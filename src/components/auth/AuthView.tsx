@@ -314,9 +314,13 @@ export default function AuthView() {
   return (
     <div className="min-h-full py-8 px-3 sm:px-6 flex flex-col justify-center">
       {/* Brand Header */}
-      <div className="text-center space-y-2 mb-4 bg-slate-900/80 backdrop-blur-md p-4 sm:p-5 rounded-3xl border border-slate-700/60 shadow-xl max-w-lg mx-auto w-full text-white">
-        <div className="inline-flex items-center justify-center w-12 h-12 rounded-2xl bg-emerald-600 text-white shadow-lg shadow-emerald-600/30">
-          <ShieldCheck className="w-7 h-7" />
+      <div className="text-center space-y-2 mb-4 bg-slate-900/85 backdrop-blur-md p-4 sm:p-5 rounded-3xl border border-slate-700/60 shadow-xl max-w-lg mx-auto w-full text-white">
+        <div className="flex justify-center mb-1">
+          <img
+            src="/logo.png"
+            alt="Logo SIM-RW Digital"
+            className="w-20 h-20 sm:w-24 sm:h-24 object-contain drop-shadow-xl transition-transform hover:scale-105"
+          />
         </div>
         <h1 className="text-xl sm:text-2xl font-extrabold text-white tracking-tight drop-shadow-sm">
           SIM-RW Digital

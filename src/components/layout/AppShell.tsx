@@ -98,9 +98,11 @@ export default function AppShell({
       {/* Top Universal Civic Bar */}
       <header className="bg-slate-900/90 backdrop-blur-md text-white border-b border-slate-800/80 sticky top-0 z-50 px-6 py-2.5 flex items-center justify-between shadow-md relative">
         <div className="flex items-center gap-3">
-          <div className="w-9 h-9 rounded-xl bg-emerald-600 flex items-center justify-center shadow-md shadow-emerald-900/50">
-            <ShieldCheck className="w-5 h-5 text-white" />
-          </div>
+          <img
+            src="/logo.png"
+            alt="Logo SIM-RW"
+            className="w-10 h-10 object-contain drop-shadow-md hover:scale-105 transition-transform"
+          />
           <div>
             <div className="text-xs font-bold uppercase tracking-wider text-emerald-400 flex items-center gap-1.5">
               <span>SIM-RW Digital</span>

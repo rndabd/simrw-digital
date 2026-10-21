@@ -72,14 +72,21 @@ export default function HeaderDashboard({ onOpenNotifications }: HeaderDashboard
       )}
 
       <div className="flex items-center justify-between">
-        <div>
-          <div className="text-xs text-slate-700 font-bold">
-            {getGreeting()}, {user?.fullName?.split(" ")[0] || "Warga"} 👋
+        <div className="flex items-center gap-3">
+          <img
+            src="/logo.png"
+            alt="Logo SIM-RW"
+            className="w-11 h-11 object-contain drop-shadow-sm shrink-0"
+          />
+          <div>
+            <div className="text-xs text-slate-700 font-bold">
+              {getGreeting()}, {user?.fullName?.split(" ")[0] || "Warga"} 👋
+            </div>
+            <div className="text-base font-extrabold text-slate-900 tracking-tight flex items-center gap-2 mt-0.5">
+              <span>{user?.fullName || "Tamu"}</span>
+            </div>
+            <div className="mt-1">{getStatusBadge()}</div>
           </div>
-          <div className="text-base font-extrabold text-slate-900 tracking-tight flex items-center gap-2 mt-0.5">
-            <span>{user?.fullName || "Tamu"}</span>
-          </div>
-          <div className="mt-1">{getStatusBadge()}</div>
         </div>
 
         <div className="flex items-center gap-2">

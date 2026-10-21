@@ -54,9 +54,11 @@ export default function HomePage() {
         style={{ backgroundImage: isDesktop ? "url('/bg-desktop.jpeg')" : "url('/bg-mobile.jpg')" }}
       >
         <div className="p-8 rounded-3xl bg-white/90 backdrop-blur-md border border-white/60 shadow-2xl flex flex-col items-center">
-          <div className="w-14 h-14 rounded-2xl bg-emerald-600 flex items-center justify-center animate-pulse shadow-lg text-white font-extrabold text-2xl">
-            W
-          </div>
+          <img
+            src="/logo.png"
+            alt="Logo SIM-RW"
+            className="w-16 h-16 object-contain animate-pulse drop-shadow-md"
+          />
           <div className="text-xs font-bold text-slate-800 mt-4 tracking-wide">
             Memuat SIM-RW Digital...
           </div>
