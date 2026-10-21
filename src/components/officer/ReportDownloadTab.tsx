@@ -115,8 +115,24 @@ export default function ReportDownloadTab() {
         fetch(`/api/v1/audit/logs`).then((r) => r.json()).catch(() => ({})),
       ]);
 
+      const finSummary = resFin?.summary || resFin?.data?.summary || {};
+      const finTx = resFin?.transactions || resFin?.data?.transactions || [];
+      const initTx = finTx.find((t: any) => t.category === "Saldo Awal Kas");
+      const initialBalance = finSummary.initialBalance ?? resFin?.initialBalance ?? (initTx ? initTx.amount : (isRwOfficer ? 15000000 : 6000000));
+      const totalIncome = finSummary.totalIncome ?? resFin?.totalIncome ?? (initialBalance + finTx.filter((t: any) => t.type === "INCOME" && t.category !== "Saldo Awal Kas").reduce((s: number, t: any) => s + Number(t.amount || 0), 0));
+      const totalExpense = finSummary.totalExpense ?? resFin?.totalExpense ?? finTx.filter((t: any) => t.type === "EXPENSE").reduce((s: number, t: any) => s + Number(t.amount || 0), 0);
+      const currentBalance = finSummary.netBalance ?? resFin?.currentBalance ?? (totalIncome - totalExpense);
+
       setReportData({
-        finances: resFin?.data || resFin,
+        finances: {
+          initialBalance,
+          totalIncome,
+          totalExpense,
+          currentBalance,
+          operationalIncome: finSummary.operationalIncome || (totalIncome - initialBalance),
+          transactions: finTx,
+          scope: resFin?.scope || (isRwOfficer ? "RW" : "RT"),
+        },
         dues: resDues?.data || [],
         residents: resRes?.data || [],
         stats: resStats?.data || null,
@@ -301,12 +317,18 @@ export default function ReportDownloadTab() {
     // Finances Section
     if (isIncluded("FINANCES") && reportData.finances) {
       const fin = reportData.finances;
+      const initialBal = fin?.initialBalance ?? fin?.summary?.initialBalance ?? 0;
+      const totIncome = fin?.totalIncome ?? fin?.summary?.totalIncome ?? 0;
+      const totExpense = fin?.totalExpense ?? fin?.summary?.totalExpense ?? 0;
+      const curBal = fin?.currentBalance ?? fin?.summary?.netBalance ?? (totIncome - totExpense);
+
       contentHtml += `
         <div class="section-title">1. Ringkasan Keuangan & Buku Kas Lingkungan</div>
-        <p>Saldo Awal Kas: <strong>Rp ${Number(fin.initialBalance || 0).toLocaleString("id-ID")}</strong> | 
-           Pemasukan: <strong>Rp ${Number(fin.totalIncome || 0).toLocaleString("id-ID")}</strong> | 
-           Pengeluaran: <strong>Rp ${Number(fin.totalExpense || 0).toLocaleString("id-ID")}</strong> | 
-           <strong>Saldo Kas Akhir: Rp ${Number(fin.currentBalance || 0).toLocaleString("id-ID")}</strong>
+        <p style="margin: 8px 0; font-size: 10.5pt; background: #f8fafc; padding: 10px; border-radius: 6px; border: 1px solid #cbd5e1;">
+          Saldo Awal Kas: <strong>Rp ${Number(initialBal).toLocaleString("id-ID")}</strong> &nbsp;|&nbsp; 
+          Total Pemasukan: <strong style="color: #059669;">Rp ${Number(totIncome).toLocaleString("id-ID")}</strong> &nbsp;|&nbsp; 
+          Total Pengeluaran: <strong style="color: #dc2626;">Rp ${Number(totExpense).toLocaleString("id-ID")}</strong> &nbsp;|&nbsp; 
+          <strong>Saldo Kas Akhir: Rp ${Number(curBal).toLocaleString("id-ID")}</strong>
         </p>
         <table>
           <thead>

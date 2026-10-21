@@ -177,13 +177,13 @@ export default function HomePage() {
           <div className={isDesktop ? "flex-1" : "flex-1 min-h-0 overflow-y-auto overscroll-contain"}>
             {activeTab === "beranda" &&
               (isDesktop ? (
-                /* DESKTOP BERANDA (2-Column Grid) */
-                <div className="grid grid-cols-12 gap-6 items-start">
-                  <div className="col-span-5 space-y-6">
+                /* DESKTOP BERANDA (Spacious 2-Column Grid) */
+                <div className="grid grid-cols-12 gap-6 lg:gap-8 items-start">
+                  <div className="col-span-12 lg:col-span-5 xl:col-span-4 space-y-6">
                     <EKtpMiniCard />
                     <QuickActions onActionClick={handleQuickAction} />
                   </div>
-                  <div className="col-span-7">
+                  <div className="col-span-12 lg:col-span-7 xl:col-span-8 space-y-6">
                     <AnnouncementFeed onSelectAnnouncement={(ann) => setSelectedAnnouncement(ann)} />
                   </div>
                 </div>

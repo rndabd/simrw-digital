@@ -161,10 +161,10 @@ export default function AppShell({
       </header>
 
       {/* Main Desktop Layout Grid */}
-      <div className="flex-1 max-w-7xl w-full mx-auto p-6 grid grid-cols-12 gap-6 relative">
+      <div className="flex-1 w-full max-w-[1720px] mx-auto px-4 sm:px-6 lg:px-8 py-6 grid grid-cols-12 gap-6 relative">
         {/* Left Sidebar (Desktop Navigation) */}
         {user && (
-          <aside className="col-span-3 space-y-4">
+          <aside className="col-span-12 lg:col-span-3 space-y-4">
             {/* User Identity Card */}
             <div className="p-4 rounded-2xl bg-white/95 backdrop-blur-md border border-white/80 shadow-lg space-y-3">
               <div className="flex items-start justify-between">
@@ -283,8 +283,8 @@ export default function AppShell({
         )}
 
         {/* Main Content Viewport */}
-        <main className={`${user ? "col-span-9" : "col-span-12"} space-y-4`}>
-          <div className="bg-white/95 backdrop-blur-md rounded-3xl border border-white/70 shadow-xl p-6 overflow-hidden min-h-[750px]">
+        <main className={`${user ? "col-span-12 lg:col-span-9" : "col-span-12"} space-y-4`}>
+          <div className="bg-white/95 backdrop-blur-md rounded-3xl border border-white/70 shadow-xl p-6 lg:p-8 min-h-[820px]">
             {children}
           </div>
         </main>
