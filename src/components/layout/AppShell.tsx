@@ -58,7 +58,7 @@ export default function AppShell({
     return (
       <div
         className="min-h-screen bg-slate-900 md:py-6 flex flex-col items-center justify-center bg-cover bg-center bg-no-repeat relative"
-        style={{ backgroundImage: "url('/bg-mobile.jpg')" }}
+        style={{ backgroundImage: "url('/bg-desktop.jpeg')" }}
       >
         {/* Backdrop overlay on desktop display for mobile simulator */}
         <div className="absolute inset-0 bg-slate-950/75 backdrop-blur-md hidden md:block pointer-events-none" />
