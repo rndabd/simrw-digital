@@ -1,7 +1,7 @@
 "use client";
 
-import React, { useState, useEffect } from "react";
-import { CreditCard, CheckCircle2, Clock, QrCode, Receipt, ShieldCheck, Upload, AlertCircle, FileText } from "lucide-react";
+import React, { useState, useEffect, useRef } from "react";
+import { CreditCard, CheckCircle2, Clock, QrCode, Receipt, ShieldCheck, Upload, AlertCircle, FileText, Camera, X } from "lucide-react";
 import { useAuth } from "@/context/AuthContext";
 
 export default function IuranTab() {
@@ -12,6 +12,22 @@ export default function IuranTab() {
   const [payingBill, setPayingBill] = useState<any | null>(null);
   const [isSubmittingPay, setIsSubmittingPay] = useState(false);
   const [paySuccessMsg, setPaySuccessMsg] = useState<string | null>(null);
+
+  // Camera & Proof State
+  const cameraProofRef = useRef<HTMLInputElement>(null);
+  const galleryProofRef = useRef<HTMLInputElement>(null);
+  const [proofPreview, setProofPreview] = useState<string | null>(null);
+
+  const handleProofChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (file) {
+      const reader = new FileReader();
+      reader.onload = () => {
+        setProofPreview(reader.result as string);
+      };
+      reader.readAsDataURL(file);
+    }
+  };
 
   const fetchBills = async () => {
     setIsLoading(true);
@@ -206,12 +222,66 @@ export default function IuranTab() {
 
                 <div>
                   <label className="text-xs font-bold text-slate-700 block mb-1">
-                    Lampirkan Bukti Transfer / Resi
+                    Lampirkan Bukti Transfer / Resi (Kamera / Galeri)
                   </label>
-                  <div className="p-3 rounded-xl border border-dashed border-slate-300 bg-slate-50 text-center text-xs text-slate-500 flex items-center justify-center gap-2">
-                    <Upload className="w-4 h-4 text-emerald-600" />
-                    <span>struk-transfer-mandiri.jpg (Terlampir)</span>
-                  </div>
+                  <input
+                    ref={cameraProofRef}
+                    type="file"
+                    accept="image/*"
+                    capture="environment"
+                    className="hidden"
+                    onChange={handleProofChange}
+                  />
+                  <input
+                    ref={galleryProofRef}
+                    type="file"
+                    accept="image/*"
+                    className="hidden"
+                    onChange={handleProofChange}
+                  />
+
+                  {proofPreview ? (
+                    <div className="relative rounded-2xl overflow-hidden border border-slate-200 bg-slate-50 p-2">
+                      <img
+                        src={proofPreview}
+                        alt="Bukti Resi Transfer"
+                        className="w-full h-36 object-cover rounded-xl"
+                      />
+                      <button
+                        type="button"
+                        onClick={() => setProofPreview(null)}
+                        className="absolute top-4 right-4 w-7 h-7 rounded-full bg-rose-600 hover:bg-rose-700 text-white flex items-center justify-center shadow-md text-xs transition"
+                        title="Hapus Bukti"
+                      >
+                        <X className="w-4 h-4" />
+                      </button>
+                      <div className="mt-1 text-center">
+                        <span className="text-[10px] text-emerald-700 font-bold flex items-center justify-center gap-1">
+                          <CheckCircle2 className="w-3 h-3 text-emerald-600" />
+                          Bukti Resi Terlampir
+                        </span>
+                      </div>
+                    </div>
+                  ) : (
+                    <div className="grid grid-cols-2 gap-2">
+                      <button
+                        type="button"
+                        onClick={() => cameraProofRef.current?.click()}
+                        className="py-2.5 px-3 rounded-xl border-2 border-dashed border-emerald-400 bg-emerald-50/60 hover:bg-emerald-100 text-emerald-800 text-xs font-bold flex items-center justify-center gap-2 transition active:scale-95 shadow-xs"
+                      >
+                        <Camera className="w-4 h-4 text-emerald-600" />
+                        <span>Foto Resi via Kamera</span>
+                      </button>
+                      <button
+                        type="button"
+                        onClick={() => galleryProofRef.current?.click()}
+                        className="py-2.5 px-3 rounded-xl border border-slate-200 bg-slate-50 hover:bg-slate-100 text-slate-700 text-xs font-semibold flex items-center justify-center gap-2 transition active:scale-95"
+                      >
+                        <Upload className="w-4 h-4 text-slate-500" />
+                        <span>Pilih Berkas Galeri</span>
+                      </button>
+                    </div>
+                  )}
                 </div>
 
                 <div className="p-2.5 rounded-xl bg-amber-50 text-amber-900 text-[11px] font-medium flex items-center gap-2">

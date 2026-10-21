@@ -103,13 +103,13 @@ export default function AppShell({
           </div>
           <div>
             <div className="text-xs font-bold uppercase tracking-wider text-emerald-400 flex items-center gap-1.5">
-              <span>SIM-RW Digital Multi-Tenant</span>
+              <span>SIM-RW Digital</span>
               <span className="px-1.5 py-0.2 rounded bg-emerald-950 text-[10px] text-emerald-300 border border-emerald-500/30">
                 Mode Desktop
               </span>
             </div>
-            <div className="text-sm font-extrabold text-white tracking-tight">
-              Sistem Pelayanan Terintegrasi Seluruh RT & RW • Kelurahan Sukamaju
+            <div className="text-xs md:text-sm font-extrabold text-white tracking-tight">
+              Inisiasi RW 15 Komplek Giri Ciheulang, Kec. Ciparay Kab. Bandung
             </div>
           </div>
         </div>

@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import { useAuth } from "@/context/AuthContext";
 import {
   MessageSquare,
@@ -15,6 +15,10 @@ import {
   ShieldAlert,
   ChevronRight,
   Filter,
+  Camera,
+  Upload,
+  Image as ImageIcon,
+  X,
 } from "lucide-react";
 
 export default function PengaduanTab() {
@@ -32,6 +36,22 @@ export default function PengaduanTab() {
   const [description, setDescription] = useState("");
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [feedbackMsg, setFeedbackMsg] = useState<string | null>(null);
+
+  // Camera & Photo Proof State
+  const cameraInputRef = useRef<HTMLInputElement>(null);
+  const galleryInputRef = useRef<HTMLInputElement>(null);
+  const [photoPreview, setPhotoPreview] = useState<string | null>(null);
+
+  const handlePhotoFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (file) {
+      const reader = new FileReader();
+      reader.onload = () => {
+        setPhotoPreview(reader.result as string);
+      };
+      reader.readAsDataURL(file);
+    }
+  };
 
   const fetchComplaints = async () => {
     setIsLoading(true);
@@ -70,6 +90,7 @@ export default function PengaduanTab() {
           location,
           priority,
           description,
+          photo_url: photoPreview || undefined,
         }),
       });
 
@@ -80,6 +101,7 @@ export default function PengaduanTab() {
         setLocation("");
         setDescription("");
         setPriority("NORMAL");
+        setPhotoPreview(null);
         setTimeout(() => {
           setShowFormModal(false);
           setFeedbackMsg(null);
@@ -247,6 +269,19 @@ export default function PengaduanTab() {
                 {item.description}
               </p>
 
+              {item.photo_url && (
+                <div className="rounded-xl overflow-hidden border border-slate-200 max-h-48 bg-slate-100">
+                  <img
+                    src={item.photo_url}
+                    alt="Lampiran Bukti Foto"
+                    className="w-full h-40 object-cover hover:scale-105 transition-transform duration-300"
+                  />
+                  <div className="p-1.5 bg-slate-900/80 text-white text-[10px] text-center font-semibold">
+                    Lampiran Bukti Foto Lapangan
+                  </div>
+                </div>
+              )}
+
               <div className="flex flex-wrap items-center justify-between text-[11px] text-slate-500 pt-1 border-t border-slate-100 gap-y-1">
                 <span className="flex items-center gap-1 text-slate-600">
                   <MapPin className="w-3.5 h-3.5 text-rose-500 shrink-0" />
@@ -366,6 +401,71 @@ export default function PengaduanTab() {
                   onChange={(e) => setDescription(e.target.value)}
                   className="w-full text-xs p-2.5 rounded-xl border border-slate-300 font-medium focus:ring-2 focus:ring-emerald-500"
                 />
+              </div>
+
+              {/* Lampiran Bukti Foto (Kamera / Galeri) */}
+              <div>
+                <label className="text-xs font-bold text-slate-700 block mb-1">
+                  Lampiran Bukti Foto (Kamera Langsung / Berkas)
+                </label>
+                <input
+                  ref={cameraInputRef}
+                  type="file"
+                  accept="image/*"
+                  capture="environment"
+                  className="hidden"
+                  onChange={handlePhotoFileChange}
+                />
+                <input
+                  ref={galleryInputRef}
+                  type="file"
+                  accept="image/*"
+                  className="hidden"
+                  onChange={handlePhotoFileChange}
+                />
+
+                {photoPreview ? (
+                  <div className="relative rounded-2xl overflow-hidden border border-slate-200 bg-slate-50 p-2">
+                    <img
+                      src={photoPreview}
+                      alt="Bukti Pengaduan"
+                      className="w-full h-36 object-cover rounded-xl"
+                    />
+                    <button
+                      type="button"
+                      onClick={() => setPhotoPreview(null)}
+                      className="absolute top-4 right-4 w-7 h-7 rounded-full bg-rose-600 hover:bg-rose-700 text-white flex items-center justify-center shadow-md text-xs transition"
+                      title="Hapus Foto"
+                    >
+                      <X className="w-4 h-4" />
+                    </button>
+                    <div className="mt-1 text-center">
+                      <span className="text-[10px] text-emerald-700 font-bold flex items-center justify-center gap-1">
+                        <CheckCircle2 className="w-3 h-3 text-emerald-600" />
+                        Bukti Foto Siap Dikirim
+                      </span>
+                    </div>
+                  </div>
+                ) : (
+                  <div className="grid grid-cols-2 gap-2">
+                    <button
+                      type="button"
+                      onClick={() => cameraInputRef.current?.click()}
+                      className="py-2.5 px-3 rounded-xl border-2 border-dashed border-emerald-400 bg-emerald-50/60 hover:bg-emerald-100 text-emerald-800 text-xs font-bold flex items-center justify-center gap-2 transition active:scale-95 shadow-xs"
+                    >
+                      <Camera className="w-4 h-4 text-emerald-600" />
+                      <span>Ambil via Kamera</span>
+                    </button>
+                    <button
+                      type="button"
+                      onClick={() => galleryInputRef.current?.click()}
+                      className="py-2.5 px-3 rounded-xl border border-slate-200 bg-slate-50 hover:bg-slate-100 text-slate-700 text-xs font-semibold flex items-center justify-center gap-2 transition active:scale-95"
+                    >
+                      <Upload className="w-4 h-4 text-slate-500" />
+                      <span>Pilih dari Galeri</span>
+                    </button>
+                  </div>
+                )}
               </div>
 
               <div>

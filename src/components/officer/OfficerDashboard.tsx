@@ -36,6 +36,7 @@ import MasterResidentsTab from "./MasterResidentsTab";
 import KkReconciliationTab from "./KkReconciliationTab";
 import PopulationStatsTab from "./PopulationStatsTab";
 import OfficerComplaintsTab from "./OfficerComplaintsTab";
+import ReportDownloadTab from "./ReportDownloadTab";
 
 export default function OfficerDashboard() {
   const { user, setOfficerMode } = useAuth();
@@ -60,6 +61,7 @@ export default function OfficerDashboard() {
     | "reconciliation"
     | "statistics"
     | "complaints"
+    | "reports"
   >("pending");
 
   // State for Saldo Awal Modal
@@ -677,6 +679,15 @@ export default function OfficerDashboard() {
             }`}
           >
             Audit UU PDP
+          </button>
+
+          <button
+            onClick={() => setActiveTab("reports")}
+            className={`py-2 px-1 rounded-xl text-center transition-all ${
+              activeTab === "reports" ? "bg-emerald-600 text-white shadow-xs font-extrabold" : "hover:text-white"
+            }`}
+          >
+            Unduh Laporan
           </button>
         </div>
       </div>
@@ -1713,6 +1724,9 @@ export default function OfficerDashboard() {
 
         {/* TAB 12: PENGADUAN WARGA */}
         {activeTab === "complaints" && <OfficerComplaintsTab />}
+
+        {/* TAB 13: UNDUH & CETAK LAPORAN RESMI */}
+        {activeTab === "reports" && <ReportDownloadTab />}
       </div>
     </div>
   );

@@ -5,14 +5,14 @@ import { AuthProvider } from "@/context/AuthContext";
 import { ViewModeProvider } from "@/context/ViewModeContext";
 
 export const metadata: Metadata = {
-  title: "SIM-RW | Aplikasi Warga Digital",
+  title: "SIM-RW Digital | Inisiasi RW 15 Komplek Giri Ciheulang",
   description:
-    "Sistem Informasi & Aplikasi Warga Digital Modern, Cepat, Terverifikasi, dan Aman UU Pelindungan Data Pribadi.",
+    "Sistem Informasi & Aplikasi Pelayanan Warga Digital Terpadu - Inisiasi RW 15 Komplek Giri Ciheulang, Kec. Ciparay Kab. Bandung.",
   manifest: "/manifest.json",
   appleWebApp: {
     capable: true,
     statusBarStyle: "default",
-    title: "SIM-RW Warga",
+    title: "SIM-RW Digital",
   },
 };
 

@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import { useAuth } from "@/context/AuthContext";
 import {
   ShieldCheck,
@@ -15,6 +15,9 @@ import {
   Crown,
   Briefcase,
   HelpCircle,
+  Camera,
+  Upload,
+  X,
 } from "lucide-react";
 
 const RW_POSITIONS = [
@@ -75,7 +78,21 @@ export default function AuthView() {
   const [resPassword, setResPassword] = useState("");
   const [resAddress, setResAddress] = useState("");
   const [resKtpFile, setResKtpFile] = useState<File | null>(null);
+  const [resKtpPreview, setResKtpPreview] = useState<string | null>(null);
+  const ktpCameraRef = useRef<HTMLInputElement>(null);
+  const ktpGalleryRef = useRef<HTMLInputElement>(null);
   const [resNikValidation, setResNikValidation] = useState<string | null>(null);
+
+  const handleKtpFileChange = (file: File | null) => {
+    setResKtpFile(file);
+    if (file) {
+      const reader = new FileReader();
+      reader.onload = () => setResKtpPreview(reader.result as string);
+      reader.readAsDataURL(file);
+    } else {
+      setResKtpPreview(null);
+    }
+  };
 
   // 3. REGISTER OFFICER (KEPENGURUSAN) STATE
   const [officerLevel, setOfficerLevel] = useState<"RW" | "RT">("RW");
@@ -302,10 +319,13 @@ export default function AuthView() {
           <ShieldCheck className="w-7 h-7" />
         </div>
         <h1 className="text-xl font-extrabold text-slate-900 tracking-tight">
-          SIM-RW Multi-Tenant Digital
+          SIM-RW Digital
         </h1>
-        <p className="text-xs text-slate-600 font-medium max-w-sm mx-auto">
-          Sistem Informasi Pelayanan Warga & Kepengurusan RT/RW Terintegrasi Terproteksi UU PDP No. 27/2022.
+        <p className="text-xs font-bold text-emerald-800 max-w-sm mx-auto">
+          Inisiasi RW 15 Komplek Giri Ciheulang, Kec. Ciparay Kab. Bandung
+        </p>
+        <p className="text-[11px] text-slate-600 font-medium max-w-sm mx-auto">
+          Sistem Pelayanan Warga & Kepengurusan RT/RW Terintegrasi Terproteksi UU PDP No. 27/2022
         </p>
       </div>
 
@@ -599,14 +619,66 @@ export default function AuthView() {
                 {/* Foto KTP */}
                 <div>
                   <label className="text-xs font-semibold text-slate-700 block mb-1">
-                    Foto Fisik KTP (Private Storage TTL 5 Menit)
+                    Foto Fisik KTP (Kamera Langsung / File)
                   </label>
                   <input
+                    ref={ktpCameraRef}
+                    type="file"
+                    accept="image/*"
+                    capture="environment"
+                    className="hidden"
+                    onChange={(e) => handleKtpFileChange(e.target.files?.[0] || null)}
+                  />
+                  <input
+                    ref={ktpGalleryRef}
                     type="file"
                     accept="image/*,.pdf"
-                    onChange={(e) => setResKtpFile(e.target.files?.[0] || null)}
-                    className="w-full text-xs p-2 rounded-xl border border-slate-300 bg-slate-50 file:mr-2 file:py-1 file:px-2 file:rounded-md file:border-0 file:text-[11px] file:font-semibold file:bg-emerald-600 file:text-white"
+                    className="hidden"
+                    onChange={(e) => handleKtpFileChange(e.target.files?.[0] || null)}
                   />
+
+                  {resKtpPreview ? (
+                    <div className="relative rounded-2xl overflow-hidden border border-slate-200 bg-slate-50 p-2">
+                      <img
+                        src={resKtpPreview}
+                        alt="Pratinjau KTP"
+                        className="w-full h-36 object-cover rounded-xl"
+                      />
+                      <button
+                        type="button"
+                        onClick={() => handleKtpFileChange(null)}
+                        className="absolute top-4 right-4 w-7 h-7 rounded-full bg-rose-600 hover:bg-rose-700 text-white flex items-center justify-center shadow-md text-xs transition"
+                        title="Hapus Foto KTP"
+                      >
+                        <X className="w-4 h-4" />
+                      </button>
+                      <div className="mt-1 text-center">
+                        <span className="text-[10px] text-emerald-700 font-bold flex items-center justify-center gap-1">
+                          <CheckCircle2 className="w-3 h-3 text-emerald-600" />
+                          Foto KTP Berhasil Diambil
+                        </span>
+                      </div>
+                    </div>
+                  ) : (
+                    <div className="grid grid-cols-2 gap-2">
+                      <button
+                        type="button"
+                        onClick={() => ktpCameraRef.current?.click()}
+                        className="py-2.5 px-3 rounded-xl border-2 border-dashed border-emerald-400 bg-emerald-50/60 hover:bg-emerald-100 text-emerald-800 text-xs font-bold flex items-center justify-center gap-2 transition active:scale-95 shadow-xs"
+                      >
+                        <Camera className="w-4 h-4 text-emerald-600" />
+                        <span>Foto KTP via Kamera</span>
+                      </button>
+                      <button
+                        type="button"
+                        onClick={() => ktpGalleryRef.current?.click()}
+                        className="py-2.5 px-3 rounded-xl border border-slate-200 bg-slate-50 hover:bg-slate-100 text-slate-700 text-xs font-semibold flex items-center justify-center gap-2 transition active:scale-95"
+                      >
+                        <Upload className="w-4 h-4 text-slate-500" />
+                        <span>Pilih Berkas KTP</span>
+                      </button>
+                    </div>
+                  )}
                 </div>
 
                 <button
