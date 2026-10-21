@@ -641,6 +641,15 @@
   ],
   "audit_logs": [
     {
+      "id": "89f6e22b-7fe1-45a6-b91d-74cd4900b9da",
+      "user_id": "user-rw-01",
+      "action": "USER_LOGIN",
+      "resource": "AUTH",
+      "payload": null,
+      "ip_address": "103.119.66.40",
+      "timestamp": "2026-10-21T15:27:54.041Z"
+    },
+    {
       "id": "b2405878-5124-402a-b651-3fd140e1e375",
       "user_id": "user-rt-01",
       "action": "USER_LOGIN",
