@@ -123,17 +123,17 @@ export default function HomePage() {
     >
       {/* Super Admin Dashboard tab */}
       {activeTab === "admin" && user.isSuperAdmin ? (
-        <div className={!isDesktop ? "flex-1 overflow-y-auto p-4 pb-8" : ""}>
+        <div className={!isDesktop ? "flex-1 min-h-0 overflow-y-auto p-4 pb-8" : ""}>
           <SuperAdminDashboard />
         </div>
       ) : isOfficerMode && user.isOfficer ? (
         /* Officer Dashboard */
-        <div className={!isDesktop ? "flex-1 overflow-y-auto p-4 pb-8" : ""}>
+        <div className={!isDesktop ? "flex-1 min-h-0 overflow-y-auto p-4 pb-8" : ""}>
           <OfficerDashboard />
         </div>
       ) : (
         /* Citizen View */
-        <div className={isDesktop ? "min-h-full flex flex-col" : "flex-1 flex flex-col h-full overflow-hidden"}>
+        <div className={isDesktop ? "min-h-full flex flex-col" : "flex-1 min-h-0 flex flex-col h-full overflow-hidden"}>
           {/* Header (rendered in mobile mode, or compact sub-header) */}
           {!isDesktop && (
             <div className="shrink-0 z-30">
@@ -174,7 +174,7 @@ export default function HomePage() {
           )}
 
           {/* Main Tab Render */}
-          <div className={isDesktop ? "flex-1" : "flex-1 overflow-y-auto"}>
+          <div className={isDesktop ? "flex-1" : "flex-1 min-h-0 overflow-y-auto overscroll-contain"}>
             {activeTab === "beranda" &&
               (isDesktop ? (
                 /* DESKTOP BERANDA (2-Column Grid) */

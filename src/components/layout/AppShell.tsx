@@ -57,14 +57,14 @@ export default function AppShell({
     // MOBILE MODE (Phone Frame)
     return (
       <div
-        className="min-h-screen bg-slate-900 md:py-6 flex flex-col items-center justify-center bg-cover bg-center bg-no-repeat relative"
+        className="fixed inset-0 h-[100dvh] max-h-[100dvh] w-full overflow-hidden bg-slate-900 md:relative md:inset-auto md:h-screen md:max-h-screen flex flex-col items-center justify-center bg-cover bg-center bg-no-repeat p-0 md:p-3"
         style={{ backgroundImage: "url('/bg-desktop.jpeg')" }}
       >
         {/* Backdrop overlay on desktop display for mobile simulator */}
         <div className="absolute inset-0 bg-slate-950/75 backdrop-blur-md hidden md:block pointer-events-none" />
 
         {/* Top Control Bar on Desktop Screens */}
-        <div className="hidden md:flex items-center justify-between w-full max-w-md px-4 py-2 mb-2 text-xs text-slate-200 bg-slate-900/80 backdrop-blur-md rounded-2xl border border-slate-700/60 shadow-lg relative z-10">
+        <div className="hidden md:flex items-center justify-between w-full max-w-sm md:max-w-[420px] px-4 py-1.5 mb-2 text-xs text-slate-200 bg-slate-900/90 backdrop-blur-md rounded-2xl border border-slate-700/60 shadow-lg shrink-0 relative z-20">
           <div className="flex items-center gap-1.5 font-semibold text-emerald-400">
             <span className="w-2 h-2 rounded-full bg-emerald-400 animate-pulse" />
             Mode Simulasi Ponsel (PWA)
@@ -74,11 +74,11 @@ export default function AppShell({
 
         {/* Mobile Mockup Device Container */}
         <div
-          className="w-full max-w-md h-screen md:h-[840px] max-h-screen md:max-h-[90vh] flex flex-col shadow-2xl relative overflow-hidden md:rounded-[2.5rem] md:border-[8px] md:border-slate-800 bg-cover bg-center bg-no-repeat z-10"
+          className="w-full h-full md:max-w-sm md:max-w-[420px] md:flex-1 md:max-h-[calc(100vh-4.5rem)] md:max-h-[800px] flex flex-col shadow-2xl relative overflow-hidden md:rounded-[2.5rem] md:border-[8px] md:border-slate-800 bg-cover bg-center bg-no-repeat z-10"
           style={{ backgroundImage: "url('/bg-mobile.jpg')" }}
         >
           <div className="hidden md:block w-32 h-4 bg-slate-800 rounded-b-xl mx-auto absolute top-0 left-1/2 -translate-x-1/2 z-50 pointer-events-none" />
-          <div className="flex-1 flex flex-col bg-slate-950/45 backdrop-blur-[2px] h-full overflow-hidden relative">
+          <div className="flex-1 min-h-0 flex flex-col bg-slate-950/45 backdrop-blur-[2px] h-full overflow-hidden relative">
             {children}
           </div>
         </div>

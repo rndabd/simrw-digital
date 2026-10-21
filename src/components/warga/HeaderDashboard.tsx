@@ -47,7 +47,10 @@ export default function HeaderDashboard({ onOpenNotifications }: HeaderDashboard
   };
 
   return (
-    <header className="bg-white/95 backdrop-blur-md border-b border-slate-200/80 sticky top-0 z-30 px-4 pt-3 pb-3 shadow-xs">
+    <header
+      className="bg-white/95 backdrop-blur-md border-b border-slate-200/80 sticky top-0 z-30 px-4 pb-3 shadow-xs select-none"
+      style={{ paddingTop: "max(0.75rem, env(safe-area-inset-top, 0.75rem))" }}
+    >
       {/* Officer mode toggle bar if user has officer privileges */}
       {user?.isOfficer && (
         <div className="mb-2.5 py-1.5 px-3 rounded-lg bg-emerald-50 border border-emerald-200 flex items-center justify-between">

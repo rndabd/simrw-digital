@@ -312,7 +312,7 @@ export default function AuthView() {
   const currentOffRw = organizations.find((o) => o.id === offRwId);
 
   return (
-    <div className="min-h-full py-8 px-3 sm:px-6 flex flex-col justify-center">
+    <div className="w-full h-full overflow-y-auto py-6 px-3 sm:px-6 flex flex-col justify-start md:justify-center">
       {/* Brand Header */}
       <div className="text-center space-y-2 mb-4 bg-slate-900/85 backdrop-blur-md p-4 sm:p-5 rounded-3xl border border-slate-700/60 shadow-xl max-w-lg mx-auto w-full text-white">
         <div className="flex justify-center mb-1">
