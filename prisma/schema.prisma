@@ -1,0 +1,187 @@
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+enum UserStatus {
+  UNVERIFIED
+  PENDING_VERIFICATION
+  VERIFIED_ACTIVE
+  REJECTED
+  SUSPENDED
+}
+
+enum RoleType {
+  SUPER_ADMIN
+  RW_CHAIR
+  RW_STAFF
+  RT_CHAIR
+  RT_STAFF
+  SECURITY
+  HEAD_OF_FAMILY
+  RESIDENT
+}
+
+enum ElevationStatus {
+  PENDING
+  APPROVED
+  REJECTED
+  EXPIRED
+}
+
+enum ScopeNotification {
+  GLOBAL_BROADCAST
+  RW_BROADCAST
+  RT_BROADCAST
+  OFFICER_ONLY
+  PERSONAL
+}
+
+model OrganizationRW {
+  id            String           @id @default(uuid())
+  rw_number     String           // e.g. "05"
+  village       String           // Kelurahan
+  district      String           // Kecamatan
+  city          String           // Kota/Kabupaten
+  rt_units      OrganizationRT[]
+  users         User[]
+  announcements Announcement[]
+  created_at    DateTime         @default(now())
+}
+
+model OrganizationRT {
+  id          String         @id @default(uuid())
+  rw_id       String
+  rt_number   String         // e.g. "02"
+  rw          OrganizationRW @relation(fields: [rw_id], references: [id])
+  users       User[]
+  households  Household[]
+  created_at  DateTime       @default(now())
+
+  @@unique([rw_id, rt_number])
+}
+
+model Household {
+  id              String         @id @default(uuid())
+  rt_id           String
+  kk_number_hash  String         @unique // HMAC-SHA256 untuk index pencarian
+  kk_number_enc   String         // AES-256-GCM Terenkripsi
+  address_block   String         // Alamat / No. Rumah
+  rt              OrganizationRT @relation(fields: [rt_id], references: [id])
+  members         User[]
+  created_at      DateTime       @default(now())
+}
+
+model User {
+  id              String         @id @default(uuid())
+  rw_id           String
+  rt_id           String
+  household_id    String?
+
+  // PII (Data Pribadi Terlindungi UU PDP)
+  nik_hash        String         @unique // HMAC-SHA256 Blind Index
+  nik_encrypted   String         // AES-256-GCM Ciphertext
+  full_name       String
+  phone_number    String         @unique
+  password_hash   String
+  ktp_doc_url     String         // Lokasi file di private storage bucket
+  
+  status          UserStatus     @default(UNVERIFIED)
+  rejection_note  String?
+  verified_at     DateTime?
+  verified_by_id  String?
+
+  rw              OrganizationRW @relation(fields: [rw_id], references: [id])
+  rt              OrganizationRT @relation(fields: [rt_id], references: [id])
+  household       Household?     @relation(fields: [household_id], references: [id])
+  roles           UserRoleMapping[]
+  officer_requests OfficerElevationRequest[]
+  device_tokens   DeviceToken[]
+  audit_logs      AuditLog[]
+
+  created_at      DateTime       @default(now())
+  updated_at      DateTime       @updatedAt
+}
+
+model Role {
+  id          String            @id @default(uuid())
+  name        RoleType          @unique
+  description String
+  permissions RolePermission[]
+  users       UserRoleMapping[]
+}
+
+model RolePermission {
+  id         String   @id @default(uuid())
+  role_id    String
+  permission String   // Contoh: "citizen:verify", "broadcast:create", "audit:view"
+  role       Role     @relation(fields: [role_id], references: [id])
+}
+
+model UserRoleMapping {
+  id          String   @id @default(uuid())
+  user_id     String
+  role_id     String
+  user        User     @relation(fields: [user_id], references: [id], onDelete: Cascade)
+  role        Role     @relation(fields: [role_id], references: [id])
+  assigned_at DateTime @default(now())
+
+  @@unique([user_id, role_id])
+}
+
+model OfficerElevationRequest {
+  id               String          @id @default(uuid())
+  user_id          String
+  requested_role   RoleType
+  target_rw_id     String
+  target_rt_id     String?
+  sk_document_url  String          // Dokumen bukti SK / Berita Acara Pelantikan
+  status           ElevationStatus @default(PENDING)
+  rejection_reason String?
+  reviewed_by      String?
+  reviewed_at      DateTime?
+  expires_at       DateTime?
+
+  user             User            @relation(fields: [user_id], references: [id])
+  created_at       DateTime        @default(now())
+}
+
+model DeviceToken {
+  id          String   @id @default(uuid())
+  user_id     String
+  token       String   @unique
+  platform    String   // "ANDROID", "IOS", "WEB"
+  is_active   Boolean  @default(true)
+  user        User     @relation(fields: [user_id], references: [id], onDelete: Cascade)
+  updated_at  DateTime @updatedAt
+}
+
+model Announcement {
+  id          String            @id @default(uuid())
+  rw_id       String
+  rt_id       String?
+  author_id   String
+  title       String
+  content     String
+  scope       ScopeNotification
+  attachments String[]
+  is_pinned   Boolean           @default(false)
+  created_at  DateTime          @default(now())
+  rw          OrganizationRW    @relation(fields: [rw_id], references: [id])
+}
+
+model AuditLog {
+  id          String   @id @default(uuid())
+  user_id     String?
+  action      String   // e.g. "VIEW_UNMASKED_NIK", "APPROVE_RESIDENT"
+  resource    String
+  payload     Json?
+  ip_address  String
+  timestamp   DateTime @default(now())
+  user        User?    @relation(fields: [user_id], references: [id])
+}
+

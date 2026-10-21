@@ -1,0 +1,1922 @@
+{
+  "rws": [
+    {
+      "id": "rw-05-coblong",
+      "rw_number": "05",
+      "village": "Sukamaju",
+      "district": "Coblong",
+      "city": "Kota Bandung",
+      "status": "ACTIVE",
+      "term_period": "2021-2026",
+      "created_at": "2026-10-20T23:53:14.614Z",
+      "initial_balance": 15000000
+    },
+    {
+      "id": "rw-08-coblong",
+      "rw_number": "08",
+      "village": "Sukamaju",
+      "district": "Coblong",
+      "city": "Kota Bandung",
+      "status": "ACTIVE",
+      "term_period": "2022-2027",
+      "created_at": "2026-10-20T23:53:14.614Z",
+      "initial_balance": 10000000
+    },
+    {
+      "id": "rw-12-coblong",
+      "rw_number": "12",
+      "village": "Sukamaju",
+      "district": "Coblong",
+      "city": "Kota Bandung",
+      "status": "PENDING_APPROVAL",
+      "term_period": "2026-2031",
+      "sk_kelurahan_url": "/uploads/sk-pemilihan-rw12.pdf",
+      "created_at": "2026-10-20T23:53:14.614Z",
+      "initial_balance": 10000000
+    }
+  ],
+  "rts": [
+    {
+      "id": "rt-01-rw-05",
+      "rw_id": "rw-05-coblong",
+      "rt_number": "01",
+      "term_period": "2021-2026",
+      "status": "ACTIVE",
+      "created_at": "2026-10-20T23:53:14.614Z",
+      "initial_balance": 3000000
+    },
+    {
+      "id": "rt-02-rw-05",
+      "rw_id": "rw-05-coblong",
+      "rt_number": "02",
+      "term_period": "2021-2026",
+      "status": "ACTIVE",
+      "created_at": "2026-10-20T23:53:14.614Z",
+      "initial_balance": 6000000
+    },
+    {
+      "id": "rt-03-rw-05",
+      "rw_id": "rw-05-coblong",
+      "rt_number": "03",
+      "term_period": "2021-2026",
+      "status": "ACTIVE",
+      "created_at": "2026-10-20T23:53:14.614Z",
+      "initial_balance": 3000000
+    },
+    {
+      "id": "rt-04-rw-05",
+      "rw_id": "rw-05-coblong",
+      "rt_number": "04",
+      "term_period": "2026-2031",
+      "status": "ACTIVE",
+      "applicant_user_id": "user-applicant-rt04",
+      "sk_document_url": "/uploads/sk-pemilihan-rt04.pdf",
+      "created_at": "2026-10-20T23:53:14.614Z",
+      "initial_balance": 3000000
+    },
+    {
+      "id": "rt-01-rw-08",
+      "rw_id": "rw-08-coblong",
+      "rt_number": "01",
+      "term_period": "2022-2027",
+      "status": "ACTIVE",
+      "created_at": "2026-10-20T23:53:14.629Z",
+      "initial_balance": 3000000
+    },
+    {
+      "id": "rt-02-rw-08",
+      "rw_id": "rw-08-coblong",
+      "rt_number": "02",
+      "term_period": "2022-2027",
+      "status": "ACTIVE",
+      "created_at": "2026-10-20T23:53:14.629Z",
+      "initial_balance": 5000000
+    }
+  ],
+  "households": [
+    {
+      "id": "hh-01",
+      "rt_id": "rt-02-rw-05",
+      "kk_number_hash": "8f6a89a47f34950081bf1aefbf705703e7472f7bdc4090807b16910ae5cbb894",
+      "kk_number_enc": "6cd05ee4f37cdadbe1e08c3d:ed0069c7a301c3ce59b532f200005ace:5ccd59cb659b76a799b5131f2e43fafb",
+      "address_block": "Blok C2 No. 14",
+      "created_at": "2026-10-20T23:53:14.630Z"
+    },
+    {
+      "id": "a53a7798-10b9-479a-917b-58ff67ab572d",
+      "rt_id": "rt-01-rw-05",
+      "kk_number_hash": "8ce9e1ee6ae56ae09437845256b2dc1ad1079d3f29cf22d5dee861131bc3ee08",
+      "kk_number_enc": "5de05020bdd6630be1a72909:d1d06ddc14eca76e69ac17360cf90c2f:b6fb50d666eb3288b2e209bb1671d322",
+      "address_block": "Blok D3 No. 08",
+      "created_at": "2026-10-21T00:05:22.462Z"
+    },
+    {
+      "id": "3e11e0e5-82bc-4d52-9d6d-a753468bc103",
+      "rt_id": "rt-02-rw-05",
+      "kk_number_hash": "5b75759f93e5d6ddd3e1e2b4d77163fd66cb7cd8928e8779ee06e7de1cb3a5e7",
+      "kk_number_enc": "87ce962287a1cdf47258ebe2:bc9b59fa021ad9364f507330ff0e282e:08d8ffbc0ebba267f0a0c0b9cf8c0df4",
+      "address_block": "Blok B1 No. 04",
+      "created_at": "2026-10-21T00:07:34.058Z"
+    },
+    {
+      "id": "hh-02",
+      "rt_id": "rt-02-rw-05",
+      "kk_number_hash": "6957885ff4320584e8015f74c30ed3ac4aff7b8b694645ba9037d04b9f4df35c",
+      "kk_number_enc": "a128801de164801b58afa18e:b3d26417eacf494e0b90d36d5c43f583:0d707f7e4bd14bf483c3b01c34a9846f",
+      "address_block": "Jl. Sukamaju Raya No. 05",
+      "created_at": "2026-10-21T02:55:54.967Z"
+    },
+    {
+      "id": "hh-03",
+      "rt_id": "rt-02-rw-05",
+      "kk_number_hash": "f4d03d75ae7bcc96d5fa3c8e9f171d1e5d9525d1640093f1246fc5dfa1860585",
+      "kk_number_enc": "9ad9392bb54639c8162d9d31:5296173edcfc87f419926c86d027718b:3402a18eca76448f2655ad4971876c19",
+      "address_block": "Blok Anggrek No. 17",
+      "created_at": "2026-10-21T02:55:54.967Z"
+    }
+  ],
+  "roles": [
+    {
+      "id": "role-super-admin",
+      "name": "SUPER_ADMIN",
+      "description": "Super Administrator Kelurahan (Kelola Seluruh RW & Rollover)",
+      "permissions": [
+        "*",
+        "citizen:verify",
+        "broadcast:create",
+        "audit:view",
+        "officer:verify_rw",
+        "officer:verify_rt",
+        "rw:manage",
+        "rollover:execute",
+        "finance:manage"
+      ]
+    },
+    {
+      "id": "role-rw-chair",
+      "name": "RW_CHAIR",
+      "description": "Ketua Rukun Warga (RW)",
+      "permissions": [
+        "citizen:verify",
+        "broadcast:create",
+        "audit:view",
+        "officer:verify_rt",
+        "rollover:execute",
+        "finance:view_all_rt",
+        "fund_request:review_rw"
+      ]
+    },
+    {
+      "id": "role-rw-staff",
+      "name": "RW_STAFF",
+      "description": "Sekretaris / Bendahara RW",
+      "permissions": [
+        "broadcast:create",
+        "audit:view",
+        "finance:view_all_rt",
+        "finance:manage_rw"
+      ]
+    },
+    {
+      "id": "role-rt-chair",
+      "name": "RT_CHAIR",
+      "description": "Ketua Rukun Tetangga (RT)",
+      "permissions": [
+        "citizen:verify",
+        "broadcast:create",
+        "audit:view",
+        "bill:validate",
+        "finance:manage_rt",
+        "fund_request:review_rt"
+      ]
+    },
+    {
+      "id": "role-rt-staff",
+      "name": "RT_STAFF",
+      "description": "Sekretaris / Bendahara RT",
+      "permissions": [
+        "broadcast:create",
+        "bill:validate",
+        "finance:manage_rt"
+      ]
+    },
+    {
+      "id": "role-security",
+      "name": "SECURITY",
+      "description": "Petugas Keamanan Lingkungan",
+      "permissions": [
+        "patrol:log",
+        "emergency:respond"
+      ]
+    },
+    {
+      "id": "role-head-family",
+      "name": "HEAD_OF_FAMILY",
+      "description": "Kepala Keluarga Warga",
+      "permissions": [
+        "citizen:read",
+        "bill:pay",
+        "letter:request"
+      ]
+    },
+    {
+      "id": "role-resident",
+      "name": "RESIDENT",
+      "description": "Warga Tetap / Warga Domisili",
+      "permissions": [
+        "citizen:read",
+        "bill:pay",
+        "letter:request"
+      ]
+    },
+    {
+      "id": "role-rw-vice-chair",
+      "name": "RW_VICE_CHAIR",
+      "description": "Wakil Ketua RW",
+      "permissions": [
+        "citizen:verify",
+        "broadcast:create",
+        "audit:view",
+        "officer:verify_rt",
+        "finance:view_all_rt",
+        "fund_request:review_rw"
+      ]
+    },
+    {
+      "id": "role-rw-secretary",
+      "name": "RW_SECRETARY",
+      "description": "Sekretaris RW",
+      "permissions": [
+        "citizen:verify",
+        "broadcast:create",
+        "audit:view",
+        "finance:view_all_rt",
+        "letter:manage"
+      ]
+    },
+    {
+      "id": "role-rw-treasurer",
+      "name": "RW_TREASURER",
+      "description": "Bendahara RW",
+      "permissions": [
+        "broadcast:create",
+        "audit:view",
+        "finance:view_all_rt",
+        "finance:manage_rw"
+      ]
+    },
+    {
+      "id": "role-rw-security",
+      "name": "RW_SECURITY",
+      "description": "Seksi Keamanan & Ketertiban RW",
+      "permissions": [
+        "patrol:log",
+        "emergency:respond",
+        "broadcast:create"
+      ]
+    },
+    {
+      "id": "role-rw-environment",
+      "name": "RW_ENVIRONMENT",
+      "description": "Seksi Kebersihan & Lingkungan Hidup RW",
+      "permissions": [
+        "broadcast:create"
+      ]
+    },
+    {
+      "id": "role-rw-development",
+      "name": "RW_DEVELOPMENT",
+      "description": "Seksi Pembangunan & Sarana Prasarana RW",
+      "permissions": [
+        "broadcast:create"
+      ]
+    },
+    {
+      "id": "role-rw-relations",
+      "name": "RW_RELATIONS",
+      "description": "Seksi Hubungan Masyarakat (Humas) RW",
+      "permissions": [
+        "broadcast:create"
+      ]
+    },
+    {
+      "id": "role-rw-youth",
+      "name": "RW_YOUTH",
+      "description": "Seksi Pemuda & Karang Taruna RW",
+      "permissions": [
+        "broadcast:create"
+      ]
+    },
+    {
+      "id": "role-rw-social",
+      "name": "RW_SOCIAL",
+      "description": "Seksi Sosial & Kesejahteraan Warga RW",
+      "permissions": [
+        "broadcast:create"
+      ]
+    },
+    {
+      "id": "role-rt-vice-chair",
+      "name": "RT_VICE_CHAIR",
+      "description": "Wakil Ketua RT",
+      "permissions": [
+        "citizen:verify",
+        "broadcast:create",
+        "audit:view",
+        "bill:validate",
+        "finance:manage_rt",
+        "fund_request:review_rt"
+      ]
+    },
+    {
+      "id": "role-rt-secretary",
+      "name": "RT_SECRETARY",
+      "description": "Sekretaris RT",
+      "permissions": [
+        "citizen:verify",
+        "broadcast:create",
+        "audit:view",
+        "letter:manage"
+      ]
+    },
+    {
+      "id": "role-rt-treasurer",
+      "name": "RT_TREASURER",
+      "description": "Bendahara RT",
+      "permissions": [
+        "broadcast:create",
+        "bill:validate",
+        "finance:manage_rt"
+      ]
+    },
+    {
+      "id": "role-rt-security",
+      "name": "RT_SECURITY",
+      "description": "Seksi Keamanan RT",
+      "permissions": [
+        "patrol:log",
+        "emergency:respond",
+        "broadcast:create"
+      ]
+    },
+    {
+      "id": "role-rt-environment",
+      "name": "RT_ENVIRONMENT",
+      "description": "Seksi Kebersihan & Pengelolaan Lingkungan RT",
+      "permissions": [
+        "broadcast:create"
+      ]
+    },
+    {
+      "id": "role-rt-social",
+      "name": "RT_SOCIAL",
+      "description": "Seksi Sosial & Kerohanian RT",
+      "permissions": [
+        "broadcast:create"
+      ]
+    },
+    {
+      "id": "role-rt-youth",
+      "name": "RT_YOUTH",
+      "description": "Seksi Pemuda / Karang Taruna RT",
+      "permissions": [
+        "broadcast:create"
+      ]
+    },
+    {
+      "id": "role-rt-women",
+      "name": "RT_WOMEN",
+      "description": "Seksi Pemberdayaan Perempuan & PKK RT",
+      "permissions": [
+        "broadcast:create"
+      ]
+    }
+  ],
+  "users": [
+    {
+      "id": "user-super-admin",
+      "rw_id": "rw-05-coblong",
+      "rt_id": "rt-02-rw-05",
+      "nik_hash": "0811859e33ec4f8d6a9ae7a8b6f6ab0dbce7d08a35fbcdeb8d5fe874e5d9645f",
+      "nik_encrypted": "84161d653ef2b6a90ccc092c:bc7dda21a41e8df79aafc65b0a3cd2ae:a6e546600cf8729c84ef883a76acd5d2",
+      "full_name": "Ibu Ratna Dewi (Lurah Sukamaju)",
+      "phone_number": "081100000000",
+      "password_hash": "$2a$10$b6JSbbqOBLDbaN1GUkLF5.gfI0TpBchVoOqIZKPkelvdOX8n8dRd2",
+      "ktp_doc_url": "/uploads/ktp-lurah.jpg",
+      "status": "VERIFIED_ACTIVE",
+      "verified_at": "2026-10-20T23:53:14.611Z",
+      "created_at": "2026-10-20T23:53:14.612Z",
+      "updated_at": "2026-10-20T23:53:14.612Z"
+    },
+    {
+      "id": "user-rw-01",
+      "rw_id": "rw-05-coblong",
+      "rt_id": "rt-02-rw-05",
+      "nik_hash": "fd7b749b279f22276f470e75f5980846203816312c4a8d2111a841c3822eb8e8",
+      "nik_encrypted": "24515617548f876beb673567:ccab04fbc47cacba8ec8eb03dc81bca7:c1d1ee0f3cbf0aff652295581e4872fb",
+      "full_name": "Budi Santoso",
+      "phone_number": "081200000001",
+      "password_hash": "$2a$10$b6JSbbqOBLDbaN1GUkLF5.gfI0TpBchVoOqIZKPkelvdOX8n8dRd2",
+      "ktp_doc_url": "/uploads/sample-ktp-1.jpg",
+      "status": "VERIFIED_ACTIVE",
+      "verified_at": "2026-10-20T23:53:14.613Z",
+      "created_at": "2026-10-20T23:53:14.613Z",
+      "updated_at": "2026-10-20T23:53:14.613Z"
+    },
+    {
+      "id": "user-rt-01",
+      "rw_id": "rw-05-coblong",
+      "rt_id": "rt-02-rw-05",
+      "nik_hash": "d083d8d342b4d3e8177eb4cfe838364eb249377a64da7fe6e38f08b845bd971e",
+      "nik_encrypted": "5b67562cda5a75545c87b4ef:0b1d24ecd72bd94ed23ce810da201db2:62fa5ea6ab9681b00a1b0b23c1a96fce",
+      "full_name": "Hendra Gunawan",
+      "phone_number": "081200000002",
+      "password_hash": "$2a$10$b6JSbbqOBLDbaN1GUkLF5.gfI0TpBchVoOqIZKPkelvdOX8n8dRd2",
+      "ktp_doc_url": "/uploads/sample-ktp-2.jpg",
+      "status": "VERIFIED_ACTIVE",
+      "verified_at": "2026-10-20T23:53:14.613Z",
+      "created_at": "2026-10-20T23:53:14.613Z",
+      "updated_at": "2026-10-20T23:53:14.613Z",
+      "household_id": "hh-02"
+    },
+    {
+      "id": "user-warga-01",
+      "rw_id": "rw-05-coblong",
+      "rt_id": "rt-02-rw-05",
+      "nik_hash": "e9872a8bb5e787fcb055613d6d2ad2f26d3bfbb90768bfd851b22862e8dbd328",
+      "nik_encrypted": "c237998361bfe890de203bd3:88a137cefafccc711d1f26ecd26b71c9:07c86df057d62aff733355c050acc56d",
+      "full_name": "Siti Aminah",
+      "phone_number": "081200000003",
+      "password_hash": "$2a$10$b6JSbbqOBLDbaN1GUkLF5.gfI0TpBchVoOqIZKPkelvdOX8n8dRd2",
+      "ktp_doc_url": "/uploads/sample-ktp-3.jpg",
+      "status": "VERIFIED_ACTIVE",
+      "verified_at": "2026-10-20T23:53:14.613Z",
+      "created_at": "2026-10-20T23:53:14.613Z",
+      "updated_at": "2026-10-20T23:53:14.613Z",
+      "household_id": "hh-01"
+    },
+    {
+      "id": "user-pending-01",
+      "rw_id": "rw-05-coblong",
+      "rt_id": "rt-02-rw-05",
+      "nik_hash": "a855686db1f9cfeaa1055fcc705c19fc8e83838c51cd600f1283599a215d466e",
+      "nik_encrypted": "a7bbe0a631d84b8790b9705e:18a3fa67b2d2cc50c1ccbd255fe1ea25:d65ab6242737f7794ab80113d5d5fcb2",
+      "full_name": "Ahmad Hidayat",
+      "phone_number": "081200000004",
+      "password_hash": "$2a$10$b6JSbbqOBLDbaN1GUkLF5.gfI0TpBchVoOqIZKPkelvdOX8n8dRd2",
+      "ktp_doc_url": "/uploads/sample-ktp-pending.jpg",
+      "status": "VERIFIED_ACTIVE",
+      "created_at": "2026-10-20T23:53:14.614Z",
+      "updated_at": "2026-10-20T23:53:14.614Z",
+      "verified_at": "2026-10-21T01:01:44.678Z",
+      "verified_by_id": "user-rt-01",
+      "household_id": "hh-03"
+    },
+    {
+      "id": "user-applicant-rt04",
+      "rw_id": "rw-05-coblong",
+      "rt_id": "rt-04-rw-05",
+      "nik_hash": "2869f3b5f819282f3f68e64c07a5c4c58fd6becb529d0d1c41abc6c17bd7223c",
+      "nik_encrypted": "954d053d5446d520ce1ca7ed:215219a658fa4cf634ec4bc5734432df:c063f5783b303be7e18fd97d69ed468b",
+      "full_name": "H. Mulyono (Calon Ketua RT 04)",
+      "phone_number": "081233445566",
+      "password_hash": "$2a$10$b6JSbbqOBLDbaN1GUkLF5.gfI0TpBchVoOqIZKPkelvdOX8n8dRd2",
+      "ktp_doc_url": "/uploads/ktp-mulyono.jpg",
+      "status": "VERIFIED_ACTIVE",
+      "created_at": "2026-10-20T23:53:14.614Z",
+      "updated_at": "2026-10-20T23:53:14.614Z",
+      "verified_at": "2026-10-20T23:56:41.164Z",
+      "verified_by_id": "user-rw-01"
+    },
+    {
+      "id": "116eb67d-d1cd-4862-81d0-873dd5212756",
+      "rw_id": "rw-05-coblong",
+      "rt_id": "rt-01-rw-05",
+      "household_id": "a53a7798-10b9-479a-917b-58ff67ab572d",
+      "nik_hash": "6921c9114e05096ab09e24cbbedd016220d40d1f5fbae6e657c0267cdf2284d7",
+      "nik_encrypted": "c8a5f241cd566a2b11569c44:ebf8f00f677101c9f95899f90aca63ef:5c9ed07d588bc00f233b9b2d3799f86a",
+      "full_name": "Bambang Soedirman",
+      "phone_number": "081299887711",
+      "password_hash": "$2a$10$a6LZ5K0PD9pZryDMgr3B2e4831k4Cf.xCN1zzdtQB0q6e966ohkuC",
+      "ktp_doc_url": "/uploads/sk-mandat.pdf",
+      "status": "VERIFIED_ACTIVE",
+      "created_at": "2026-10-21T00:05:22.463Z",
+      "updated_at": "2026-10-21T00:05:22.463Z"
+    },
+    {
+      "id": "8a400e4f-e5ba-4cbe-a329-4e3508b89b48",
+      "rw_id": "rw-05-coblong",
+      "rt_id": "rt-02-rw-05",
+      "household_id": "3e11e0e5-82bc-4d52-9d6d-a753468bc103",
+      "nik_hash": "f21c851c62167ccee6237343bc25cbe5ae2d6a3564c2e55e6015c60b5b3300dd",
+      "nik_encrypted": "b2ae11624385d5ccfbe96722:779be5caae79c9d0d98987880db80f89:ad572f318c82e4aed3248da1068b1be2",
+      "full_name": "Dewi Anggraini",
+      "phone_number": "081255443322",
+      "password_hash": "$2a$10$BNogZWxVmz21Hh/FMMU6kOeba/82SYr/nHJddzGkkzKU2Q8xTnqEG",
+      "ktp_doc_url": "/uploads/sk-mandat.pdf",
+      "status": "VERIFIED_ACTIVE",
+      "created_at": "2026-10-21T00:07:34.058Z",
+      "updated_at": "2026-10-21T00:07:34.058Z"
+    }
+  ],
+  "user_roles": [
+    {
+      "id": "ur-0",
+      "user_id": "user-super-admin",
+      "role_id": "role-super-admin",
+      "assigned_at": "2026-10-20T23:53:14.630Z"
+    },
+    {
+      "id": "ur-1",
+      "user_id": "user-rw-01",
+      "role_id": "role-rw-chair",
+      "assigned_at": "2026-10-20T23:53:14.630Z"
+    },
+    {
+      "id": "ur-2",
+      "user_id": "user-rt-01",
+      "role_id": "role-rt-chair",
+      "assigned_at": "2026-10-20T23:53:14.630Z"
+    },
+    {
+      "id": "ur-3",
+      "user_id": "user-warga-01",
+      "role_id": "role-resident",
+      "assigned_at": "2026-10-20T23:53:14.630Z"
+    },
+    {
+      "id": "ur-4",
+      "user_id": "user-pending-01",
+      "role_id": "role-resident",
+      "assigned_at": "2026-10-20T23:53:14.630Z"
+    },
+    {
+      "id": "ur-5",
+      "user_id": "user-applicant-rt04",
+      "role_id": "role-resident",
+      "assigned_at": "2026-10-20T23:53:14.630Z"
+    },
+    {
+      "id": "41060b4a-9632-4a9e-a234-e28d7de61253",
+      "user_id": "user-applicant-rt04",
+      "role_id": "role-rt-chair",
+      "assigned_at": "2026-10-20T23:56:41.164Z"
+    },
+    {
+      "id": "f7bbced6-af53-4dd4-ace5-9d25437ddc0b",
+      "user_id": "116eb67d-d1cd-4862-81d0-873dd5212756",
+      "role_id": "role-resident",
+      "assigned_at": "2026-10-21T00:05:22.463Z"
+    },
+    {
+      "id": "3d92f4f6-6f30-4dea-8179-6611cffee607",
+      "user_id": "116eb67d-d1cd-4862-81d0-873dd5212756",
+      "role_id": "role-rw-secretary",
+      "assigned_at": "2026-10-21T00:05:40.682Z"
+    },
+    {
+      "id": "1ab5923d-f979-4222-888a-038e59892118",
+      "user_id": "8a400e4f-e5ba-4cbe-a329-4e3508b89b48",
+      "role_id": "role-resident",
+      "assigned_at": "2026-10-21T00:07:34.058Z"
+    },
+    {
+      "id": "fbc7a736-806b-402d-ba96-e13888507773",
+      "user_id": "8a400e4f-e5ba-4cbe-a329-4e3508b89b48",
+      "role_id": "role-rt-secretary",
+      "assigned_at": "2026-10-21T00:07:42.491Z"
+    }
+  ],
+  "officer_requests": [
+    {
+      "id": "76210673-b5f8-4807-b340-6c7d6ad7d76c",
+      "user_id": "8a400e4f-e5ba-4cbe-a329-4e3508b89b48",
+      "requested_role": "RT_SECRETARY",
+      "target_rw_id": "rw-05-coblong",
+      "target_rt_id": "rt-02-rw-05",
+      "sk_document_url": "/uploads/sk-mandat.pdf",
+      "status": "APPROVED",
+      "created_at": "2026-10-21T00:07:34.058Z",
+      "reviewed_by": "user-rw-01",
+      "reviewed_at": "2026-10-21T00:07:42.491Z"
+    },
+    {
+      "id": "614e9f8d-a8c4-4987-9839-864fb1f5695c",
+      "user_id": "116eb67d-d1cd-4862-81d0-873dd5212756",
+      "requested_role": "RW_SECRETARY",
+      "target_rw_id": "rw-05-coblong",
+      "target_rt_id": "rt-01-rw-05",
+      "sk_document_url": "/uploads/sk-mandat.pdf",
+      "status": "APPROVED",
+      "created_at": "2026-10-21T00:05:22.463Z",
+      "reviewed_by": "user-super-admin",
+      "reviewed_at": "2026-10-21T00:05:40.681Z"
+    }
+  ],
+  "device_tokens": [],
+  "announcements": [
+    {
+      "id": "ann-01",
+      "rw_id": "rw-05-coblong",
+      "author_id": "user-rw-01",
+      "title": "Kerja Bakti Massal Lingkungan RW 05",
+      "content": "Dalam rangka memasuki musim penghujan dan pencegahan genangan air, seluruh warga dihimbau mengikuti giat gotong royong membersihkan saluran air pada hari Minggu pagi pukul 07.30 WIB di pos masing-masing.",
+      "scope": "RW_BROADCAST",
+      "attachments": [],
+      "is_pinned": true,
+      "created_at": "2026-10-19T23:53:14.630Z"
+    },
+    {
+      "id": "ann-02",
+      "rw_id": "rw-05-coblong",
+      "rt_id": "rt-02-rw-05",
+      "author_id": "user-rt-01",
+      "title": "Pemberitahuan Jadwal Ronda Malam RT 02",
+      "content": "Jadwal siskamling ronda malam RT 02 telah diperbarui untuk periode Oktober. Bapak-bapak warga diharap mengecek giliran jaga masing-masing di pos ronda.",
+      "scope": "RT_BROADCAST",
+      "attachments": [],
+      "is_pinned": false,
+      "created_at": "2026-10-20T11:53:14.630Z"
+    }
+  ],
+  "audit_logs": [
+    {
+      "id": "fac99081-31a8-4dbd-8d45-20b410ba30e9",
+      "user_id": "user-warga-01",
+      "action": "USER_LOGIN",
+      "resource": "AUTH",
+      "payload": null,
+      "ip_address": "202.51.228.33",
+      "timestamp": "2026-10-21T11:05:21.219Z"
+    },
+    {
+      "id": "a63330a4-21df-441b-9117-4cbade4f537d",
+      "user_id": "user-rt-01",
+      "action": "USER_LOGIN",
+      "resource": "AUTH",
+      "payload": null,
+      "ip_address": "202.51.228.33",
+      "timestamp": "2026-10-21T11:02:23.094Z"
+    },
+    {
+      "id": "c5611911-61f6-4e6e-84b3-9a0e80dda61e",
+      "user_id": "user-rw-01",
+      "action": "USER_LOGIN",
+      "resource": "AUTH",
+      "payload": null,
+      "ip_address": "202.51.228.33",
+      "timestamp": "2026-10-21T10:59:42.061Z"
+    },
+    {
+      "id": "43243535-ed54-450c-8e48-ee983029c851",
+      "user_id": "user-rw-01",
+      "action": "USER_LOGIN",
+      "resource": "AUTH",
+      "payload": null,
+      "ip_address": "202.51.228.33",
+      "timestamp": "2026-10-21T10:57:23.927Z"
+    },
+    {
+      "id": "d4d20cfe-66d7-4f23-8501-8a1a28949052",
+      "user_id": "user-rt-01",
+      "action": "USER_LOGIN",
+      "resource": "AUTH",
+      "payload": null,
+      "ip_address": "202.51.228.33",
+      "timestamp": "2026-10-21T10:57:20.539Z"
+    },
+    {
+      "id": "3ee68a12-77c0-4c51-be32-a66e67df29bb",
+      "user_id": "user-rw-01",
+      "action": "USER_LOGIN",
+      "resource": "AUTH",
+      "payload": null,
+      "ip_address": "202.51.228.33",
+      "timestamp": "2026-10-21T10:57:13.551Z"
+    },
+    {
+      "id": "18ab16fd-27b8-4853-9a5d-bc4f946311fc",
+      "user_id": "user-rt-01",
+      "action": "USER_LOGIN",
+      "resource": "AUTH",
+      "payload": null,
+      "ip_address": "202.51.228.33",
+      "timestamp": "2026-10-21T10:57:11.789Z"
+    },
+    {
+      "id": "3206d41b-68ed-4aa2-bb93-e86b6540fc9f",
+      "user_id": "user-pending-01",
+      "action": "USER_LOGIN",
+      "resource": "AUTH",
+      "payload": null,
+      "ip_address": "202.51.228.33",
+      "timestamp": "2026-10-21T10:57:03.944Z"
+    },
+    {
+      "id": "a86aea19-8c3f-40cf-b45d-2bfdbf38df3b",
+      "user_id": "user-rt-01",
+      "action": "USER_LOGIN",
+      "resource": "AUTH",
+      "payload": null,
+      "ip_address": "202.51.228.33",
+      "timestamp": "2026-10-21T10:55:10.734Z"
+    },
+    {
+      "id": "76f6405a-5e29-46a0-8a7c-a2468da49fb8",
+      "user_id": "user-rt-01",
+      "action": "USER_LOGIN",
+      "resource": "AUTH",
+      "payload": null,
+      "ip_address": "114.122.73.157",
+      "timestamp": "2026-10-21T03:21:47.550Z"
+    },
+    {
+      "id": "9d1a74e1-50ae-4441-a167-1d289f3088b2",
+      "user_id": "user-rw-01",
+      "action": "USER_LOGIN",
+      "resource": "AUTH",
+      "payload": null,
+      "ip_address": "202.51.228.33",
+      "timestamp": "2026-10-21T03:11:43.894Z"
+    },
+    {
+      "id": "dbc33354-cff3-410d-888d-dbf2206627a5",
+      "user_id": "user-warga-01",
+      "action": "USER_LOGIN",
+      "resource": "AUTH",
+      "payload": null,
+      "ip_address": "202.51.228.1",
+      "timestamp": "2026-10-21T03:09:08.527Z"
+    },
+    {
+      "id": "3fc2f1f8-de98-4290-8bae-118c8266ed95",
+      "user_id": "user-rt-01",
+      "action": "RESPOND_COMPLAINT",
+      "resource": "COMPLAINT",
+      "payload": {
+        "ticketNumber": "ADU-202610-004",
+        "title": "Lampu Penerangan Gang 2 Mati",
+        "status": "DIPROSES",
+        "statusNote": "Petugas seksi sarpras RT sudah membeli bohlam baru dan akan segera dipasang sore ini pukul 16:30 WIB.",
+        "responderName": "Hendra Gunawan"
+      },
+      "ip_address": "::1",
+      "timestamp": "2026-10-21T03:01:09.560Z"
+    },
+    {
+      "id": "6720799b-fb07-4d43-848e-aa34773f561f",
+      "user_id": "user-rt-01",
+      "action": "USER_LOGIN",
+      "resource": "AUTH",
+      "payload": null,
+      "ip_address": "::1",
+      "timestamp": "2026-10-21T03:01:09.472Z"
+    },
+    {
+      "id": "269b11f6-0497-45a6-8a81-0662320914ec",
+      "user_id": "user-warga-01",
+      "action": "SUBMIT_COMPLAINT",
+      "resource": "COMPLAINT",
+      "payload": {
+        "ticketNumber": "ADU-202610-004",
+        "title": "Lampu Penerangan Gang 2 Mati",
+        "category": "FASILITAS_LAMPU_JALAN",
+        "location": "Gang 2 RT 02 depan Pos Kamling"
+      },
+      "ip_address": "::1",
+      "timestamp": "2026-10-21T03:01:09.241Z"
+    },
+    {
+      "id": "2ef3ee5b-eb4b-4744-a521-b29fa6cee179",
+      "user_id": "user-warga-01",
+      "action": "USER_LOGIN",
+      "resource": "AUTH",
+      "payload": null,
+      "ip_address": "::1",
+      "timestamp": "2026-10-21T03:01:08.389Z"
+    },
+    {
+      "id": "246ba4ce-53d5-44ca-8f87-293fba0696f6",
+      "user_id": "user-rt-01",
+      "action": "USER_LOGIN",
+      "resource": "AUTH",
+      "payload": null,
+      "ip_address": "::1",
+      "timestamp": "2026-10-21T02:57:15.856Z"
+    },
+    {
+      "id": "7b0a01aa-61ac-412a-ac7d-b6e2ed55eaf2",
+      "user_id": "user-warga-01",
+      "action": "USER_LOGIN",
+      "resource": "AUTH",
+      "payload": null,
+      "ip_address": "::1",
+      "timestamp": "2026-10-21T02:57:15.127Z"
+    },
+    {
+      "id": "2d121ec2-0846-4321-9c65-cf2913a3755b",
+      "user_id": "user-rt-01",
+      "action": "USER_LOGIN",
+      "resource": "AUTH",
+      "payload": null,
+      "ip_address": "::1",
+      "timestamp": "2026-10-21T02:57:05.263Z"
+    },
+    {
+      "id": "decc1bbc-3179-4fb9-a0b8-6248c8fea8ee",
+      "user_id": "user-pending-01",
+      "action": "USER_LOGIN",
+      "resource": "AUTH",
+      "payload": null,
+      "ip_address": "::1",
+      "timestamp": "2026-10-21T01:01:51.648Z"
+    },
+    {
+      "id": "768a4542-21b9-409f-bf46-e65330ca9f1f",
+      "user_id": "user-super-admin",
+      "action": "USER_LOGIN",
+      "resource": "AUTH",
+      "payload": null,
+      "ip_address": "::1",
+      "timestamp": "2026-10-21T01:01:50.812Z"
+    },
+    {
+      "id": "7a4b2489-3a0e-463a-99f2-4468379fcb92",
+      "user_id": "user-rt-01",
+      "action": "USER_LOGIN",
+      "resource": "AUTH",
+      "payload": null,
+      "ip_address": "::1",
+      "timestamp": "2026-10-21T01:01:49.737Z"
+    },
+    {
+      "id": "f6790d8d-01cd-4d86-b265-31b373aa778f",
+      "user_id": "user-warga-01",
+      "action": "USER_LOGIN",
+      "resource": "AUTH",
+      "payload": null,
+      "ip_address": "::1",
+      "timestamp": "2026-10-21T01:01:48.704Z"
+    },
+    {
+      "id": "ae6e6345-c35a-4704-8462-0c8691141c5c",
+      "user_id": "user-warga-01",
+      "action": "USER_LOGIN",
+      "resource": "AUTH",
+      "payload": null,
+      "ip_address": "::1",
+      "timestamp": "2026-10-21T01:01:48.198Z"
+    },
+    {
+      "id": "f9f110f8-51a5-4ab4-b898-bb6d467fe300",
+      "user_id": "user-rt-01",
+      "action": "APPROVE_RESIDENT",
+      "resource": "USER:user-pending-01",
+      "payload": {
+        "targetUserId": "user-pending-01",
+        "assignedRole": "role-resident"
+      },
+      "ip_address": "::1",
+      "timestamp": "2026-10-21T01:01:44.682Z"
+    },
+    {
+      "id": "d6854d6d-8c7a-44ec-b0f7-e8bc5001eed5",
+      "user_id": "user-rt-01",
+      "action": "USER_LOGIN",
+      "resource": "AUTH",
+      "payload": null,
+      "ip_address": "::1",
+      "timestamp": "2026-10-21T01:01:22.700Z"
+    },
+    {
+      "id": "ca3c4935-8682-40cf-a743-e9d97825feec",
+      "user_id": "user-rw-01",
+      "action": "USER_LOGIN",
+      "resource": "AUTH",
+      "payload": null,
+      "ip_address": "::1",
+      "timestamp": "2026-10-21T01:01:20.596Z"
+    },
+    {
+      "id": "48263785-01ef-4e62-a61f-cfc4f65623d6",
+      "user_id": "user-rt-01",
+      "action": "USER_LOGIN",
+      "resource": "AUTH",
+      "payload": null,
+      "ip_address": "::1",
+      "timestamp": "2026-10-21T01:01:19.692Z"
+    },
+    {
+      "id": "0c4797de-9ade-4c7e-b265-8b55d47854c2",
+      "user_id": "user-rw-01",
+      "action": "USER_LOGIN",
+      "resource": "AUTH",
+      "payload": null,
+      "ip_address": "::1",
+      "timestamp": "2026-10-21T01:01:18.986Z"
+    },
+    {
+      "id": "33e5d616-5542-4d4c-a4be-f40ae4b8e083",
+      "user_id": "user-rt-01",
+      "action": "USER_LOGIN",
+      "resource": "AUTH",
+      "payload": null,
+      "ip_address": "::1",
+      "timestamp": "2026-10-21T01:01:17.076Z"
+    },
+    {
+      "id": "32019577-ea11-4ce5-bfed-0de9321e8c62",
+      "user_id": "user-rt-01",
+      "action": "USER_LOGIN",
+      "resource": "AUTH",
+      "payload": null,
+      "ip_address": "::1",
+      "timestamp": "2026-10-21T01:01:13.609Z"
+    },
+    {
+      "id": "3e6d505c-df1e-4b7e-8b23-fb6c8a72840d",
+      "user_id": "user-super-admin",
+      "action": "USER_LOGIN",
+      "resource": "AUTH",
+      "payload": null,
+      "ip_address": "::1",
+      "timestamp": "2026-10-21T01:01:05.173Z"
+    },
+    {
+      "id": "bb94275b-37be-4034-8a9e-de437d80a8a4",
+      "user_id": "user-super-admin",
+      "action": "USER_LOGIN",
+      "resource": "AUTH",
+      "payload": null,
+      "ip_address": "::1",
+      "timestamp": "2026-10-21T00:30:44.075Z"
+    },
+    {
+      "id": "610d6102-6aa1-4563-b83a-686fed55e5c1",
+      "user_id": "user-rw-01",
+      "action": "UPDATE_INITIAL_BALANCE_RW",
+      "resource": "RW:rw-05-coblong",
+      "payload": {
+        "initialBalance": 15000000,
+        "notes": "Penetapan saldo awal kas kepengurusan"
+      },
+      "ip_address": "127.0.0.1",
+      "timestamp": "2026-10-21T00:23:13.343Z"
+    },
+    {
+      "id": "2c74b1bc-e9a9-4c07-81a2-8c00d6fb9795",
+      "user_id": "user-warga-01",
+      "action": "USER_LOGIN",
+      "resource": "AUTH",
+      "payload": null,
+      "ip_address": "::1",
+      "timestamp": "2026-10-21T00:22:59.509Z"
+    },
+    {
+      "id": "7a4a151c-ddb7-4144-ac64-8dbe8550e4a6",
+      "user_id": "user-rw-01",
+      "action": "USER_LOGIN",
+      "resource": "AUTH",
+      "payload": null,
+      "ip_address": "::1",
+      "timestamp": "2026-10-21T00:22:50.400Z"
+    },
+    {
+      "id": "138e038f-0146-4186-8b8a-61ccc3a15b34",
+      "user_id": "user-rt-01",
+      "action": "UPDATE_INITIAL_BALANCE_RT",
+      "resource": "RT:rt-02-rw-05",
+      "payload": {
+        "initialBalance": 6000000,
+        "notes": "Koreksi saldo awal kas BAST hasil musyawarah warga RT 02"
+      },
+      "ip_address": "127.0.0.1",
+      "timestamp": "2026-10-21T00:22:40.821Z"
+    },
+    {
+      "id": "75776d28-b428-4574-bdd9-5f7bc6c3efdb",
+      "user_id": "user-rt-01",
+      "action": "USER_LOGIN",
+      "resource": "AUTH",
+      "payload": null,
+      "ip_address": "::1",
+      "timestamp": "2026-10-21T00:22:40.625Z"
+    },
+    {
+      "id": "9cf65956-fc1c-4dd3-a97c-571526c067b1",
+      "user_id": "user-rw-01",
+      "action": "USER_LOGIN",
+      "resource": "AUTH",
+      "payload": null,
+      "ip_address": "::1",
+      "timestamp": "2026-10-21T00:12:56.117Z"
+    },
+    {
+      "id": "61117280-1fb4-4b37-a5e4-a824c01b8f0d",
+      "user_id": "user-rt-01",
+      "action": "GENERATE_MONTHLY_DUES",
+      "resource": "RT:rt-02-rw-05",
+      "payload": {
+        "month": "November",
+        "year": 2026,
+        "amount": 50000,
+        "createdCount": 5
+      },
+      "ip_address": "127.0.0.1",
+      "timestamp": "2026-10-21T00:10:15.361Z"
+    },
+    {
+      "id": "8c9ac895-3a59-4ea0-85ef-33c024bc8a84",
+      "user_id": "user-rt-01",
+      "action": "USER_LOGIN",
+      "resource": "AUTH",
+      "payload": null,
+      "ip_address": "::1",
+      "timestamp": "2026-10-21T00:09:24.276Z"
+    },
+    {
+      "id": "9b3a81c3-38a5-4014-abe1-dc74cfc91f9e",
+      "user_id": "user-super-admin",
+      "action": "USER_LOGIN",
+      "resource": "AUTH",
+      "payload": null,
+      "ip_address": "::1",
+      "timestamp": "2026-10-21T00:09:18.935Z"
+    },
+    {
+      "id": "8d2ecfd4-6414-4614-8baf-b2f713828ce3",
+      "user_id": "8a400e4f-e5ba-4cbe-a329-4e3508b89b48",
+      "action": "USER_LOGIN",
+      "resource": "AUTH",
+      "payload": null,
+      "ip_address": "::1",
+      "timestamp": "2026-10-21T00:07:42.611Z"
+    },
+    {
+      "id": "87a30d3f-491e-4a54-9b54-9b391d4647f8",
+      "user_id": "user-rw-01",
+      "action": "APPROVE_OFFICER_ELEVATION",
+      "resource": "OFFICER_REQUEST:76210673-b5f8-4807-b340-6c7d6ad7d76c",
+      "payload": {
+        "applicantId": "8a400e4f-e5ba-4cbe-a329-4e3508b89b48",
+        "requestedRole": "RT_SECRETARY"
+      },
+      "ip_address": "::1",
+      "timestamp": "2026-10-21T00:07:42.492Z"
+    },
+    {
+      "id": "eede6429-67a3-4861-87c5-bfd23f5e5860",
+      "user_id": "user-rw-01",
+      "action": "USER_LOGIN",
+      "resource": "AUTH",
+      "payload": null,
+      "ip_address": "::1",
+      "timestamp": "2026-10-21T00:07:42.362Z"
+    },
+    {
+      "id": "c37e1e78-1d31-4652-92ec-f7c3364f01a7",
+      "user_id": "8a400e4f-e5ba-4cbe-a329-4e3508b89b48",
+      "action": "REGISTER_OFFICER_APPLICANT",
+      "resource": "OFFICER_REQUEST",
+      "payload": {
+        "role": "RT_SECRETARY",
+        "roleLevel": "RT",
+        "targetRwId": "rw-05-coblong",
+        "targetRtId": "rt-02-rw-05",
+        "isNewRw": false,
+        "isNewRt": false,
+        "maskedNik": "327301******0088"
+      },
+      "ip_address": "127.0.0.1",
+      "timestamp": "2026-10-21T00:07:34.060Z"
+    },
+    {
+      "id": "1cfacc7e-fd64-4bc2-bbe1-85f582dd8ee9",
+      "user_id": "116eb67d-d1cd-4862-81d0-873dd5212756",
+      "action": "USER_LOGIN",
+      "resource": "AUTH",
+      "payload": null,
+      "ip_address": "::1",
+      "timestamp": "2026-10-21T00:07:33.573Z"
+    },
+    {
+      "id": "d0ecebae-a8d4-4a44-abee-0b942b0e394b",
+      "user_id": "116eb67d-d1cd-4862-81d0-873dd5212756",
+      "action": "USER_LOGIN",
+      "resource": "AUTH",
+      "payload": null,
+      "ip_address": "::1",
+      "timestamp": "2026-10-21T00:05:40.810Z"
+    },
+    {
+      "id": "d2ac0618-7e9d-4c10-8fe5-a960d9ab16da",
+      "user_id": "user-super-admin",
+      "action": "APPROVE_OFFICER_ELEVATION",
+      "resource": "OFFICER_REQUEST:614e9f8d-a8c4-4987-9839-864fb1f5695c",
+      "payload": {
+        "applicantId": "116eb67d-d1cd-4862-81d0-873dd5212756",
+        "requestedRole": "RW_SECRETARY"
+      },
+      "ip_address": "::1",
+      "timestamp": "2026-10-21T00:05:40.683Z"
+    },
+    {
+      "id": "0c669fb3-a3e0-430b-b2bb-62e6549313a4",
+      "user_id": "user-super-admin",
+      "action": "USER_LOGIN",
+      "resource": "AUTH",
+      "payload": null,
+      "ip_address": "::1",
+      "timestamp": "2026-10-21T00:05:40.535Z"
+    },
+    {
+      "id": "a1e30507-4cee-4f8d-b4bc-d89edede55f2",
+      "user_id": "116eb67d-d1cd-4862-81d0-873dd5212756",
+      "action": "USER_LOGIN",
+      "resource": "AUTH",
+      "payload": null,
+      "ip_address": "::1",
+      "timestamp": "2026-10-21T00:05:31.716Z"
+    },
+    {
+      "id": "32cb6ffb-898e-4d58-b4b7-aaa3e59f82a6",
+      "user_id": "user-super-admin",
+      "action": "USER_LOGIN",
+      "resource": "AUTH",
+      "payload": null,
+      "ip_address": "::1",
+      "timestamp": "2026-10-21T00:05:31.099Z"
+    },
+    {
+      "id": "f74ba11f-8ce4-400a-854e-5b1e3b338554",
+      "user_id": "user-super-admin",
+      "action": "USER_LOGIN",
+      "resource": "AUTH",
+      "payload": null,
+      "ip_address": "::1",
+      "timestamp": "2026-10-21T00:05:22.766Z"
+    },
+    {
+      "id": "e3ffd0e3-45aa-481c-9ff7-abcb4225be60",
+      "user_id": "116eb67d-d1cd-4862-81d0-873dd5212756",
+      "action": "REGISTER_OFFICER_APPLICANT",
+      "resource": "OFFICER_REQUEST",
+      "payload": {
+        "role": "RW_SECRETARY",
+        "roleLevel": "RW",
+        "targetRwId": "rw-05-coblong",
+        "targetRtId": "rt-01-rw-05",
+        "isNewRw": false,
+        "isNewRt": false,
+        "maskedNik": "327301******0099"
+      },
+      "ip_address": "127.0.0.1",
+      "timestamp": "2026-10-21T00:05:22.464Z"
+    },
+    {
+      "id": "596b7c93-5237-4c4d-adca-93efc5c49a03",
+      "user_id": "user-rw-01",
+      "action": "APPROVE_FUND_REQUEST_STAGE_RW_FINAL",
+      "resource": "FUND_REQUEST:freq-01",
+      "payload": {
+        "title": "Pengadaan 4 Titik CCTV Lingkungan Gang RT 02",
+        "amount": 2400000
+      },
+      "ip_address": "::1",
+      "timestamp": "2026-10-20T23:56:47.281Z"
+    },
+    {
+      "id": "147b8a95-3037-45d8-bc49-e8586fbb1c26",
+      "user_id": "user-rw-01",
+      "action": "USER_LOGIN",
+      "resource": "AUTH",
+      "payload": null,
+      "ip_address": "::1",
+      "timestamp": "2026-10-20T23:56:47.227Z"
+    },
+    {
+      "id": "10d87a46-ec28-493d-87eb-d5c8c8d3f978",
+      "user_id": "user-rw-01",
+      "action": "APPROVE_NEW_RT_ORGANIZATION",
+      "resource": "ORGANIZATION_RT:rt-04-rw-05",
+      "payload": {
+        "rtNumber": "04",
+        "applicantId": "user-applicant-rt04"
+      },
+      "ip_address": "::1",
+      "timestamp": "2026-10-20T23:56:41.166Z"
+    },
+    {
+      "id": "0687d38e-0831-44d5-b4db-9d95ce197b66",
+      "user_id": "user-rw-01",
+      "action": "USER_LOGIN",
+      "resource": "AUTH",
+      "payload": null,
+      "ip_address": "::1",
+      "timestamp": "2026-10-20T23:56:41.099Z"
+    },
+    {
+      "id": "601bbe22-f0cc-4495-a05a-a2b7b8bb371a",
+      "user_id": "user-rw-01",
+      "action": "USER_LOGIN",
+      "resource": "AUTH",
+      "payload": null,
+      "ip_address": "::1",
+      "timestamp": "2026-10-20T23:56:34.325Z"
+    },
+    {
+      "id": "6295a656-570f-4d90-975a-10a4af539890",
+      "user_id": "user-rt-01",
+      "action": "VALIDATE_DUES_PAYMENT_APPROVED",
+      "resource": "BILL:bill-01",
+      "payload": {
+        "citizenId": "user-warga-01",
+        "amount": 50000,
+        "transactionId": "4e2fdfa3-5e73-46c4-97f3-a7bae0962383"
+      },
+      "ip_address": "::1",
+      "timestamp": "2026-10-20T23:56:26.973Z"
+    },
+    {
+      "id": "ae71d280-8acb-4703-a171-a7b1ae843ecb",
+      "user_id": "user-rt-01",
+      "action": "USER_LOGIN",
+      "resource": "AUTH",
+      "payload": null,
+      "ip_address": "::1",
+      "timestamp": "2026-10-20T23:56:26.796Z"
+    },
+    {
+      "id": "0c21a4bb-d667-4070-b2a2-bcdc04070074",
+      "user_id": "user-rt-01",
+      "action": "USER_LOGIN",
+      "resource": "AUTH",
+      "payload": null,
+      "ip_address": "::1",
+      "timestamp": "2026-10-20T23:54:34.724Z"
+    },
+    {
+      "id": "4134a9c2-274a-4b77-9c3d-2abce5b2118b",
+      "user_id": "user-rt-01",
+      "action": "USER_LOGIN",
+      "resource": "AUTH",
+      "payload": null,
+      "ip_address": "::1",
+      "timestamp": "2026-10-20T23:54:28.005Z"
+    },
+    {
+      "id": "b67b70f5-6998-4b43-9b2e-ad154e6d5e69",
+      "user_id": "user-rt-01",
+      "action": "USER_LOGIN",
+      "resource": "AUTH",
+      "payload": null,
+      "ip_address": "::1",
+      "timestamp": "2026-10-20T23:54:12.118Z"
+    },
+    {
+      "id": "audit-init-01",
+      "user_id": "user-super-admin",
+      "action": "SYSTEM_INITIALIZE_MULTITENANT",
+      "resource": "SYSTEM",
+      "payload": {
+        "note": "SIM-RW Multi-Tenant, Multi-RT & Finansial Engine Ready"
+      },
+      "ip_address": "127.0.0.1",
+      "timestamp": "2026-10-20T23:53:14.630Z"
+    }
+  ],
+  "bills": [
+    {
+      "id": "bill-1792541415359-42637f",
+      "user_id": "8a400e4f-e5ba-4cbe-a329-4e3508b89b48",
+      "rw_id": "rw-05-coblong",
+      "rt_id": "rt-02-rw-05",
+      "month": "November",
+      "year": 2026,
+      "amount": 50000,
+      "category": "IURAN_KEBERSIHAN_KEAMANAN",
+      "status": "UNPAID"
+    },
+    {
+      "id": "bill-1792541415359-892499",
+      "user_id": "user-warga-01",
+      "rw_id": "rw-05-coblong",
+      "rt_id": "rt-02-rw-05",
+      "month": "November",
+      "year": 2026,
+      "amount": 50000,
+      "category": "IURAN_KEBERSIHAN_KEAMANAN",
+      "status": "UNPAID"
+    },
+    {
+      "id": "bill-1792541415359-af4bbb",
+      "user_id": "user-rt-01",
+      "rw_id": "rw-05-coblong",
+      "rt_id": "rt-02-rw-05",
+      "month": "November",
+      "year": 2026,
+      "amount": 50000,
+      "category": "IURAN_KEBERSIHAN_KEAMANAN",
+      "status": "UNPAID"
+    },
+    {
+      "id": "bill-1792541415359-29cced",
+      "user_id": "user-rw-01",
+      "rw_id": "rw-05-coblong",
+      "rt_id": "rt-02-rw-05",
+      "month": "November",
+      "year": 2026,
+      "amount": 50000,
+      "category": "IURAN_KEBERSIHAN_KEAMANAN",
+      "status": "UNPAID"
+    },
+    {
+      "id": "bill-1792541415359-3a5a31",
+      "user_id": "user-super-admin",
+      "rw_id": "rw-05-coblong",
+      "rt_id": "rt-02-rw-05",
+      "month": "November",
+      "year": 2026,
+      "amount": 50000,
+      "category": "IURAN_KEBERSIHAN_KEAMANAN",
+      "status": "UNPAID"
+    },
+    {
+      "id": "bill-01",
+      "user_id": "user-warga-01",
+      "rw_id": "rw-05-coblong",
+      "rt_id": "rt-02-rw-05",
+      "month": "Oktober",
+      "year": 2026,
+      "amount": 50000,
+      "category": "IURAN_KEBERSIHAN_KEAMANAN",
+      "status": "PAID",
+      "proof_url": "/uploads/bukti-transfer-siti.jpg",
+      "paid_at": "2026-10-20T23:53:14.630Z",
+      "validated_by": "user-rt-01",
+      "validated_at": "2026-10-20T23:56:26.972Z"
+    },
+    {
+      "id": "bill-02",
+      "user_id": "user-warga-01",
+      "rw_id": "rw-05-coblong",
+      "rt_id": "rt-02-rw-05",
+      "month": "September",
+      "year": 2026,
+      "amount": 50000,
+      "category": "IURAN_KEBERSIHAN_KEAMANAN",
+      "status": "PAID",
+      "paid_at": "2026-09-25T23:53:14.630Z",
+      "validated_by": "user-rt-01",
+      "validated_at": "2026-09-26T23:53:14.630Z"
+    },
+    {
+      "id": "bill-03",
+      "user_id": "user-pending-01",
+      "rw_id": "rw-05-coblong",
+      "rt_id": "rt-02-rw-05",
+      "month": "Oktober",
+      "year": 2026,
+      "amount": 50000,
+      "category": "IURAN_KEBERSIHAN_KEAMANAN",
+      "status": "UNPAID"
+    },
+    {
+      "id": "bill-1792541365707",
+      "user_id": "user-rt-01",
+      "rw_id": "rw-05-coblong",
+      "rt_id": "rt-02-rw-05",
+      "month": "Oktober",
+      "year": 2026,
+      "amount": 50000,
+      "category": "IURAN_KEBERSIHAN_KEAMANAN",
+      "status": "UNPAID"
+    }
+  ],
+  "cash_transactions": [
+    {
+      "id": "ctx-rw05-init",
+      "org_type": "RW",
+      "rw_id": "rw-05-coblong",
+      "type": "INCOME",
+      "amount": 15000000,
+      "category": "Saldo Awal Kas",
+      "description": "Penetapan saldo awal kas kepengurusan",
+      "date": "2026-10-21",
+      "recorded_by": "user-super-admin"
+    },
+    {
+      "id": "ctx-rt02-init",
+      "org_type": "RT",
+      "rw_id": "rw-05-coblong",
+      "rt_id": "rt-02-rw-05",
+      "type": "INCOME",
+      "amount": 6000000,
+      "category": "Saldo Awal Kas",
+      "description": "Koreksi saldo awal kas BAST hasil musyawarah warga RT 02",
+      "date": "2026-10-21",
+      "recorded_by": "user-super-admin"
+    },
+    {
+      "id": "4e2fdfa3-5e73-46c4-97f3-a7bae0962383",
+      "org_type": "RT",
+      "rw_id": "rw-05-coblong",
+      "rt_id": "rt-02-rw-05",
+      "type": "INCOME",
+      "amount": 50000,
+      "category": "Iuran Warga",
+      "description": "Penerimaan iuran IURAN KEBERSIHAN KEAMANAN (Siti Aminah) periode Oktober 2026",
+      "date": "2026-10-20",
+      "recorded_by": "user-rt-01",
+      "proof_doc_url": "/uploads/bukti-transfer-siti.jpg"
+    },
+    {
+      "id": "ctx-rt02-01",
+      "org_type": "RT",
+      "rw_id": "rw-05-coblong",
+      "rt_id": "rt-02-rw-05",
+      "type": "INCOME",
+      "amount": 2500000,
+      "category": "Iuran Warga",
+      "description": "Penerimaan iuran kebersihan & keamanan warga RT 02 September (50 KK)",
+      "date": "2026-09-30",
+      "recorded_by": "user-rt-01"
+    },
+    {
+      "id": "ctx-rt02-02",
+      "org_type": "RT",
+      "rw_id": "rw-05-coblong",
+      "rt_id": "rt-02-rw-05",
+      "type": "INCOME",
+      "amount": 700000,
+      "category": "Donasi / Kas Sukarela",
+      "description": "Donasi warga untuk penambahan lampu penerangan jalan gang C",
+      "date": "2026-10-05",
+      "recorded_by": "user-rt-01"
+    },
+    {
+      "id": "ctx-rt02-03",
+      "org_type": "RT",
+      "rw_id": "rw-05-coblong",
+      "rt_id": "rt-02-rw-05",
+      "type": "EXPENSE",
+      "amount": 1200000,
+      "category": "Operasional Sampah",
+      "description": "Biaya angkut sampah gerobak ke TPS Sukamaju bulan September",
+      "date": "2026-10-02",
+      "recorded_by": "user-rt-01"
+    },
+    {
+      "id": "ctx-rt02-04",
+      "org_type": "RT",
+      "rw_id": "rw-05-coblong",
+      "rt_id": "rt-02-rw-05",
+      "type": "EXPENSE",
+      "amount": 350000,
+      "category": "Perawatan Fasilitas",
+      "description": "Pembelian 5 bohlam LED tenaga surya untuk gang B",
+      "date": "2026-10-10",
+      "recorded_by": "user-rt-01"
+    },
+    {
+      "id": "ctx-rt01-01",
+      "org_type": "RT",
+      "rw_id": "rw-05-coblong",
+      "rt_id": "rt-01-rw-05",
+      "type": "INCOME",
+      "amount": 2800000,
+      "category": "Iuran Warga",
+      "description": "Penerimaan iuran warga RT 01",
+      "date": "2026-10-01",
+      "recorded_by": "user-rt01-chair"
+    },
+    {
+      "id": "ctx-rt01-02",
+      "org_type": "RT",
+      "rw_id": "rw-05-coblong",
+      "rt_id": "rt-01-rw-05",
+      "type": "EXPENSE",
+      "amount": 1500000,
+      "category": "Keamanan",
+      "description": "Honor ronda malam satpam RT 01",
+      "date": "2026-10-03",
+      "recorded_by": "user-rt01-chair"
+    },
+    {
+      "id": "ctx-rt03-01",
+      "org_type": "RT",
+      "rw_id": "rw-05-coblong",
+      "rt_id": "rt-03-rw-05",
+      "type": "INCOME",
+      "amount": 1900000,
+      "category": "Iuran Warga",
+      "description": "Iuran warga RT 03 bulan berjalan",
+      "date": "2026-10-02",
+      "recorded_by": "user-rt03-chair"
+    },
+    {
+      "id": "ctx-rt03-02",
+      "org_type": "RT",
+      "rw_id": "rw-05-coblong",
+      "rt_id": "rt-03-rw-05",
+      "type": "EXPENSE",
+      "amount": 900000,
+      "category": "Kebersihan",
+      "description": "Pembersihan parit dan rumput liar RT 03",
+      "date": "2026-10-08",
+      "recorded_by": "user-rt03-chair"
+    },
+    {
+      "id": "ctx-rw05-01",
+      "org_type": "RW",
+      "rw_id": "rw-05-coblong",
+      "type": "INCOME",
+      "amount": 10000000,
+      "category": "Alokasi Dana Kelurahan",
+      "description": "Pencairan dana stimulus sarana prasarana Kelurahan Sukamaju semester 2",
+      "date": "2026-09-15",
+      "recorded_by": "user-rw-01"
+    },
+    {
+      "id": "ctx-rw05-02",
+      "org_type": "RW",
+      "rw_id": "rw-05-coblong",
+      "type": "INCOME",
+      "amount": 3000000,
+      "category": "Iuran Operasional RW",
+      "description": "Kontribusi kas terpadu dari unit-unit RT",
+      "date": "2026-10-01",
+      "recorded_by": "user-rw-01"
+    },
+    {
+      "id": "ctx-rw05-03",
+      "org_type": "RW",
+      "rw_id": "rw-05-coblong",
+      "type": "EXPENSE",
+      "amount": 4000000,
+      "category": "Sarana Lingkungan RW",
+      "description": "Perbaikan portal gerbang utama dan pengecatan pos kamling induk RW 05",
+      "date": "2026-10-06",
+      "recorded_by": "user-rw-01"
+    }
+  ],
+  "fund_requests": [
+    {
+      "id": "freq-01",
+      "rw_id": "rw-05-coblong",
+      "rt_id": "rt-02-rw-05",
+      "applicant_user_id": "user-rt-01",
+      "title": "Pengadaan 4 Titik CCTV Lingkungan Gang RT 02",
+      "amount": 2400000,
+      "purpose": "Peningkatan keamanan warga pasca maraknya pencurian sepeda di gang sempit.",
+      "document_url": "/uploads/rab-cctv-rt02.pdf",
+      "status": "APPROVED",
+      "rt_reviewed_by": "user-rt-01",
+      "rt_reviewed_at": "2026-10-20T18:53:14.630Z",
+      "created_at": "2026-10-19T23:53:14.630Z",
+      "rw_reviewed_by": "user-rw-01",
+      "rw_reviewed_at": "2026-10-20T23:56:47.279Z"
+    },
+    {
+      "id": "freq-02",
+      "rw_id": "rw-05-coblong",
+      "rt_id": "rt-01-rw-05",
+      "applicant_user_id": "user-rt01-chair",
+      "title": "Penyemprotan Fogging Demam Berdarah RT 01",
+      "amount": 1500000,
+      "purpose": "Pencegahan DBD karena ada 2 warga yang terkena demam berdarah.",
+      "document_url": "/uploads/rab-fogging.pdf",
+      "status": "APPROVED",
+      "rt_reviewed_by": "user-rt01-chair",
+      "rt_reviewed_at": "2026-10-10T23:53:14.630Z",
+      "rw_reviewed_by": "user-rw-01",
+      "rw_reviewed_at": "2026-10-11T23:53:14.630Z",
+      "created_at": "2026-10-08T23:53:14.630Z"
+    }
+  ],
+  "rollovers": [
+    {
+      "id": "rollover-prev-01",
+      "target_type": "RW",
+      "target_rw_id": "rw-05-coblong",
+      "from_user_id": "user-rw-past-01",
+      "to_user_id": "user-rw-01",
+      "period_from": "2016",
+      "period_to": "2021",
+      "next_period_to": "2026",
+      "closing_cash_balance": 14500000,
+      "handover_notes": "Serah terima kas saldo awal, inventaris balai warga 120 kursi lipat & 4 tenda, dan 2 unit mesin rumput.",
+      "bast_document_url": "/uploads/bast-rw05-2021.pdf",
+      "executed_by": "user-super-admin",
+      "created_at": "2021-08-17T10:00:00.000Z"
+    }
+  ],
+  "master_residents": [
+    {
+      "id": "res-01",
+      "rw_id": "rw-05-coblong",
+      "rt_id": "rt-02-rw-05",
+      "kk_number": "3273012010150001",
+      "nik": "3273011205800001",
+      "full_name": "Supriyadi",
+      "gender": "LAKI_LAKI",
+      "birth_place": "Bandung",
+      "birth_date": "1980-05-12",
+      "religion": "ISLAM",
+      "occupation": "Karyawan Swasta",
+      "family_relation": "KEPALA_KELUARGA",
+      "residence_status": "TETAP",
+      "mutation_status": "AKTIF",
+      "address_street": "Jl. Sukamaju Gang Melati Blok C2 No. 14",
+      "phone_number": "081299990001",
+      "input_by": "user-rt-01",
+      "created_at": "2026-08-22T02:55:54.699Z",
+      "updated_at": "2026-08-22T02:55:54.699Z"
+    },
+    {
+      "id": "res-02",
+      "rw_id": "rw-05-coblong",
+      "rt_id": "rt-02-rw-05",
+      "kk_number": "3273012010150001",
+      "nik": "3273012010850002",
+      "full_name": "Siti Aminah",
+      "gender": "PEREMPUAN",
+      "birth_place": "Bandung",
+      "birth_date": "1985-10-20",
+      "religion": "ISLAM",
+      "occupation": "Wiraswasta",
+      "family_relation": "ISTRI",
+      "residence_status": "TETAP",
+      "mutation_status": "AKTIF",
+      "address_street": "Jl. Sukamaju Gang Melati Blok C2 No. 14",
+      "phone_number": "081200000003",
+      "input_by": "user-rt-01",
+      "created_at": "2026-08-22T02:55:54.699Z",
+      "updated_at": "2026-08-22T02:55:54.699Z"
+    },
+    {
+      "id": "res-03",
+      "rw_id": "rw-05-coblong",
+      "rt_id": "rt-02-rw-05",
+      "kk_number": "3273012010150001",
+      "nik": "3273011508120003",
+      "full_name": "Rizky Pratama",
+      "gender": "LAKI_LAKI",
+      "birth_place": "Bandung",
+      "birth_date": "2012-08-15",
+      "religion": "ISLAM",
+      "occupation": "Pelajar",
+      "family_relation": "ANAK",
+      "residence_status": "TETAP",
+      "mutation_status": "AKTIF",
+      "address_street": "Jl. Sukamaju Gang Melati Blok C2 No. 14",
+      "input_by": "user-rt-01",
+      "created_at": "2026-08-22T02:55:54.699Z",
+      "updated_at": "2026-08-22T02:55:54.699Z"
+    },
+    {
+      "id": "res-04",
+      "rw_id": "rw-05-coblong",
+      "rt_id": "rt-02-rw-05",
+      "kk_number": "3273011505800002",
+      "nik": "3273011003780004",
+      "full_name": "Hendra Gunawan",
+      "gender": "LAKI_LAKI",
+      "birth_place": "Garut",
+      "birth_date": "1978-03-10",
+      "religion": "ISLAM",
+      "occupation": "Pegawai Negeri Sipil (PNS)",
+      "family_relation": "KEPALA_KELUARGA",
+      "residence_status": "TETAP",
+      "mutation_status": "AKTIF",
+      "address_street": "Jl. Sukamaju Raya No. 05 RT 02",
+      "phone_number": "081200000002",
+      "input_by": "user-rt-01",
+      "created_at": "2026-07-23T02:55:54.699Z",
+      "updated_at": "2026-07-23T02:55:54.699Z"
+    },
+    {
+      "id": "res-05",
+      "rw_id": "rw-05-coblong",
+      "rt_id": "rt-02-rw-05",
+      "kk_number": "3273011505800002",
+      "nik": "3273012507810005",
+      "full_name": "Ratna Sari",
+      "gender": "PEREMPUAN",
+      "birth_place": "Bandung",
+      "birth_date": "1981-07-25",
+      "religion": "ISLAM",
+      "occupation": "Guru",
+      "family_relation": "ISTRI",
+      "residence_status": "TETAP",
+      "mutation_status": "AKTIF",
+      "address_street": "Jl. Sukamaju Raya No. 05 RT 02",
+      "input_by": "user-rt-01",
+      "created_at": "2026-07-23T02:55:54.699Z",
+      "updated_at": "2026-07-23T02:55:54.699Z"
+    },
+    {
+      "id": "res-06",
+      "rw_id": "rw-05-coblong",
+      "rt_id": "rt-02-rw-05",
+      "kk_number": "3273010408750003",
+      "nik": "3273010408750006",
+      "full_name": "Bambang Sudarmono",
+      "gender": "LAKI_LAKI",
+      "birth_place": "Semarang",
+      "birth_date": "1975-08-04",
+      "religion": "ISLAM",
+      "occupation": "Wiraswasta Otomotif",
+      "family_relation": "KEPALA_KELUARGA",
+      "residence_status": "TETAP",
+      "mutation_status": "AKTIF",
+      "address_street": "Gang Kenanga Blok B3 No. 08 RT 02",
+      "phone_number": "081322001188",
+      "input_by": "user-rt-01",
+      "created_at": "2026-09-06T02:55:54.699Z",
+      "updated_at": "2026-09-06T02:55:54.699Z"
+    },
+    {
+      "id": "res-07",
+      "rw_id": "rw-05-coblong",
+      "rt_id": "rt-02-rw-05",
+      "kk_number": "3273010408750003",
+      "nik": "3273011409770007",
+      "full_name": "Lestari Rahayu",
+      "gender": "PEREMPUAN",
+      "birth_place": "Solo",
+      "birth_date": "1977-09-14",
+      "religion": "ISLAM",
+      "occupation": "Ibu Rumah Tangga",
+      "family_relation": "ISTRI",
+      "residence_status": "TETAP",
+      "mutation_status": "AKTIF",
+      "address_street": "Gang Kenanga Blok B3 No. 08 RT 02",
+      "input_by": "user-rt-01",
+      "created_at": "2026-09-06T02:55:54.699Z",
+      "updated_at": "2026-09-06T02:55:54.699Z"
+    },
+    {
+      "id": "res-08",
+      "rw_id": "rw-05-coblong",
+      "rt_id": "rt-02-rw-05",
+      "kk_number": "3273010408750003",
+      "nik": "3273011802050008",
+      "full_name": "Farhan Sudarmono",
+      "gender": "LAKI_LAKI",
+      "birth_place": "Bandung",
+      "birth_date": "2005-02-18",
+      "religion": "ISLAM",
+      "occupation": "Mahasiswa",
+      "family_relation": "ANAK",
+      "residence_status": "TETAP",
+      "mutation_status": "AKTIF",
+      "address_street": "Gang Kenanga Blok B3 No. 08 RT 02",
+      "input_by": "user-rt-01",
+      "created_at": "2026-09-06T02:55:54.699Z",
+      "updated_at": "2026-09-06T02:55:54.699Z"
+    },
+    {
+      "id": "res-09",
+      "rw_id": "rw-05-coblong",
+      "rt_id": "rt-02-rw-05",
+      "kk_number": "3273011212600004",
+      "nik": "3273015212580009",
+      "full_name": "Sri Wahyuni",
+      "gender": "PEREMPUAN",
+      "birth_place": "Yogyakarta",
+      "birth_date": "1958-12-12",
+      "religion": "ISLAM",
+      "occupation": "Pensiunan",
+      "family_relation": "KEPALA_KELUARGA",
+      "residence_status": "TETAP",
+      "mutation_status": "AKTIF",
+      "address_street": "Gang Bougenville Blok A1 No. 02 RT 02",
+      "phone_number": "081566778899",
+      "input_by": "user-rt-01",
+      "created_at": "2026-09-21T02:55:54.699Z",
+      "updated_at": "2026-09-21T02:55:54.699Z"
+    },
+    {
+      "id": "res-10",
+      "rw_id": "rw-05-coblong",
+      "rt_id": "rt-02-rw-05",
+      "kk_number": "3273010804820005",
+      "nik": "3273010804820010",
+      "full_name": "Dedi Mulyadi",
+      "gender": "LAKI_LAKI",
+      "birth_place": "Subang",
+      "birth_date": "1982-04-08",
+      "religion": "ISLAM",
+      "occupation": "BUMN",
+      "family_relation": "KEPALA_KELUARGA",
+      "residence_status": "KONTRAK",
+      "mutation_status": "PINDAH_KELUAR",
+      "mutation_date": "2026-09-15",
+      "mutation_note": "Pindah tugas kedinasan ke Jakarta Selatan",
+      "address_street": "Rumah Kontrakan No. 22 RT 02",
+      "input_by": "user-rt-01",
+      "created_at": "2026-06-23T02:55:54.699Z",
+      "updated_at": "2026-09-16T02:55:54.699Z"
+    },
+    {
+      "id": "res-11",
+      "rw_id": "rw-05-coblong",
+      "rt_id": "rt-02-rw-05",
+      "kk_number": "3273012209900006",
+      "nik": "3273012209900011",
+      "full_name": "Rudi Hermawan",
+      "gender": "LAKI_LAKI",
+      "birth_place": "Surabaya",
+      "birth_date": "1990-09-22",
+      "religion": "KRISTEN",
+      "occupation": "Arsitek",
+      "family_relation": "KEPALA_KELUARGA",
+      "residence_status": "KONTRAK",
+      "mutation_status": "PINDAH_MASUK",
+      "mutation_date": "2026-10-02",
+      "mutation_note": "Pindah domisili dari Surabaya, SK Pindah Lengkap",
+      "address_street": "Gang Cempaka Blok D1 No. 04 RT 02",
+      "phone_number": "081788990011",
+      "input_by": "user-rt-01",
+      "created_at": "2026-10-03T02:55:54.699Z",
+      "updated_at": "2026-10-03T02:55:54.699Z"
+    }
+  ],
+  "complaints": [
+    {
+      "id": "comp-63fad8f0-2a4d-4e8f-9c73-22316bea14b5",
+      "ticket_number": "ADU-202610-004",
+      "rw_id": "rw-05-coblong",
+      "rt_id": "rt-02-rw-05",
+      "user_id": "user-warga-01",
+      "author_name": "Siti Aminah",
+      "author_phone": "081200000003",
+      "category": "FASILITAS_LAMPU_JALAN",
+      "title": "Lampu Penerangan Gang 2 Mati",
+      "description": "Lampu tiang listrik depan rumah No. 12 mati sejak kemarin malam.",
+      "location": "Gang 2 RT 02 depan Pos Kamling",
+      "priority": "HIGH",
+      "status": "DIPROSES",
+      "created_at": "2026-10-21T03:01:09.238Z",
+      "updated_at": "2026-10-21T03:01:09.556Z",
+      "officer_response": "Petugas seksi sarpras RT sudah membeli bohlam baru dan akan segera dipasang sore ini pukul 16:30 WIB."
+    },
+    {
+      "id": "comp-01",
+      "ticket_number": "ADU-202610-001",
+      "rw_id": "rw-05-coblong",
+      "rt_id": "rt-02-rw-05",
+      "user_id": "user-warga-01",
+      "author_name": "Siti Aminah",
+      "author_phone": "081200000003",
+      "category": "FASILITAS_LAMPU_JALAN",
+      "title": "Lampu Penerangan Jalan Gang Mawar 3 Mati Total",
+      "description": "Lampu jalan tiang depan rumah No. 12 sudah 3 malam mati, jalanan gang jadi gelap gulita dan rawan terpeleset saat hujan.",
+      "location": "Depan rumah No. 12 Gang Mawar RT 02",
+      "photo_url": "/uploads/lampu-jalan-mati.jpg",
+      "priority": "NORMAL",
+      "status": "DIPROSES",
+      "officer_response": "Petugas seksi sarpras RT 02 telah membeli bohlam LED baru dan dijadwalkan dipasang sore ini bersama petugas PLN setempat.",
+      "created_at": "2026-10-20T08:55:54.829Z",
+      "updated_at": "2026-10-20T22:55:54.829Z"
+    },
+    {
+      "id": "comp-02",
+      "ticket_number": "ADU-202610-002",
+      "rw_id": "rw-05-coblong",
+      "rt_id": "rt-02-rw-05",
+      "user_id": "user-warga-01",
+      "author_name": "Siti Aminah",
+      "author_phone": "081200000003",
+      "category": "KEBERSIHAN_SAMPAH",
+      "title": "Tumpukan Sampah Liar Dekat Lapangan Bulutangkis",
+      "description": "Ada pembuangan sampah liar di pinggir pagar lapangan bulutangkis, menimbulkan bau busuk dan lalat.",
+      "location": "Sebelah barat lapangan badminton RT 02",
+      "priority": "HIGH",
+      "status": "SELESAI",
+      "officer_response": "Sudah diangkut oleh tim kebersihan truk sampah kelurahan pukul 09.00 WIB pagi tadi. Warga dihimbau tidak membuang sampah di lokasi tersebut.",
+      "resolved_at": "2026-10-21T00:55:54.829Z",
+      "resolved_by": "user-rt-01",
+      "created_at": "2026-10-19T02:55:54.829Z",
+      "updated_at": "2026-10-21T00:55:54.829Z"
+    },
+    {
+      "id": "comp-03",
+      "ticket_number": "ADU-202610-003",
+      "rw_id": "rw-05-coblong",
+      "rt_id": "rt-02-rw-05",
+      "user_id": "user-rt-01",
+      "author_name": "Hendra Gunawan",
+      "author_phone": "081200000002",
+      "category": "KEAMANAN_KETERTIBAN",
+      "title": "Kendaraan Knalpot Brong Bising Melewati Gang Malam Hari",
+      "description": "Sering ada pemuda luar melintas tengah malam dengan knalpot brong bising yang mengganggu istirahat warga lansia dan balita.",
+      "location": "Portal gerbang masuk RW 05",
+      "priority": "NORMAL",
+      "status": "MENUNGGU",
+      "created_at": "2026-10-20T23:55:54.829Z",
+      "updated_at": "2026-10-20T23:55:54.829Z"
+    }
+  ]
+}
