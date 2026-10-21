@@ -154,7 +154,7 @@ export default function HomePage() {
                     ? "Direktori & Kontak Pengurus"
                     : "Profil Warga & E-KTP Digital"}
                 </h1>
-                <p className="text-xs text-slate-500 mt-0.5">
+                <p className="text-xs text-slate-700 font-medium mt-0.5">
                   Pelayanan Administrasi Warga Digital Multi-RW Sukamaju, Bandung.
                 </p>
               </div>
@@ -234,19 +234,19 @@ export default function HomePage() {
 
             <div className="space-y-1">
               <h3 className="text-base font-extrabold text-slate-900">Tombol Darurat (Panic SOS)</h3>
-              <p className="text-xs text-slate-500">
+              <p className="text-xs text-slate-700 font-medium">
                 Peringatan darurat akan membunyikan sirene alarm di Pos Satpam dan mengirimkan koordinat rumah Anda.
               </p>
             </div>
 
-            <div className="p-3 rounded-2xl bg-slate-50 border border-slate-200 text-xs text-slate-700 font-semibold">
+            <div className="p-3 rounded-2xl bg-slate-50 border border-slate-200 text-xs text-slate-800 font-bold">
               Lokasi: {user.addressBlock || "Blok C2 No. 14"}, RT {user.rt?.number || "02"} / RW {user.rw?.number || "05"}
             </div>
 
             <div className="flex gap-2">
               <button
                 onClick={() => setShowEmergencyModal(false)}
-                className="flex-1 py-3 rounded-xl border border-slate-300 text-slate-700 font-bold text-xs hover:bg-slate-50"
+                className="flex-1 py-3 rounded-xl border border-slate-300 text-slate-800 font-bold text-xs hover:bg-slate-50"
               >
                 Batal
               </button>
@@ -274,13 +274,13 @@ export default function HomePage() {
               <button
                 type="button"
                 onClick={() => setShowLaporModal(false)}
-                className="p-1 rounded-lg text-slate-400 hover:text-slate-600"
+                className="p-1 rounded-lg text-slate-600 hover:text-slate-900"
               >
                 <X className="w-5 h-5" />
               </button>
             </div>
 
-            <p className="text-xs text-slate-500">
+            <p className="text-xs text-slate-700 font-medium">
               Sampaikan keluhan terkait lampu jalan mati, tumpukan sampah, saluran mampet, atau gangguan ketertiban.
             </p>
 
@@ -310,7 +310,7 @@ export default function HomePage() {
           <div className="bg-white rounded-3xl max-w-sm w-full p-5 space-y-3.5 shadow-2xl">
             <div className="flex items-start justify-between">
               <div className="space-y-1">
-                <span className="text-[10px] font-bold text-emerald-700 uppercase tracking-wider">
+                <span className="text-[10px] font-extrabold text-emerald-800 uppercase tracking-wider">
                   Pengumuman Resmi
                 </span>
                 <h3 className="text-sm font-extrabold text-slate-900 leading-snug">
@@ -319,21 +319,21 @@ export default function HomePage() {
               </div>
               <button
                 onClick={() => setSelectedAnnouncement(null)}
-                className="p-1 rounded-lg text-slate-400 hover:text-slate-600"
+                className="p-1 rounded-lg text-slate-600 hover:text-slate-900"
               >
                 <X className="w-5 h-5" />
               </button>
             </div>
 
-            <p className="text-xs text-slate-700 leading-relaxed max-h-60 overflow-y-auto">
+            <p className="text-xs text-slate-800 leading-relaxed max-h-60 overflow-y-auto">
               {selectedAnnouncement.content}
             </p>
 
-            <div className="pt-2 border-t border-slate-100 flex items-center justify-between text-[11px] text-slate-500">
+            <div className="pt-2 border-t border-slate-100 flex items-center justify-between text-[11px] text-slate-700 font-semibold">
               <span>Disiarkan: {selectedAnnouncement.authorName || "Pengurus RW"}</span>
               <button
                 onClick={() => setSelectedAnnouncement(null)}
-                className="px-3 py-1 rounded-xl bg-slate-100 hover:bg-slate-200 text-slate-800 font-bold text-xs"
+                className="px-3 py-1 rounded-xl bg-slate-100 hover:bg-slate-200 text-slate-900 font-extrabold text-xs"
               >
                 Tutup
               </button>
@@ -353,7 +353,7 @@ export default function HomePage() {
               </div>
               <button
                 onClick={() => setShowNotificationsModal(false)}
-                className="p-1 text-slate-400 hover:text-slate-600"
+                className="p-1 text-slate-600 hover:text-slate-900"
               >
                 <X className="w-4 h-4" />
               </button>
@@ -362,7 +362,7 @@ export default function HomePage() {
             <div className="space-y-2 max-h-64 overflow-y-auto">
               <div className="p-3 rounded-xl bg-emerald-50/70 border border-emerald-200/80 text-xs space-y-1">
                 <div className="font-bold text-emerald-950">Status Akun Terverifikasi 🎉</div>
-                <div className="text-emerald-800 text-[11px]">
+                <div className="text-emerald-900 text-[11px] font-medium">
                   Akun Anda aktif dalam sistem SIM-RW Digital. Seluruh layanan online tersedia.
                 </div>
               </div>
@@ -370,7 +370,7 @@ export default function HomePage() {
 
             <button
               onClick={() => setShowNotificationsModal(false)}
-              className="w-full py-2 rounded-xl bg-slate-100 text-slate-700 font-bold text-xs hover:bg-slate-200"
+              className="w-full py-2 rounded-xl bg-slate-100 text-slate-800 font-bold text-xs hover:bg-slate-200"
             >
               Tutup
             </button>

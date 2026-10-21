@@ -324,7 +324,7 @@ export default function AuthView() {
         <p className="text-xs font-bold text-emerald-300 max-w-sm mx-auto">
           Inisiasi RW 15 Komplek Giri Ciheulang, Kec. Ciparay Kab. Bandung
         </p>
-        <p className="text-[11px] text-slate-300 font-medium max-w-sm mx-auto">
+        <p className="text-[11px] text-slate-200 font-semibold drop-shadow-sm max-w-sm mx-auto">
           Sistem Pelayanan Warga & Kepengurusan RT/RW Terintegrasi Terproteksi UU PDP No. 27/2022
         </p>
       </div>
@@ -674,7 +674,7 @@ export default function AuthView() {
                         onClick={() => ktpGalleryRef.current?.click()}
                         className="py-2.5 px-3 rounded-xl border border-slate-200 bg-slate-50 hover:bg-slate-100 text-slate-700 text-xs font-semibold flex items-center justify-center gap-2 transition active:scale-95"
                       >
-                        <Upload className="w-4 h-4 text-slate-500" />
+                        <Upload className="w-4 h-4 text-slate-700" />
                         <span>Pilih Berkas KTP</span>
                       </button>
                     </div>
@@ -757,7 +757,7 @@ export default function AuthView() {
                       </optgroup>
                     )}
                   </select>
-                  <p className="text-[11px] text-slate-500 mt-1 italic">
+                  <p className="text-[11px] text-slate-700 font-medium mt-1">
                     {officerLevel === "RW"
                       ? RW_POSITIONS.find((p) => p.value === officerRole)?.desc
                       : RT_POSITIONS.find((p) => p.value === officerRole)?.desc}
@@ -1116,7 +1116,7 @@ export default function AuthView() {
               className="p-2 rounded-xl bg-slate-100 hover:bg-slate-200 text-left border border-slate-200 transition-colors"
             >
               <div className="text-xs font-bold text-slate-800">Ibu Siti Aminah</div>
-              <div className="text-[10px] text-slate-500">Warga Aktif (Bayar Iuran)</div>
+              <div className="text-[10px] text-slate-700 font-bold">Warga Aktif (Bayar Iuran)</div>
             </button>
           </div>
         </div>

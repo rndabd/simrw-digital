@@ -258,7 +258,7 @@ export default function MasterResidentsTab() {
           </div>
           <div>
             <h2 className="text-sm font-extrabold text-white">Buku Induk & Sensus Kependudukan RT/RW</h2>
-            <p className="text-[11px] text-slate-300">
+            <p className="text-[11px] text-slate-200 font-medium">
               Pengelolaan master data seluruh jiwa dan kartu keluarga (KK) yang diinput resmi oleh kepengurusan.
             </p>
           </div>
@@ -277,7 +277,7 @@ export default function MasterResidentsTab() {
       <div className="p-3 rounded-2xl bg-white border border-slate-200/90 shadow-2xs space-y-2.5">
         <div className="flex flex-col sm:flex-row items-center gap-2">
           <div className="relative flex-1 w-full">
-            <Search className="w-4 h-4 text-slate-400 absolute left-3 top-1/2 -translate-y-1/2" />
+            <Search className="w-4 h-4 text-slate-600 absolute left-3 top-1/2 -translate-y-1/2" />
             <input
               type="text"
               placeholder="Cari nama, NIK, No. KK, atau alamat..."
@@ -321,27 +321,27 @@ export default function MasterResidentsTab() {
           </div>
         </div>
 
-        <div className="flex items-center justify-between text-[11px] text-slate-500 px-1 pt-1 border-t border-slate-100">
-          <span>Menampilkan: <strong className="text-slate-800">{residents.length} Jiwa Terdaftar</strong></span>
-          <span className="text-[10px] text-emerald-700 font-semibold">Tersimpan Aman Enkripsi UU PDP</span>
+        <div className="flex items-center justify-between text-[11px] text-slate-700 font-semibold px-1 pt-1 border-t border-slate-100">
+          <span>Menampilkan: <strong className="text-slate-900 font-extrabold">{residents.length} Jiwa Terdaftar</strong></span>
+          <span className="text-[10px] text-emerald-800 font-extrabold">Tersimpan Aman Enkripsi UU PDP</span>
         </div>
       </div>
 
       {/* Residents Table */}
       {isLoading ? (
-        <div className="p-8 text-center text-xs text-slate-500">Memuat data kependudukan...</div>
+        <div className="p-8 text-center text-xs text-slate-700 font-bold">Memuat data kependudukan...</div>
       ) : residents.length === 0 ? (
         <div className="p-10 rounded-3xl bg-white border border-slate-200 text-center space-y-2 shadow-xs">
-          <Users className="w-10 h-10 text-slate-400 mx-auto" />
-          <div className="text-sm font-bold text-slate-800">Data Penduduk Masih Kosong / Tidak Ditemukan</div>
-          <p className="text-xs text-slate-500 max-w-sm mx-auto">
+          <Users className="w-10 h-10 text-slate-700 mx-auto" />
+          <div className="text-sm font-bold text-slate-900">Data Penduduk Masih Kosong / Tidak Ditemukan</div>
+          <p className="text-xs text-slate-700 font-medium max-w-sm mx-auto">
             Gunakan tombol &quot;Input Penduduk Baru&quot; untuk mencatat data warga hasil sensus atau registrasi manual RT.
           </p>
         </div>
       ) : (
         <div className="overflow-x-auto bg-white rounded-2xl border border-slate-200/90 shadow-2xs">
           <table className="w-full text-left text-xs">
-            <thead className="bg-slate-50/80 border-b border-slate-200 text-slate-600 font-bold uppercase tracking-wider text-[10px]">
+            <thead className="bg-slate-50/80 border-b border-slate-200 text-slate-800 font-extrabold uppercase tracking-wider text-[10px]">
               <tr>
                 <th className="py-3 px-3.5">Nama & Hubungan</th>
                 <th className="py-3 px-3">No. KK & NIK</th>
@@ -371,17 +371,17 @@ export default function MasterResidentsTab() {
                       <div className="font-extrabold text-slate-900 text-xs">{r.full_name}</div>
                       <div className="mt-1 flex items-center gap-1">
                         {getRelationBadge(r.family_relation)}
-                        <span className="text-[10.5px] text-slate-400">• {r.occupation || "Lainnya"}</span>
+                        <span className="text-[10.5px] text-slate-600 font-semibold">• {r.occupation || "Lainnya"}</span>
                       </div>
                     </td>
 
                     <td className="py-3 px-3 font-mono text-[11px]">
-                      <div className="text-slate-500 text-[10px]">KK: {r.maskedKk}</div>
+                      <div className="text-slate-700 font-bold text-[10px]">KK: {r.maskedKk}</div>
                       <div className="flex items-center gap-1.5 mt-0.5">
-                        <span className="text-slate-800 font-bold">{displayNik}</span>
+                        <span className="text-slate-900 font-bold">{displayNik}</span>
                         <button
                           onClick={() => setUnmaskedNiks((prev) => ({ ...prev, [r.id]: !prev[r.id] }))}
-                          className="text-slate-400 hover:text-emerald-700"
+                          className="text-slate-700 hover:text-emerald-700 font-bold"
                           title={isUnmasked ? "Sembunyikan NIK" : "Buka sensor NIK (UU PDP)"}
                         >
                           {isUnmasked ? <EyeOff className="w-3.5 h-3.5" /> : <Eye className="w-3.5 h-3.5" />}
@@ -389,13 +389,13 @@ export default function MasterResidentsTab() {
                       </div>
                     </td>
 
-                    <td className="py-3 px-3 text-[11px] text-slate-700">
+                    <td className="py-3 px-3 text-[11px] text-slate-800">
                       <div>{r.gender === "LAKI_LAKI" ? "Laki-laki" : "Perempuan"}</div>
-                      <div className="text-slate-400 text-[10px]">{age}</div>
+                      <div className="text-slate-600 font-medium text-[10px]">{age}</div>
                     </td>
 
                     <td className="py-3 px-3 text-[11px]">
-                      <span className="px-2 py-0.5 rounded-full text-[10px] font-bold bg-slate-100 text-slate-700">
+                      <span className="px-2 py-0.5 rounded-full text-[10px] font-bold bg-slate-100 text-slate-800 border border-slate-200">
                         {r.residence_status === "TETAP" ? "Warga Tetap" : r.residence_status}
                       </span>
                     </td>
@@ -455,7 +455,7 @@ export default function MasterResidentsTab() {
                   <h3 className="text-sm font-extrabold text-slate-900">
                     {editingId ? "Perbarui Data Penduduk" : "Input Penduduk Baru ke Sensus RT"}
                   </h3>
-                  <p className="text-[10.5px] text-slate-500">Form pencatatan resmi Buku Induk Lingkungan RT</p>
+                  <p className="text-[10.5px] text-slate-700 font-medium">Form pencatatan resmi Buku Induk Lingkungan RT</p>
                 </div>
               </div>
               <button
@@ -684,21 +684,21 @@ export default function MasterResidentsTab() {
                 </div>
                 <div>
                   <h3 className="text-sm font-extrabold text-slate-900">Catat Mutasi Penduduk</h3>
-                  <p className="text-[10px] text-slate-500">Pembaruan perpindahan / perubahan status warga</p>
+                  <p className="text-[10px] text-slate-700 font-semibold">Pembaruan perpindahan / perubahan status warga</p>
                 </div>
               </div>
               <button
                 onClick={() => setShowMutationModal(false)}
-                className="w-7 h-7 rounded-full bg-slate-100 hover:bg-slate-200 text-slate-600 flex items-center justify-center text-xs font-bold"
+                className="w-7 h-7 rounded-full bg-slate-100 hover:bg-slate-200 text-slate-700 flex items-center justify-center text-xs font-bold"
               >
                 ✕
               </button>
             </div>
 
             <div className="p-3 rounded-xl bg-slate-50 border border-slate-200 text-xs space-y-0.5">
-              <div className="text-slate-400 text-[10px]">Warga Yang Dimutasi:</div>
+              <div className="text-slate-700 text-[10px] font-bold">Warga Yang Dimutasi:</div>
               <div className="font-extrabold text-slate-900">{selectedMutationResident.full_name}</div>
-              <div className="font-mono text-[10.5px] text-slate-500">NIK: {selectedMutationResident.maskedNik}</div>
+              <div className="font-mono text-[10.5px] text-slate-700 font-bold">NIK: {selectedMutationResident.maskedNik}</div>
             </div>
 
             <form onSubmit={handleSaveMutation} className="space-y-3">

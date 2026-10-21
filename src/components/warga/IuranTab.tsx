@@ -106,7 +106,7 @@ export default function IuranTab() {
           </div>
           <div>
             <h2 className="text-sm font-extrabold text-white">Iuran & Kas Lingkungan Warga</h2>
-            <p className="text-[11px] text-slate-300">
+            <p className="text-[11px] text-slate-200 font-medium">
               Transparansi iuran kebersihan, penerangan jalan, dan kas keamanan RT setempat.
             </p>
           </div>
@@ -154,7 +154,7 @@ export default function IuranTab() {
 
           <div className="grid grid-cols-2 sm:grid-cols-4 gap-2 text-xs">
             <div className="p-2.5 rounded-xl bg-slate-50 border border-slate-200">
-              <span className="text-[10px] text-slate-400 block font-semibold">Saldo Awal Kas:</span>
+              <span className="text-[10px] text-slate-700 block font-bold">Saldo Awal Kas:</span>
               <span className="font-bold text-slate-800 font-mono text-xs">
                 Rp {(rtFinance.initialBalance ?? 0).toLocaleString("id-ID")}
               </span>
@@ -195,7 +195,7 @@ export default function IuranTab() {
               <button
                 type="button"
                 onClick={() => setPayingBill(null)}
-                className="text-slate-400 hover:text-slate-600 text-xs font-bold"
+                className="text-slate-600 hover:text-slate-900 text-xs font-extrabold"
               >
                 Tutup
               </button>
@@ -209,7 +209,7 @@ export default function IuranTab() {
             ) : (
               <>
                 <div className="p-3 rounded-xl bg-slate-50 border border-slate-200 text-xs space-y-1">
-                  <div className="text-slate-500">Iuran Periode:</div>
+                  <div className="text-slate-700 font-bold">Iuran Periode:</div>
                   <div className="font-bold text-slate-900">
                     Iuran Kebersihan & Keamanan ({payingBill.month} {payingBill.year})
                   </div>
@@ -281,7 +281,7 @@ export default function IuranTab() {
                         onClick={() => galleryProofRef.current?.click()}
                         className="py-2.5 px-3 rounded-xl border border-slate-200 bg-slate-50 hover:bg-slate-100 text-slate-700 text-xs font-semibold flex items-center justify-center gap-2 transition active:scale-95"
                       >
-                        <Upload className="w-4 h-4 text-slate-500" />
+                        <Upload className="w-4 h-4 text-slate-700" />
                         <span>Pilih Berkas Galeri</span>
                       </button>
                     </div>
@@ -315,9 +315,9 @@ export default function IuranTab() {
         </div>
 
         {isLoading ? (
-          <div className="p-6 text-center text-xs text-slate-500">Memuat data iuran...</div>
+          <div className="p-6 text-center text-xs text-slate-700 font-bold">Memuat data iuran...</div>
         ) : bills.length === 0 ? (
-          <div className="p-6 bg-white rounded-2xl border border-slate-200 text-center text-xs text-slate-500">
+          <div className="p-6 bg-white rounded-2xl border border-slate-200 text-center text-xs text-slate-700 font-bold">
             Tidak ada tagihan yang ditemukan.
           </div>
         ) : (
@@ -325,7 +325,7 @@ export default function IuranTab() {
             {bills.map((bill) => (
               <div
                 key={bill.id}
-                className="p-5 rounded-2xl bg-white border border-slate-200/90 shadow-xs space-y-3"
+                className="p-5 rounded-2xl bg-white/95 backdrop-blur-md border border-white/80 shadow-md space-y-3"
               >
                 <div className="flex items-start justify-between">
                   <div>
@@ -378,7 +378,7 @@ export default function IuranTab() {
                     <span>Bukti pembayaran telah terkirim pada {new Date(bill.paid_at).toLocaleTimeString("id-ID")}. Menunggu konfirmasi bendahara RT.</span>
                   </div>
                 ) : (
-                  <div className="flex items-center justify-between pt-2.5 border-t border-slate-100 text-xs text-slate-500">
+                  <div className="flex items-center justify-between pt-2.5 border-t border-slate-100 text-xs text-slate-700 font-medium">
                     <span className="flex items-center gap-1 text-emerald-700 font-semibold">
                       <CheckCircle2 className="w-3.5 h-3.5" /> Divalidasi oleh Bendahara RT
                     </span>
@@ -388,7 +388,7 @@ export default function IuranTab() {
                           `Kwitansi Resmi SIM-RW:\nNo: TRX-${bill.id}\nWarga: ${user?.fullName}\nPeriode: ${bill.month} ${bill.year}\nJumlah: Rp ${bill.amount.toLocaleString("id-ID")}\nStatus: LUNAS SAH`
                         )
                       }
-                      className="inline-flex items-center gap-1 text-slate-600 hover:text-slate-900 font-semibold hover:underline"
+                      className="inline-flex items-center gap-1 text-slate-700 hover:text-slate-900 font-bold hover:underline"
                     >
                       <Receipt className="w-3.5 h-3.5" /> Unduh Kwitansi
                     </button>

@@ -47,7 +47,7 @@ export default function BottomNav({ activeTab, onChangeTab }: BottomNavProps) {
               <div className="relative">
                 <Icon
                   className={`w-5 h-5 transition-transform ${
-                    isActive ? "scale-110 text-emerald-600 stroke-[2.3]" : "text-slate-500 stroke-[1.8]"
+                    isActive ? "scale-110 text-emerald-600 stroke-[2.3]" : "text-slate-600 stroke-[2]"
                   }`}
                 />
                 {tab.badge && (

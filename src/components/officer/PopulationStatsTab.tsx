@@ -84,7 +84,7 @@ export default function PopulationStatsTab() {
         );
       default:
         return (
-          <span className="px-2.5 py-0.5 rounded-full text-xs font-semibold bg-slate-100 text-slate-700 dark:bg-slate-800 dark:text-slate-300">
+          <span className="px-2.5 py-0.5 rounded-full text-xs font-bold bg-slate-100 text-slate-800 dark:bg-slate-800 dark:text-slate-100">
             Aktif
           </span>
         );
@@ -102,10 +102,10 @@ export default function PopulationStatsTab() {
               <span className="px-3 py-1 bg-indigo-500/30 border border-indigo-400/40 text-indigo-200 text-xs font-semibold rounded-full uppercase tracking-wider">
                 Analitik Demografi & Mutasi
               </span>
-              <span className="text-xs text-slate-300">Data Realtime Sensus RT/RW</span>
+              <span className="text-xs text-slate-200 font-semibold">Data Realtime Sensus RT/RW</span>
             </div>
             <h2 className="text-2xl font-bold">Statistik Kependudukan & Dinamika Warga</h2>
-            <p className="text-sm text-slate-300 mt-1 max-w-2xl">
+            <p className="text-sm text-slate-200 font-medium mt-1 max-w-2xl">
               Pemantauan distribusi populasi, struktur usia, perbandingan gender, kepemilikan domisili, dan mutasi keluar-masuk.
             </p>
           </div>
@@ -126,13 +126,13 @@ export default function PopulationStatsTab() {
         {/* Total Jiwa */}
         <div className="p-5 bg-white/80 dark:bg-slate-900/80 backdrop-blur-md rounded-2xl border border-slate-200/80 dark:border-slate-800 shadow-sm">
           <div className="flex items-center justify-between">
-            <span className="text-xs font-medium text-slate-500 dark:text-slate-400">Total Penduduk Aktif</span>
+            <span className="text-xs font-bold text-slate-700 dark:text-slate-200">Total Penduduk Aktif</span>
             <div className="w-8 h-8 rounded-xl bg-indigo-100 dark:bg-indigo-900/40 text-indigo-600 dark:text-indigo-400 flex items-center justify-center">
               <Users className="w-4 h-4" />
             </div>
           </div>
           <p className="text-3xl font-extrabold text-slate-800 dark:text-white mt-2">
-            {data.totalJiwa} <span className="text-sm font-normal text-slate-500">Jiwa</span>
+            {data.totalJiwa} <span className="text-sm font-bold text-slate-700">Jiwa</span>
           </p>
           <p className="text-xs text-emerald-600 dark:text-emerald-400 mt-1 font-medium">
             Tersebar di {data.totalKk} Kartu Keluarga (KK)
@@ -142,7 +142,7 @@ export default function PopulationStatsTab() {
         {/* Gender Breakdown */}
         <div className="p-5 bg-white/80 dark:bg-slate-900/80 backdrop-blur-md rounded-2xl border border-slate-200/80 dark:border-slate-800 shadow-sm">
           <div className="flex items-center justify-between">
-            <span className="text-xs font-medium text-slate-500 dark:text-slate-400">Proporsi Gender</span>
+            <span className="text-xs font-bold text-slate-700 dark:text-slate-200">Proporsi Gender</span>
             <div className="w-8 h-8 rounded-xl bg-blue-100 dark:bg-blue-900/40 text-blue-600 dark:text-blue-400 flex items-center justify-center">
               <Activity className="w-4 h-4" />
             </div>
@@ -150,11 +150,11 @@ export default function PopulationStatsTab() {
           <div className="mt-2 flex items-baseline justify-between">
             <div>
               <p className="text-xl font-bold text-blue-600 dark:text-blue-400">{data.maleCount}</p>
-              <p className="text-[11px] text-slate-500">Laki-laki ({data.malePercent}%)</p>
+              <p className="text-[11px] text-slate-700 font-bold">Laki-laki ({data.malePercent}%)</p>
             </div>
             <div className="text-right">
               <p className="text-xl font-bold text-pink-500">{data.femaleCount}</p>
-              <p className="text-[11px] text-slate-500">Perempuan ({data.femalePercent}%)</p>
+              <p className="text-[11px] text-slate-700 font-bold">Perempuan ({data.femalePercent}%)</p>
             </div>
           </div>
           <div className="mt-2.5 flex h-2 rounded-full overflow-hidden bg-slate-100 dark:bg-slate-800">
@@ -166,7 +166,7 @@ export default function PopulationStatsTab() {
         {/* Status Domisili */}
         <div className="p-5 bg-white/80 dark:bg-slate-900/80 backdrop-blur-md rounded-2xl border border-slate-200/80 dark:border-slate-800 shadow-sm">
           <div className="flex items-center justify-between">
-            <span className="text-xs font-medium text-slate-500 dark:text-slate-400">Status Tempat Tinggal</span>
+            <span className="text-xs font-bold text-slate-700 dark:text-slate-200">Status Tempat Tinggal</span>
             <div className="w-8 h-8 rounded-xl bg-emerald-100 dark:bg-emerald-900/40 text-emerald-600 dark:text-emerald-400 flex items-center justify-center">
               <Home className="w-4 h-4" />
             </div>
@@ -176,16 +176,16 @@ export default function PopulationStatsTab() {
               <p className="text-xl font-bold text-emerald-600 dark:text-emerald-400">
                 {data.residenceStats.tetap}
               </p>
-              <p className="text-[11px] text-slate-500">Warga Tetap</p>
+              <p className="text-[11px] text-slate-700 font-bold">Warga Tetap</p>
             </div>
             <div className="text-right">
               <p className="text-xl font-bold text-amber-600 dark:text-amber-400">
                 {data.residenceStats.kontrak + data.residenceStats.kost}
               </p>
-              <p className="text-[11px] text-slate-500">Kontrak / Kost</p>
+              <p className="text-[11px] text-slate-700 font-bold">Kontrak / Kost</p>
             </div>
           </div>
-          <p className="text-xs text-slate-400 mt-2">
+          <p className="text-xs text-slate-700 dark:text-slate-300 mt-2 font-medium">
             Stabilitas warga: {data.totalJiwa > 0 ? Math.round((data.residenceStats.tetap / data.totalJiwa) * 100) : 0}% tetap
           </p>
         </div>
@@ -193,16 +193,16 @@ export default function PopulationStatsTab() {
         {/* Total Mutasi */}
         <div className="p-5 bg-white/80 dark:bg-slate-900/80 backdrop-blur-md rounded-2xl border border-slate-200/80 dark:border-slate-800 shadow-sm">
           <div className="flex items-center justify-between">
-            <span className="text-xs font-medium text-slate-500 dark:text-slate-400">Total Riwayat Mutasi</span>
+            <span className="text-xs font-bold text-slate-700 dark:text-slate-200">Total Riwayat Mutasi</span>
             <div className="w-8 h-8 rounded-xl bg-amber-100 dark:bg-amber-900/40 text-amber-600 dark:text-amber-400 flex items-center justify-center">
               <ArrowRightLeft className="w-4 h-4" />
             </div>
           </div>
           <p className="text-3xl font-extrabold text-slate-800 dark:text-white mt-2">
             {data.mutations.pindahMasuk + data.mutations.pindahKeluar + data.mutations.lahir + data.mutations.meninggal}{" "}
-            <span className="text-sm font-normal text-slate-500">Peristiwa</span>
+            <span className="text-sm font-bold text-slate-700">Peristiwa</span>
           </p>
-          <p className="text-xs text-slate-500 mt-1">Dinamika mutasi kependudukan</p>
+          <p className="text-xs text-slate-700 dark:text-slate-300 mt-1 font-medium">Dinamika mutasi kependudukan</p>
         </div>
       </div>
 
@@ -213,7 +213,7 @@ export default function PopulationStatsTab() {
           <div className="flex items-center justify-between mb-4">
             <div>
               <h3 className="text-base font-bold text-slate-800 dark:text-white">Kelompok Usia Penduduk</h3>
-              <p className="text-xs text-slate-500">Distribusi jenjang umur warga di lingkungan</p>
+              <p className="text-xs text-slate-700 dark:text-slate-300 font-medium">Distribusi jenjang umur warga di lingkungan</p>
             </div>
             <TrendingUp className="w-5 h-5 text-indigo-500" />
           </div>
@@ -222,10 +222,10 @@ export default function PopulationStatsTab() {
             {/* Balita */}
             <div>
               <div className="flex items-center justify-between text-xs mb-1">
-                <span className="flex items-center gap-2 font-medium text-slate-700 dark:text-slate-300">
+                <span className="flex items-center gap-2 font-bold text-slate-900 dark:text-slate-100">
                   <Baby className="w-4 h-4 text-sky-500" /> Balita (0 - 5 Tahun)
                 </span>
-                <span className="font-semibold text-slate-800 dark:text-white">
+                <span className="font-extrabold text-slate-900 dark:text-white">
                   {data.ageGroups.balita} Jiwa (
                   {data.totalJiwa > 0 ? Math.round((data.ageGroups.balita / data.totalJiwa) * 100) : 0}%)
                 </span>
@@ -243,10 +243,10 @@ export default function PopulationStatsTab() {
             {/* Anak & Remaja */}
             <div>
               <div className="flex items-center justify-between text-xs mb-1">
-                <span className="flex items-center gap-2 font-medium text-slate-700 dark:text-slate-300">
+                <span className="flex items-center gap-2 font-bold text-slate-900 dark:text-slate-100">
                   <Smile className="w-4 h-4 text-emerald-500" /> Anak & Pelajar (6 - 17 Tahun)
                 </span>
-                <span className="font-semibold text-slate-800 dark:text-white">
+                <span className="font-extrabold text-slate-900 dark:text-white">
                   {data.ageGroups.anak} Jiwa (
                   {data.totalJiwa > 0 ? Math.round((data.ageGroups.anak / data.totalJiwa) * 100) : 0}%)
                 </span>
@@ -264,10 +264,10 @@ export default function PopulationStatsTab() {
             {/* Usia Produktif */}
             <div>
               <div className="flex items-center justify-between text-xs mb-1">
-                <span className="flex items-center gap-2 font-medium text-slate-700 dark:text-slate-300">
+                <span className="flex items-center gap-2 font-bold text-slate-900 dark:text-slate-100">
                   <Briefcase className="w-4 h-4 text-indigo-500" /> Usia Produktif & Kerja (18 - 59 Tahun)
                 </span>
-                <span className="font-semibold text-slate-800 dark:text-white">
+                <span className="font-extrabold text-slate-900 dark:text-white">
                   {data.ageGroups.produktif} Jiwa (
                   {data.totalJiwa > 0 ? Math.round((data.ageGroups.produktif / data.totalJiwa) * 100) : 0}%)
                 </span>
@@ -285,10 +285,10 @@ export default function PopulationStatsTab() {
             {/* Lansia */}
             <div>
               <div className="flex items-center justify-between text-xs mb-1">
-                <span className="flex items-center gap-2 font-medium text-slate-700 dark:text-slate-300">
+                <span className="flex items-center gap-2 font-bold text-slate-900 dark:text-slate-100">
                   <Heart className="w-4 h-4 text-purple-500" /> Lansia (60+ Tahun)
                 </span>
-                <span className="font-semibold text-slate-800 dark:text-white">
+                <span className="font-extrabold text-slate-900 dark:text-white">
                   {data.ageGroups.lansia} Jiwa (
                   {data.totalJiwa > 0 ? Math.round((data.ageGroups.lansia / data.totalJiwa) * 100) : 0}%)
                 </span>
@@ -311,7 +311,7 @@ export default function PopulationStatsTab() {
             <div className="flex items-center justify-between mb-4">
               <div>
                 <h3 className="text-base font-bold text-slate-800 dark:text-white">Rekapitulasi Mutasi Penduduk</h3>
-                <p className="text-xs text-slate-500">Peristiwa keluar, masuk, kelahiran, dan kematian</p>
+                <p className="text-xs text-slate-700 dark:text-slate-300 font-medium">Peristiwa keluar, masuk, kelahiran, dan kematian</p>
               </div>
               <ArrowRightLeft className="w-5 h-5 text-amber-500" />
             </div>
@@ -363,7 +363,7 @@ export default function PopulationStatsTab() {
             </div>
           </div>
 
-          <div className="mt-4 pt-3 border-t border-slate-100 dark:border-slate-800 text-xs text-slate-500">
+          <div className="mt-4 pt-3 border-t border-slate-100 dark:border-slate-800 text-xs text-slate-700 dark:text-slate-300 font-medium">
             Seluruh mutasi tercatat otomatis dan divalidasi oleh ketua RT setempat.
           </div>
         </div>
@@ -376,22 +376,22 @@ export default function PopulationStatsTab() {
             <h3 className="text-base font-bold text-slate-800 dark:text-white">
               Log Riwayat Mutasi Kependudukan Terbaru
             </h3>
-            <p className="text-xs text-slate-500">
+            <p className="text-xs text-slate-700 dark:text-slate-300 font-medium">
               Daftar pencatatan mutasi warga yang telah diverifikasi oleh pengurus
             </p>
           </div>
-          <Calendar className="w-5 h-5 text-slate-400" />
+          <Calendar className="w-5 h-5 text-slate-600" />
         </div>
 
         {data.recentMutations.length === 0 ? (
           <div className="p-8 text-center border border-dashed border-slate-200 dark:border-slate-800 rounded-2xl">
-            <p className="text-sm text-slate-500">Belum ada catatan mutasi kependudukan di lingkungan ini.</p>
+            <p className="text-sm font-bold text-slate-700 dark:text-slate-300">Belum ada catatan mutasi kependudukan di lingkungan ini.</p>
           </div>
         ) : (
           <div className="overflow-x-auto">
             <table className="w-full text-left text-xs">
               <thead>
-                <tr className="border-b border-slate-200 dark:border-slate-800 text-slate-500 dark:text-slate-400 uppercase tracking-wider text-[10px]">
+                <tr className="border-b border-slate-200 dark:border-slate-800 text-slate-800 dark:text-slate-200 uppercase tracking-wider text-[10px] font-extrabold">
                   <th className="pb-3 pl-2">Nama Warga</th>
                   <th className="pb-3">Jenis Kelamin</th>
                   <th className="pb-3">Status Mutasi</th>
@@ -406,19 +406,19 @@ export default function PopulationStatsTab() {
                     <td className="py-3 pl-2 font-semibold text-slate-800 dark:text-white">
                       {mut.fullName}
                     </td>
-                    <td className="py-3 text-slate-600 dark:text-slate-400">
+                    <td className="py-3 text-slate-800 dark:text-slate-200 font-medium">
                       {mut.gender === "LAKI_LAKI" ? "Laki-laki" : "Perempuan"}
                     </td>
                     <td className="py-3">{getMutationBadge(mut.mutationStatus)}</td>
-                    <td className="py-3 text-slate-600 dark:text-slate-400">
+                    <td className="py-3 text-slate-800 dark:text-slate-200 font-medium">
                       {new Date(mut.mutationDate).toLocaleDateString("id-ID", {
                         day: "numeric",
                         month: "long",
                         year: "numeric",
                       })}
                     </td>
-                    <td className="py-3 text-slate-600 dark:text-slate-400">{mut.address}</td>
-                    <td className="py-3 pr-2 text-slate-600 dark:text-slate-400 italic">
+                    <td className="py-3 text-slate-800 dark:text-slate-200 font-medium">{mut.address}</td>
+                    <td className="py-3 pr-2 text-slate-800 dark:text-slate-200 font-medium italic">
                       {mut.mutationNote}
                     </td>
                   </tr>

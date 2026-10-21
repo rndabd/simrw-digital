@@ -24,23 +24,23 @@ export default function HeaderDashboard({ onOpenNotifications }: HeaderDashboard
     if (!user) return null;
     if (user.status === "VERIFIED_ACTIVE") {
       return (
-        <span className="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full text-xs font-semibold bg-emerald-100 text-emerald-800 border border-emerald-300">
-          <CheckCircle2 className="w-3.5 h-3.5 text-emerald-600" />
+        <span className="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full text-xs font-extrabold bg-emerald-100 text-emerald-900 border border-emerald-300">
+          <CheckCircle2 className="w-3.5 h-3.5 text-emerald-700" />
           RT {user.rt?.number || "02"} / RW {user.rw?.number || "05"} • Warga Tetap
         </span>
       );
     }
     if (user.status === "PENDING_VERIFICATION") {
       return (
-        <span className="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full text-xs font-semibold bg-amber-100 text-amber-800 border border-amber-300">
-          <Clock className="w-3.5 h-3.5 text-amber-600" />
+        <span className="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full text-xs font-extrabold bg-amber-100 text-amber-950 border border-amber-300">
+          <Clock className="w-3.5 h-3.5 text-amber-700" />
           Menunggu Verifikasi RT
         </span>
       );
     }
     return (
-      <span className="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full text-xs font-semibold bg-rose-100 text-rose-800 border border-rose-300">
-        <AlertTriangle className="w-3.5 h-3.5 text-rose-600" />
+      <span className="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full text-xs font-extrabold bg-rose-100 text-rose-900 border border-rose-300">
+        <AlertTriangle className="w-3.5 h-3.5 text-rose-700" />
         {user.status}
       </span>
     );
@@ -73,7 +73,7 @@ export default function HeaderDashboard({ onOpenNotifications }: HeaderDashboard
 
       <div className="flex items-center justify-between">
         <div>
-          <div className="text-xs text-slate-500 font-medium">
+          <div className="text-xs text-slate-700 font-bold">
             {getGreeting()}, {user?.fullName?.split(" ")[0] || "Warga"} 👋
           </div>
           <div className="text-base font-extrabold text-slate-900 tracking-tight flex items-center gap-2 mt-0.5">

@@ -202,10 +202,10 @@ export default function OfficerComplaintsTab() {
               <span className="px-3 py-1 bg-rose-500/30 border border-rose-400/40 text-rose-200 text-xs font-semibold rounded-full uppercase tracking-wider">
                 Pusat Aduan Warga
               </span>
-              <span className="text-xs text-slate-300">Respon Cepat Tanggap Pengurus</span>
+              <span className="text-xs text-slate-200 font-semibold">Respon Cepat Tanggap Pengurus</span>
             </div>
             <h2 className="text-2xl font-bold">Kelola Laporan & Pengaduan Warga</h2>
-            <p className="text-sm text-slate-300 mt-1 max-w-2xl">
+            <p className="text-sm text-slate-200 font-medium mt-1 max-w-2xl">
               Daftar seluruh aspirasi, keluhan keamanan, fasilitas umum, dan laporan kebersihan yang diajukan oleh warga di lingkungan Anda.
             </p>
           </div>
@@ -224,7 +224,7 @@ export default function OfficerComplaintsTab() {
       {/* KPI Counters */}
       <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
         <div className="p-4 bg-white/80 dark:bg-slate-900/80 backdrop-blur-md rounded-2xl border border-slate-200/80 dark:border-slate-800 shadow-sm">
-          <span className="text-xs font-medium text-slate-500">Total Pengaduan</span>
+          <span className="text-xs font-bold text-slate-700 dark:text-slate-200">Total Pengaduan</span>
           <p className="text-2xl font-bold text-slate-800 dark:text-white mt-1">{complaints.length}</p>
         </div>
 
@@ -277,7 +277,7 @@ export default function OfficerComplaintsTab() {
 
         {/* Search Input */}
         <div className="relative min-w-[260px]">
-          <Search className="w-4 h-4 absolute left-3 top-1/2 -translate-y-1/2 text-slate-400" />
+          <Search className="w-4 h-4 absolute left-3 top-1/2 -translate-y-1/2 text-slate-600" />
           <input
             type="text"
             placeholder="Cari tiket, judul, atau pelapor..."
@@ -292,12 +292,12 @@ export default function OfficerComplaintsTab() {
       {isLoading ? (
         <div className="p-12 text-center bg-white/60 dark:bg-slate-900/60 rounded-3xl border border-slate-200/80 dark:border-slate-800">
           <RefreshCw className="w-8 h-8 text-rose-500 animate-spin mx-auto mb-3" />
-          <p className="text-sm text-slate-600 dark:text-slate-400">Memuat laporan warga...</p>
+          <p className="text-sm font-bold text-slate-800 dark:text-slate-100">Memuat laporan warga...</p>
         </div>
       ) : filteredComplaints.length === 0 ? (
         <div className="p-12 text-center bg-white/60 dark:bg-slate-900/60 rounded-3xl border border-dashed border-slate-300 dark:border-slate-800">
-          <MessageSquare className="w-8 h-8 text-slate-400 mx-auto mb-2" />
-          <p className="text-sm font-semibold text-slate-700 dark:text-slate-300">
+          <MessageSquare className="w-8 h-8 text-slate-600 mx-auto mb-2" />
+          <p className="text-sm font-bold text-slate-800 dark:text-slate-100">
             Tidak ada pengaduan warga yang sesuai filter.
           </p>
         </div>
@@ -313,7 +313,7 @@ export default function OfficerComplaintsTab() {
                   <span className="font-mono text-xs font-bold text-rose-600 dark:text-rose-400 px-2 py-0.5 rounded-lg bg-rose-50 dark:bg-rose-950/60 border border-rose-200 dark:border-rose-900">
                     {comp.ticket_number}
                   </span>
-                  <span className="px-2 py-0.5 rounded-lg text-xs font-semibold bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-300">
+                  <span className="px-2 py-0.5 rounded-lg text-xs font-bold bg-slate-100 dark:bg-slate-800 text-slate-800 dark:text-slate-100">
                     {getCategoryLabel(comp.category)}
                   </span>
                   {(comp.is_urgent || comp.priority === "HIGH" || comp.priority === "EMERGENCY") && (
@@ -328,24 +328,24 @@ export default function OfficerComplaintsTab() {
                   {comp.title}
                 </h3>
 
-                <p className="text-xs text-slate-600 dark:text-slate-300 leading-relaxed">
+                <p className="text-xs text-slate-800 dark:text-slate-100 font-medium leading-relaxed">
                   {comp.description}
                 </p>
 
-                <div className="flex flex-wrap items-center gap-4 text-xs text-slate-500 dark:text-slate-400 pt-1">
+                <div className="flex flex-wrap items-center gap-4 text-xs text-slate-700 dark:text-slate-200 font-medium pt-1">
                   <span className="flex items-center gap-1">
-                    <User className="w-3.5 h-3.5 text-slate-400" /> Pelapor:{" "}
-                    <strong className="text-slate-700 dark:text-slate-200 font-semibold">
+                    <User className="w-3.5 h-3.5 text-slate-600 dark:text-slate-300" /> Pelapor:{" "}
+                    <strong className="text-slate-900 dark:text-slate-100 font-bold">
                       {comp.author_name || comp.citizen_name || "Warga RT"}
                     </strong>
                   </span>
                   {(comp.location || comp.location_notes) && (
                     <span className="flex items-center gap-1">
-                      <MapPin className="w-3.5 h-3.5 text-slate-400" /> Lokasi: {comp.location || comp.location_notes}
+                      <MapPin className="w-3.5 h-3.5 text-slate-600 dark:text-slate-300" /> Lokasi: {comp.location || comp.location_notes}
                     </span>
                   )}
                   <span className="flex items-center gap-1">
-                    <Calendar className="w-3.5 h-3.5 text-slate-400" /> Dilaporkan: {new Date(comp.created_at).toLocaleDateString("id-ID", {
+                    <Calendar className="w-3.5 h-3.5 text-slate-600 dark:text-slate-300" /> Dilaporkan: {new Date(comp.created_at).toLocaleDateString("id-ID", {
                       day: "numeric",
                       month: "short",
                       year: "numeric",
@@ -358,10 +358,10 @@ export default function OfficerComplaintsTab() {
                 {/* Officer Response Preview if available */}
                 {comp.officer_response && (
                   <div className="mt-3 p-3 bg-slate-50 dark:bg-slate-800/80 rounded-xl border border-slate-200 dark:border-slate-700">
-                    <p className="text-[11px] font-bold text-slate-700 dark:text-slate-300 flex items-center gap-1.5 mb-1">
+                    <p className="text-[11px] font-bold text-slate-900 dark:text-slate-100 flex items-center gap-1.5 mb-1">
                       <MessageSquare className="w-3.5 h-3.5 text-indigo-500" /> Tanggapan Pengurus:
                     </p>
-                    <p className="text-xs text-slate-600 dark:text-slate-300 italic">
+                    <p className="text-xs text-slate-800 dark:text-slate-100 italic font-medium">
                       "{comp.officer_response}"
                     </p>
                   </div>
@@ -397,7 +397,7 @@ export default function OfficerComplaintsTab() {
               </div>
               <button
                 onClick={() => setShowResponseModal(false)}
-                className="text-slate-400 hover:text-slate-600 p-1 rounded-lg"
+                className="text-slate-600 hover:text-slate-900 font-bold p-1 rounded-lg"
               >
                 ✕
               </button>
@@ -405,19 +405,19 @@ export default function OfficerComplaintsTab() {
 
             <form onSubmit={handleSubmitResponse} className="space-y-4 mt-4">
               <div className="p-3 bg-slate-50 dark:bg-slate-800/60 rounded-xl space-y-1">
-                <p className="text-xs font-semibold text-slate-700 dark:text-slate-300">
+                <p className="text-xs font-bold text-slate-900 dark:text-slate-100">
                   {selectedComplaint.title}
                 </p>
-                <p className="text-xs text-slate-500 dark:text-slate-400 line-clamp-2">
+                <p className="text-xs text-slate-800 dark:text-slate-200 font-medium line-clamp-2">
                   {selectedComplaint.description}
                 </p>
-                <p className="text-[11px] text-slate-400 pt-1">
+                <p className="text-[11px] text-slate-700 dark:text-slate-300 font-medium pt-1">
                   Oleh: {selectedComplaint.author_name || selectedComplaint.citizen_name || "Warga"} • RT 02
                 </p>
               </div>
 
               <div>
-                <label className="block text-xs font-semibold text-slate-700 dark:text-slate-300 mb-1">
+                <label className="block text-xs font-bold text-slate-900 dark:text-slate-100 mb-1">
                   Status Penanganan *
                 </label>
                 <select
@@ -432,7 +432,7 @@ export default function OfficerComplaintsTab() {
               </div>
 
               <div>
-                <label className="block text-xs font-semibold text-slate-700 dark:text-slate-300 mb-1">
+                <label className="block text-xs font-bold text-slate-900 dark:text-slate-100 mb-1">
                   Tanggapan Pengurus untuk Warga *
                 </label>
                 <textarea
@@ -449,7 +449,7 @@ export default function OfficerComplaintsTab() {
                 <button
                   type="button"
                   onClick={() => setShowResponseModal(false)}
-                  className="px-4 py-2 text-xs font-semibold text-slate-600 dark:text-slate-400 hover:bg-slate-100 dark:hover:bg-slate-800 rounded-xl"
+                  className="px-4 py-2 text-xs font-bold text-slate-700 dark:text-slate-200 hover:bg-slate-100 dark:hover:bg-slate-800 rounded-xl"
                 >
                   Batal
                 </button>

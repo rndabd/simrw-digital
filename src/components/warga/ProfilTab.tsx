@@ -99,26 +99,26 @@ export default function ProfilTab() {
           <div className="p-5 rounded-2xl bg-white border border-slate-200/90 shadow-2xs space-y-3">
             <div className="flex items-start justify-between">
               <div className="space-y-0.5">
-                <div className="text-xs font-bold text-slate-800 flex items-center gap-1.5">
+                <div className="text-xs font-extrabold text-slate-900 flex items-center gap-1.5">
                   <Award className="w-4 h-4 text-emerald-600" />
                   Pengajuan Kepengurusan Lingkungan
                 </div>
-                <div className="text-[11px] text-slate-500">
+                <div className="text-[11px] text-slate-700 font-medium">
                   Ajukan peran baru (Sekretaris/Bendahara RT, Satpam, dll.)
                 </div>
               </div>
               <button
                 disabled={user?.status !== "VERIFIED_ACTIVE" || user?.hasPendingOfficerRequest}
                 onClick={() => setShowApplyModal(!showApplyModal)}
-                className="px-3 py-1.5 rounded-xl bg-emerald-50 text-emerald-700 hover:bg-emerald-100 disabled:bg-slate-100 disabled:text-slate-400 text-xs font-bold border border-emerald-200"
+                className="px-3 py-1.5 rounded-xl bg-emerald-50 text-emerald-800 hover:bg-emerald-100 disabled:bg-slate-100 disabled:text-slate-600 text-xs font-bold border border-emerald-300"
               >
                 {user?.hasPendingOfficerRequest ? "Sedang Ditinjau" : "Ajukan Peran"}
               </button>
             </div>
 
             {user?.status !== "VERIFIED_ACTIVE" && (
-              <div className="text-[11px] text-amber-700 bg-amber-50 p-2.5 rounded-xl border border-amber-200 flex items-center gap-1.5">
-                <AlertTriangle className="w-3.5 h-3.5 shrink-0" />
+              <div className="text-[11px] text-amber-900 bg-amber-50 p-2.5 rounded-xl border border-amber-300 font-medium flex items-center gap-1.5">
+                <AlertTriangle className="w-3.5 h-3.5 shrink-0 text-amber-600" />
                 Syarat Mutlak: Akun wajib berstatus Warga Terverifikasi Aktif.
               </div>
             )}
@@ -126,12 +126,12 @@ export default function ProfilTab() {
             {showApplyModal && (
               <form onSubmit={handleApplyOfficer} className="pt-3 border-t border-slate-100 space-y-3">
                 {applyMessage && (
-                  <div className="p-2.5 rounded-lg bg-emerald-50 text-emerald-800 text-xs font-semibold">
+                  <div className="p-2.5 rounded-lg bg-emerald-50 text-emerald-900 text-xs font-bold border border-emerald-200">
                     {applyMessage}
                   </div>
                 )}
                 <div>
-                  <label className="text-[11px] font-semibold text-slate-600 block mb-1">
+                  <label className="text-[11px] font-bold text-slate-800 block mb-1">
                     Pilih Jabatan Yang Diajukan
                   </label>
                   <select
@@ -147,10 +147,10 @@ export default function ProfilTab() {
                 </div>
 
                 <div>
-                  <label className="text-[11px] font-semibold text-slate-600 block mb-1">
+                  <label className="text-[11px] font-bold text-slate-800 block mb-1">
                     Unggah Dokumen SK / Bukti Berita Acara
                   </label>
-                  <div className="p-3 rounded-xl border border-dashed border-slate-300 text-center text-xs text-slate-500 bg-slate-50 flex items-center justify-center gap-2">
+                  <div className="p-3 rounded-xl border border-dashed border-slate-300 text-center text-xs text-slate-700 bg-slate-50 flex items-center justify-center gap-2 font-medium">
                     <FileUp className="w-4 h-4 text-emerald-600" />
                     <span>{skDocName} (Terlampir)</span>
                   </div>
@@ -159,7 +159,7 @@ export default function ProfilTab() {
                 <button
                   type="submit"
                   disabled={isApplying}
-                  className="w-full py-2.5 px-3 rounded-xl bg-emerald-600 text-white font-bold text-xs hover:bg-emerald-700 transition-all"
+                  className="w-full py-2.5 px-3 rounded-xl bg-emerald-600 text-white font-bold text-xs hover:bg-emerald-700 transition-all shadow-sm"
                 >
                   {isApplying ? "Mengirim..." : "Kirimkan Pengajuan ke Ketua RW"}
                 </button>
@@ -169,11 +169,11 @@ export default function ProfilTab() {
 
           {/* Demo Credentials Switcher */}
           <div className="p-5 rounded-2xl bg-white border border-slate-200/90 shadow-2xs space-y-2.5">
-            <div className="text-xs font-bold text-slate-800 uppercase tracking-wider flex items-center gap-1.5">
+            <div className="text-xs font-extrabold text-slate-900 uppercase tracking-wider flex items-center gap-1.5">
               <UserCheck className="w-4 h-4 text-emerald-600" />
               Beralih Cepat Akun Demo (1-Click Switcher)
             </div>
-            <p className="text-[11px] text-slate-500">
+            <p className="text-[11px] text-slate-700 font-medium">
               Uji seluruh alur sistem dengan berganti peran pengguna secara instan:
             </p>
 

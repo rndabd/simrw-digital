@@ -120,11 +120,11 @@ export default function AnnouncementFeed({ onSelectAnnouncement }: AnnouncementF
         </div>
       ) : filtered.length === 0 ? (
         <div className="p-6 rounded-2xl bg-white/95 backdrop-blur-md border border-white/80 text-center space-y-2 shadow-sm">
-          <div className="w-10 h-10 rounded-full bg-slate-100 mx-auto flex items-center justify-center text-slate-500">
+          <div className="w-10 h-10 rounded-full bg-slate-100 mx-auto flex items-center justify-center text-slate-700">
             <BellRing className="w-5 h-5" />
           </div>
           <div className="text-xs font-bold text-slate-800">Belum ada pengumuman baru</div>
-          <div className="text-[11px] text-slate-500">Pengumuman dari pengurus RT/RW akan tampil di sini.</div>
+          <div className="text-[11px] text-slate-600 font-semibold">Pengumuman dari pengurus RT/RW akan tampil di sini.</div>
         </div>
       ) : (
         <div className="space-y-2.5">
@@ -147,8 +147,8 @@ export default function AnnouncementFeed({ onSelectAnnouncement }: AnnouncementF
 
               <div className="flex items-center justify-between mb-1.5">
                 {getScopeBadge(item.scope)}
-                <span className="text-[10px] text-slate-500 font-medium flex items-center gap-1">
-                  <Calendar className="w-3 h-3" />
+                <span className="text-[11px] text-slate-700 font-bold flex items-center gap-1">
+                  <Calendar className="w-3.5 h-3.5 text-slate-600" />
                   {formatDistanceToNow(new Date(item.created_at), {
                     addSuffix: true,
                     locale: idLocale,
@@ -164,7 +164,7 @@ export default function AnnouncementFeed({ onSelectAnnouncement }: AnnouncementF
                 {item.content}
               </p>
 
-              <div className="mt-2.5 pt-2 border-t border-slate-100 flex items-center justify-between text-[11px] text-slate-600 font-semibold">
+              <div className="mt-2.5 pt-2 border-t border-slate-200 flex items-center justify-between text-[11px] text-slate-700 font-bold">
                 <span>Oleh: {item.authorName || "Pengurus RW"}</span>
                 <span className="inline-flex items-center gap-0.5 text-emerald-700 font-bold hover:underline">
                   Baca Detail <ChevronRight className="w-3.5 h-3.5" />

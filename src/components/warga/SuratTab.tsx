@@ -61,7 +61,7 @@ export default function SuratTab() {
           </div>
           <div>
             <h2 className="text-sm font-extrabold text-white">Layanan Surat Pengantar Online</h2>
-            <p className="text-[11px] text-slate-300">
+            <p className="text-[11px] text-slate-200 font-medium">
               Urus administrasi kependudukan tanpa antre fisik ke rumah pengurus RT.
             </p>
           </div>
@@ -152,9 +152,9 @@ export default function SuratTab() {
                 </span>
               </div>
 
-              <p className="text-xs text-slate-600">{letter.purpose}</p>
+              <p className="text-xs text-slate-700 font-medium">{letter.purpose}</p>
 
-              <div className="pt-2 border-t border-slate-100 flex items-center justify-between text-[11px] text-slate-400">
+              <div className="pt-2 border-t border-slate-200 flex items-center justify-between text-[11px] text-slate-700 font-bold">
                 <span className="font-mono text-[10px]">No: {letter.number}</span>
                 <span>{letter.date}</span>
               </div>

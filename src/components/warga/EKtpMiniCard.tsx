@@ -43,17 +43,17 @@ export default function EKtpMiniCard() {
         <div className="col-span-2 space-y-2.5">
           {/* NIK row with masking toggle */}
           <div>
-            <div className="text-[11px] text-emerald-200 font-medium flex items-center justify-between">
+            <div className="text-[11px] text-emerald-100 font-bold flex items-center justify-between">
               <span>Nomor Induk Kependudukan (NIK)</span>
             </div>
             <div className="flex items-center gap-2 mt-0.5">
-              <span className="font-mono text-sm tracking-wider font-bold text-white bg-emerald-950/40 px-2 py-0.5 rounded border border-emerald-600/30">
+              <span className="font-mono text-sm tracking-wider font-extrabold text-white bg-emerald-950/70 px-2.5 py-0.5 rounded-lg border border-emerald-500/40 shadow-xs">
                 {showNik ? user.maskedNik : "•••• •••• •••• " + user.maskedNik.slice(-4)}
               </span>
               <button
                 type="button"
                 onClick={() => setShowNik(!showNik)}
-                className="p-1 rounded hover:bg-emerald-700/60 text-emerald-200 transition-colors"
+                className="p-1 rounded-md hover:bg-emerald-700/60 text-emerald-200 transition-colors"
                 title={showNik ? "Sembunyikan NIK" : "Tampilkan NIK (Disensor)"}
               >
                 {showNik ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
@@ -63,21 +63,21 @@ export default function EKtpMiniCard() {
 
           {/* Full Name */}
           <div>
-            <div className="text-[10px] text-emerald-300 uppercase tracking-wider font-semibold">
+            <div className="text-[10px] text-emerald-200 uppercase tracking-wider font-extrabold">
               Nama Lengkap
             </div>
-            <div className="text-base font-bold text-white leading-tight">
+            <div className="text-base font-extrabold text-white leading-tight">
               {user.fullName}
             </div>
           </div>
 
           {/* Address & RT/RW */}
-          <div className="flex items-center gap-3 text-xs text-emerald-100">
+          <div className="flex items-center gap-3 text-xs text-white font-medium">
             <div className="flex items-center gap-1">
               <Home className="w-3.5 h-3.5 text-emerald-300" />
               <span>{user.addressBlock || "Blok C2 No. 14"}</span>
             </div>
-            <span>•</span>
+            <span className="text-emerald-300">•</span>
             <div>
               RT {user.rt?.number || "02"} / RW {user.rw?.number || "05"}
             </div>
@@ -86,8 +86,8 @@ export default function EKtpMiniCard() {
 
         {/* QR Code / Status Verification Column */}
         <div className="col-span-1 flex flex-col items-center justify-center p-2 rounded-xl bg-white/10 backdrop-blur-sm border border-white/10">
-          <QrCode className="w-12 h-12 text-white/90" />
-          <div className="mt-1.5 flex items-center gap-1 text-[10px] font-bold text-emerald-200">
+          <QrCode className="w-12 h-12 text-white" />
+          <div className="mt-1.5 flex items-center gap-1 text-[10px] font-extrabold text-emerald-300">
             <UserCheck className="w-3 h-3 text-emerald-300" />
             <span>TERVERIFIKASI</span>
           </div>
@@ -95,7 +95,7 @@ export default function EKtpMiniCard() {
       </div>
 
       {/* Card Footer Micro Bar */}
-      <div className="mt-4 pt-2.5 border-t border-emerald-600/30 flex items-center justify-between text-[10px] text-emerald-300/80">
+      <div className="mt-4 pt-2.5 border-t border-emerald-600/40 flex items-center justify-between text-[10px] text-emerald-200 font-bold">
         <span>Kel. {user.rw?.village || "Sukamaju"}, Kec. Coblong</span>
         <span className="font-mono">ID: {user.id.substring(0, 8)}</span>
       </div>

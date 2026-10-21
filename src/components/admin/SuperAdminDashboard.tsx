@@ -198,7 +198,7 @@ export default function SuperAdminDashboard() {
               <h2 className="text-xl font-extrabold text-white tracking-tight mt-0.5">
                 Pusat Tata Kelola RW & Rollover Kepengurusan
               </h2>
-              <div className="text-xs text-slate-300 mt-1">
+              <div className="text-xs text-slate-200 font-semibold mt-1">
                 Admin: <span className="font-bold text-white">{user?.fullName}</span> • Kelurahan Sukamaju, Bandung
               </div>
             </div>
@@ -213,7 +213,7 @@ export default function SuperAdminDashboard() {
         </div>
 
         {/* Tab Controls */}
-        <div className="grid grid-cols-2 md:grid-cols-5 gap-1.5 mt-6 bg-slate-800/90 p-1.5 rounded-2xl text-xs font-bold text-slate-300">
+        <div className="grid grid-cols-2 md:grid-cols-5 gap-1.5 mt-6 bg-slate-800/90 p-1.5 rounded-2xl text-xs font-bold text-slate-200">
           <button
             onClick={() => setActiveTab("rw_requests")}
             className={`py-2 px-3 rounded-xl transition-all flex items-center justify-center gap-1.5 ${
@@ -285,7 +285,7 @@ export default function SuperAdminDashboard() {
                 <Clock className="w-4 h-4 text-amber-600" />
                 Permohonan Pendaftaran RW Baru
               </h3>
-              <p className="text-xs text-slate-500">
+              <p className="text-xs text-slate-700 font-medium">
                 Verifikasi dokumen SK Pelantikan & keabsahan pemilihan sebelum mengaktifkan RW di sistem.
               </p>
             </div>
@@ -299,12 +299,12 @@ export default function SuperAdminDashboard() {
           </div>
 
           {isLoadingRws ? (
-            <div className="p-8 text-center text-xs text-slate-500">Memuat permohonan RW...</div>
+            <div className="p-8 text-center text-xs text-slate-700 font-bold">Memuat permohonan RW...</div>
           ) : pendingRws.length === 0 ? (
             <div className="p-10 bg-white rounded-3xl border border-slate-200 text-center space-y-2 shadow-xs">
               <CheckCircle2 className="w-12 h-12 text-emerald-500 mx-auto" />
               <div className="text-sm font-bold text-slate-800">Tidak Ada Permohonan RW Menunggu</div>
-              <p className="text-xs text-slate-500 max-w-sm mx-auto">
+              <p className="text-xs text-slate-700 font-medium max-w-sm mx-auto">
                 Semua RW yang mendaftar telah ditinjau dan disetujui oleh Kelurahan.
               </p>
             </div>
@@ -320,7 +320,7 @@ export default function SuperAdminDashboard() {
                       <div className="text-base font-extrabold text-slate-900">
                         RW {rw.rw_number} Kelurahan {rw.village}
                       </div>
-                      <div className="text-xs text-slate-500">
+                      <div className="text-xs text-slate-700 font-bold">
                         Kecamatan {rw.district}, {rw.city}
                       </div>
                     </div>
@@ -330,17 +330,17 @@ export default function SuperAdminDashboard() {
                   </div>
 
                   <div className="p-3 rounded-xl bg-slate-50 border border-slate-200 text-xs space-y-1">
-                    <div className="text-slate-500 text-[10px] uppercase font-semibold">Pemohon Calon Ketua RW:</div>
+                    <div className="text-slate-700 text-[10px] uppercase font-bold">Pemohon Calon Ketua RW:</div>
                     <div className="font-bold text-slate-900">{rw.applicantName}</div>
-                    <div className="text-emerald-700 font-mono text-[11px]">WhatsApp: {rw.applicantPhone}</div>
-                    <div className="text-slate-500 text-[11px] pt-1 border-t border-slate-200 mt-1 flex items-center justify-between">
+                    <div className="text-emerald-700 font-mono text-[11px] font-bold">WhatsApp: {rw.applicantPhone}</div>
+                    <div className="text-slate-700 text-[11px] font-bold pt-1 border-t border-slate-200 mt-1 flex items-center justify-between">
                       <span>Masa Bakti: {rw.term_period}</span>
                       <span>Unit RT: {rw.totalRt} RT</span>
                     </div>
                   </div>
 
                   <div className="flex items-center justify-between text-xs pt-1">
-                    <span className="text-slate-500 flex items-center gap-1">
+                    <span className="text-slate-700 font-bold flex items-center gap-1">
                       <FileText className="w-3.5 h-3.5 text-emerald-600" /> Dokumen SK Pemilihan
                     </span>
                     <a
@@ -384,7 +384,7 @@ export default function SuperAdminDashboard() {
               <Building2 className="w-4 h-4 text-emerald-600" />
               Direktori Seluruh RW & RT Terdaftar
             </h3>
-            <p className="text-xs text-slate-500">
+            <p className="text-xs text-slate-700 font-medium">
               Pemantauan multi-tenant seluruh unit RW dalam lingkup wilayah Kelurahan Sukamaju.
             </p>
           </div>
@@ -400,7 +400,7 @@ export default function SuperAdminDashboard() {
                     <div className="text-base font-extrabold text-slate-900">
                       Rukun Warga (RW) {rw.rw_number}
                     </div>
-                    <div className="text-xs text-slate-500">
+                    <div className="text-xs text-slate-700 font-bold">
                       Kel. {rw.village}, Kec. {rw.district}
                     </div>
                   </div>
@@ -411,17 +411,17 @@ export default function SuperAdminDashboard() {
 
                 <div className="grid grid-cols-2 gap-2 text-xs">
                   <div className="p-2.5 rounded-xl bg-slate-50 border border-slate-100">
-                    <div className="text-[10px] text-slate-400 font-semibold uppercase">Masa Bakti</div>
+                    <div className="text-[10px] text-slate-600 font-bold uppercase">Masa Bakti</div>
                     <div className="font-extrabold text-slate-800 mt-0.5">{rw.term_period}</div>
                   </div>
                   <div className="p-2.5 rounded-xl bg-slate-50 border border-slate-100">
-                    <div className="text-[10px] text-slate-400 font-semibold uppercase">Jumlah Unit RT</div>
+                    <div className="text-[10px] text-slate-600 font-bold uppercase">Jumlah Unit RT</div>
                     <div className="font-extrabold text-slate-800 mt-0.5">{rw.totalRt} Rukun Tetangga</div>
                   </div>
                 </div>
 
-                <div className="pt-2 border-t border-slate-100 text-xs flex items-center justify-between text-slate-500">
-                  <span>Warga Terdaftar: <strong className="text-slate-800">{rw.totalCitizens} Orang</strong></span>
+                <div className="pt-2 border-t border-slate-100 text-xs flex items-center justify-between text-slate-700 font-bold">
+                  <span>Warga Terdaftar: <strong className="text-slate-900 font-extrabold">{rw.totalCitizens} Orang</strong></span>
                   <button
                     onClick={() => {
                       setSelectedRwId(rw.id);
@@ -446,7 +446,7 @@ export default function SuperAdminDashboard() {
               <RotateCw className="w-4 h-4 text-emerald-600" />
               Fungsi Rollover 5 Tahun & Serah Terima Pekerjaan (BAST)
             </h3>
-            <p className="text-xs text-slate-500">
+            <p className="text-xs text-slate-700 font-medium">
               Otomatisasi pengalihan wewenang ketua RW/RT demisioner ke pejabat baru terpilih, serah terima saldo kas, dan arsip dokumen.
             </p>
           </div>
@@ -489,7 +489,7 @@ export default function SuperAdminDashboard() {
                     placeholder="2021"
                     className="w-full text-xs p-3 rounded-xl border border-slate-300 text-center font-bold"
                   />
-                  <span className="text-slate-400">s/d</span>
+                  <span className="text-slate-700 font-bold">s/d</span>
                   <input
                     type="text"
                     value={periodTo}
@@ -497,7 +497,7 @@ export default function SuperAdminDashboard() {
                     placeholder="2026"
                     className="w-full text-xs p-3 rounded-xl border border-slate-300 text-center font-bold"
                   />
-                  <span className="text-slate-400">ke</span>
+                  <span className="text-slate-700 font-bold">ke</span>
                   <input
                     type="text"
                     value={nextPeriodTo}
@@ -521,7 +521,7 @@ export default function SuperAdminDashboard() {
                 >
                   <option value="user-rw-01">Budi Santoso (Ketua RW 05 Masa Bakti 2021-2026)</option>
                 </select>
-                <span className="text-[10px] text-slate-400 mt-1 block">
+                <span className="text-[11px] text-slate-600 font-medium mt-1 block">
                   *Mandat kepemimpinan Ketua RW lama dicabut & beralih status menjadi Penasihat RW.
                 </span>
               </div>
@@ -592,15 +592,15 @@ export default function SuperAdminDashboard() {
               <History className="w-4 h-4 text-emerald-600" />
               Arsip Berita Acara Serah Terima (BAST) & Jejak Rollover
             </h3>
-            <p className="text-xs text-slate-500">
+            <p className="text-xs text-slate-700 font-medium">
               Riwayat lengkap peralihan kepengurusan masa bakti 5 tahun dari masa ke masa.
             </p>
           </div>
 
           {isLoadingRollovers ? (
-            <div className="p-8 text-center text-xs text-slate-500">Memuat arsip BAST...</div>
+            <div className="p-8 text-center text-xs text-slate-700 font-bold">Memuat arsip BAST...</div>
           ) : rollovers.length === 0 ? (
-            <div className="p-8 bg-white rounded-2xl border border-slate-200 text-center text-xs text-slate-500">
+            <div className="p-8 bg-white rounded-2xl border border-slate-200 text-center text-xs text-slate-700 font-bold">
               Belum ada arsip rollover sebelumnya.
             </div>
           ) : (
@@ -612,8 +612,8 @@ export default function SuperAdminDashboard() {
                 >
                   <div className="flex items-start justify-between">
                     <div>
-                      <div className="text-xs font-bold text-slate-500">
-                        Peralihan Masa Bakti: <span className="text-emerald-700">{r.period_from}-{r.period_to} ➔ {r.period_to}-{r.next_period_to}</span>
+                      <div className="text-xs font-bold text-slate-700">
+                        Peralihan Masa Bakti: <span className="text-emerald-700 font-extrabold">{r.period_from}-{r.period_to} ➔ {r.period_to}-{r.next_period_to}</span>
                       </div>
                       <div className="text-sm font-extrabold text-slate-900 mt-0.5">
                         RW {r.rwNumber} Kelurahan {r.village}
@@ -626,22 +626,22 @@ export default function SuperAdminDashboard() {
 
                   <div className="grid grid-cols-2 gap-3 text-xs p-3 rounded-xl bg-slate-50 border border-slate-200">
                     <div>
-                      <div className="text-[10px] text-slate-400 font-semibold uppercase">Pejabat Demisioner</div>
-                      <div className="font-bold text-slate-800">{r.outgoingName}</div>
+                      <div className="text-[10px] text-slate-600 font-bold uppercase">Pejabat Demisioner</div>
+                      <div className="font-extrabold text-slate-900">{r.outgoingName}</div>
                     </div>
                     <div>
-                      <div className="text-[10px] text-slate-400 font-semibold uppercase">Pejabat Baru Dilantik</div>
-                      <div className="font-bold text-emerald-800">{r.incomingName}</div>
+                      <div className="text-[10px] text-slate-600 font-bold uppercase">Pejabat Baru Dilantik</div>
+                      <div className="font-extrabold text-emerald-800">{r.incomingName}</div>
                     </div>
                   </div>
 
-                  <p className="text-xs text-slate-600 bg-slate-50/50 p-2.5 rounded-lg border border-slate-100">
-                    <strong className="text-slate-800">Catatan BAST:</strong> {r.handover_notes}
+                  <p className="text-xs text-slate-800 font-medium bg-slate-50/50 p-2.5 rounded-lg border border-slate-200">
+                    <strong className="text-slate-900 font-bold">Catatan BAST:</strong> {r.handover_notes}
                   </p>
 
-                  <div className="pt-2 border-t border-slate-100 flex items-center justify-between text-xs text-slate-500">
-                    <span>Kas Dialihkan: <strong className="text-emerald-700">Rp {Number(r.closing_cash_balance).toLocaleString("id-ID")}</strong></span>
-                    <span className="text-[11px] text-slate-400 font-mono">Disahkan: {new Date(r.created_at).toLocaleDateString("id-ID")}</span>
+                  <div className="pt-2 border-t border-slate-100 flex items-center justify-between text-xs text-slate-700 font-bold">
+                    <span>Kas Dialihkan: <strong className="text-emerald-700 font-extrabold">Rp {Number(r.closing_cash_balance).toLocaleString("id-ID")}</strong></span>
+                    <span className="text-[11px] text-slate-600 font-mono font-bold">Disahkan: {new Date(r.created_at).toLocaleDateString("id-ID")}</span>
                   </div>
                 </div>
               ))}
@@ -658,15 +658,15 @@ export default function SuperAdminDashboard() {
               <Lock className="w-4 h-4 text-emerald-600" />
               Jejak Audit Global UU PDP (Seluruh RW)
             </h3>
-            <p className="text-xs text-slate-500">
+            <p className="text-xs text-slate-700 font-medium">
               Rekaman mutlak seluruh aktivitas login, pembukaan NIK, dan perubahan hak akses se-kelurahan.
             </p>
           </div>
 
           {isLoadingAudit ? (
-            <div className="p-8 text-center text-xs text-slate-500">Memuat log audit...</div>
+            <div className="p-8 text-center text-xs text-slate-700 font-bold">Memuat log audit...</div>
           ) : auditLogs.length === 0 ? (
-            <div className="p-8 bg-white rounded-2xl border border-slate-200 text-center text-xs text-slate-500">
+            <div className="p-8 bg-white rounded-2xl border border-slate-200 text-center text-xs text-slate-700 font-bold">
               Belum ada catatan log audit.
             </div>
           ) : (
@@ -684,7 +684,7 @@ export default function SuperAdminDashboard() {
                       >
                         {actionMeta.title}
                       </span>
-                      <span className="text-[10px] text-slate-400 font-medium shrink-0">
+                      <span className="text-[10px] text-slate-600 font-bold shrink-0">
                         {new Date(log.timestamp).toLocaleTimeString("id-ID", {
                           hour: "2-digit",
                           minute: "2-digit",
@@ -693,9 +693,9 @@ export default function SuperAdminDashboard() {
                       </span>
                     </div>
 
-                    <div className="text-[11px] text-slate-600">
+                    <div className="text-[11px] text-slate-700 font-medium">
                       Aktor: <span className="font-bold text-slate-900">{log.actorName}</span> • IP:{" "}
-                      <span className="font-mono text-[10px] text-slate-400">{log.ip_address}</span>
+                      <span className="font-mono text-[10px] text-slate-600 font-bold">{log.ip_address}</span>
                     </div>
 
                     <AuditPayloadViewer action={log.action} payload={log.payload} />

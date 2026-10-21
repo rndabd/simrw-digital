@@ -212,12 +212,12 @@ export default function WargaTab() {
               <span className="px-3 py-1 bg-emerald-500/30 border border-emerald-400/40 text-emerald-200 text-xs font-semibold rounded-full uppercase tracking-wider">
                 Struktur Kepengurusan & Direktori
               </span>
-              <span className="text-xs text-slate-300">Resmi Periode Berjalan</span>
+              <span className="text-xs text-slate-200 font-semibold">Resmi Periode Berjalan</span>
             </div>
             <h1 className="text-2xl font-bold tracking-tight">
               Bagan Organisasi RW 15 Komplek Giri Ciheulang
             </h1>
-            <p className="text-xs md:text-sm text-slate-300 mt-1 max-w-2xl leading-relaxed">
+            <p className="text-xs md:text-sm text-slate-200 mt-1 max-w-2xl leading-relaxed font-medium">
               Kecamatan Ciparay, Kabupaten Bandung • Susunan pengurus lingkungan, pimpinan RT, koordinator seksi, dan layanan tanggap darurat 24 jam.
             </p>
           </div>
@@ -229,7 +229,7 @@ export default function WargaTab() {
               className={`px-3.5 py-1.5 rounded-xl text-xs font-bold transition-all ${
                 viewMode === "BAGAN"
                   ? "bg-emerald-600 text-white shadow-md shadow-emerald-900/50"
-                  : "text-slate-400 hover:text-white"
+                  : "text-slate-200 hover:text-white font-bold"
               }`}
             >
               Bagan Hirarki
@@ -239,7 +239,7 @@ export default function WargaTab() {
               className={`px-3.5 py-1.5 rounded-xl text-xs font-bold transition-all ${
                 viewMode === "DAFTAR"
                   ? "bg-emerald-600 text-white shadow-md shadow-emerald-900/50"
-                  : "text-slate-400 hover:text-white"
+                  : "text-slate-200 hover:text-white font-bold"
               }`}
             >
               Daftar Kontak
@@ -264,7 +264,7 @@ export default function WargaTab() {
                   SIAGA SOS
                 </span>
               </div>
-              <p className="text-xs text-slate-600 dark:text-slate-300 mt-0.5">
+              <p className="text-xs text-slate-700 dark:text-slate-200 font-semibold mt-0.5">
                 Petugas Satpam & Ronda Gerbang Utama • Terhubung langsung dengan sirene darurat aplikasi
               </p>
             </div>
@@ -322,11 +322,11 @@ export default function WargaTab() {
                     </div>
                   </div>
 
-                  <p className="text-xs text-slate-500 dark:text-slate-400 mt-2 flex items-center gap-1.5">
-                    <Home className="w-3.5 h-3.5 shrink-0 text-slate-400" /> {pimpinanRw.address}
+                  <p className="text-xs text-slate-700 font-bold dark:text-slate-200 mt-2 flex items-center gap-1.5">
+                    <Home className="w-3.5 h-3.5 shrink-0 text-slate-600" /> {pimpinanRw.address}
                   </p>
 
-                  <p className="text-xs text-slate-600 dark:text-slate-300 mt-2 bg-slate-50 dark:bg-slate-800/60 p-2.5 rounded-xl border border-slate-100 dark:border-slate-800 leading-relaxed italic">
+                  <p className="text-xs text-slate-800 font-medium dark:text-slate-200 mt-2 bg-slate-50 dark:bg-slate-800/60 p-2.5 rounded-xl border border-slate-200 dark:border-slate-800 leading-relaxed italic">
                     "{pimpinanRw.tupoksi}"
                   </p>
                 </div>
@@ -360,20 +360,20 @@ export default function WargaTab() {
                       <h3 className="text-lg font-bold text-slate-900 dark:text-white mt-1.5">
                         {wakilRw.name}
                       </h3>
-                      <p className="text-xs font-semibold text-slate-600 dark:text-slate-400">
+                      <p className="text-xs font-bold text-slate-800 dark:text-slate-200">
                         {wakilRw.subrole}
                       </p>
                     </div>
-                    <div className="w-12 h-12 rounded-2xl bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-slate-300 flex items-center justify-center font-black text-lg border border-slate-300">
+                    <div className="w-12 h-12 rounded-2xl bg-slate-100 dark:bg-slate-800 text-slate-800 dark:text-slate-100 flex items-center justify-center font-black text-lg border border-slate-300">
                       W.RW
                     </div>
                   </div>
 
-                  <p className="text-xs text-slate-500 dark:text-slate-400 mt-2 flex items-center gap-1.5">
-                    <Home className="w-3.5 h-3.5 shrink-0 text-slate-400" /> {wakilRw.address}
+                  <p className="text-xs text-slate-700 font-bold dark:text-slate-200 mt-2 flex items-center gap-1.5">
+                    <Home className="w-3.5 h-3.5 shrink-0 text-slate-600" /> {wakilRw.address}
                   </p>
 
-                  <p className="text-xs text-slate-600 dark:text-slate-300 mt-2 bg-slate-50 dark:bg-slate-800/60 p-2.5 rounded-xl border border-slate-100 dark:border-slate-800 leading-relaxed italic">
+                  <p className="text-xs text-slate-800 font-medium dark:text-slate-200 mt-2 bg-slate-50 dark:bg-slate-800/60 p-2.5 rounded-xl border border-slate-200 dark:border-slate-800 leading-relaxed italic">
                     "{wakilRw.tupoksi}"
                   </p>
                 </div>
@@ -418,23 +418,23 @@ export default function WargaTab() {
                         <span className="px-2.5 py-0.5 rounded-full text-[10px] font-bold bg-blue-50 text-blue-700 dark:bg-blue-950 dark:text-blue-300 border border-blue-200">
                           {officer.role}
                         </span>
-                        <h4 className="font-bold text-base text-slate-900 dark:text-white mt-1">
+                        <h4 className="font-extrabold text-base text-slate-900 dark:text-white mt-1">
                           {officer.name}
                         </h4>
-                        <p className="text-xs text-slate-500 dark:text-slate-400">
+                        <p className="text-xs font-bold text-slate-800 dark:text-slate-100">
                           {officer.subrole}
                         </p>
                       </div>
-                      <div className="w-9 h-9 rounded-xl bg-blue-50 text-blue-600 flex items-center justify-center font-bold text-xs">
+                      <div className="w-9 h-9 rounded-xl bg-blue-50 text-blue-800 flex items-center justify-center font-bold text-xs">
                         {officer.role.includes("Sekretaris") ? "SEK" : "BEN"}
                       </div>
                     </div>
 
-                    <p className="text-xs text-slate-500 mt-2 flex items-center gap-1">
-                      <Home className="w-3.5 h-3.5 text-slate-400" /> {officer.address}
+                    <p className="text-xs text-slate-700 font-bold mt-2 flex items-center gap-1">
+                      <Home className="w-3.5 h-3.5 text-slate-600" /> {officer.address}
                     </p>
 
-                    <p className="text-xs text-slate-600 dark:text-slate-300 mt-2 bg-slate-50 dark:bg-slate-800/40 p-2 rounded-xl text-[11px] leading-relaxed">
+                    <p className="text-xs text-slate-800 font-medium dark:text-slate-200 mt-2 bg-slate-50 dark:bg-slate-800/40 p-2.5 rounded-xl border border-slate-200 dark:border-slate-800 text-[11px] leading-relaxed">
                       {officer.tupoksi}
                     </p>
                   </div>
@@ -481,21 +481,21 @@ export default function WargaTab() {
                         <span className={`px-2.5 py-0.5 rounded-full text-[10px] font-bold border ${seksi.badgeColor}`}>
                           {seksi.role}
                         </span>
-                        <div className="w-8 h-8 rounded-xl bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-300 flex items-center justify-center shrink-0">
+                        <div className="w-8 h-8 rounded-xl bg-slate-100 dark:bg-slate-800 text-slate-800 dark:text-slate-100 flex items-center justify-center shrink-0">
                           <IconComponent className="w-4 h-4" />
                         </div>
                       </div>
 
-                      <h4 className="font-bold text-sm text-slate-900 dark:text-white mt-2">
+                      <h4 className="font-extrabold text-sm text-slate-900 dark:text-white mt-2">
                         {seksi.name}
                       </h4>
-                      <p className="text-xs text-slate-500 font-medium">{seksi.subrole}</p>
+                      <p className="text-xs text-slate-800 font-bold">{seksi.subrole}</p>
 
-                      <p className="text-xs text-slate-500 mt-2 flex items-center gap-1">
-                        <MapPin className="w-3.5 h-3.5 text-slate-400 shrink-0" /> {seksi.address}
+                      <p className="text-xs text-slate-700 font-bold mt-2 flex items-center gap-1">
+                        <MapPin className="w-3.5 h-3.5 text-slate-600 shrink-0" /> {seksi.address}
                       </p>
 
-                      <p className="text-[11px] text-slate-600 dark:text-slate-400 mt-2 bg-slate-50 dark:bg-slate-800/40 p-2 rounded-xl">
+                      <p className="text-[11px] text-slate-800 font-medium dark:text-slate-200 mt-2 bg-slate-50 dark:bg-slate-800/40 p-2 rounded-xl border border-slate-200 dark:border-slate-800">
                         {seksi.tupoksi}
                       </p>
                     </div>
@@ -555,9 +555,9 @@ export default function WargaTab() {
                     <h4 className="font-bold text-sm text-slate-900 dark:text-white mt-2">
                       {rt.name}
                     </h4>
-                    <p className="text-xs text-slate-500 mt-0.5">{rt.role}</p>
-                    <p className="text-[11px] text-slate-500 mt-1 flex items-center gap-1">
-                      <Home className="w-3 h-3 text-slate-400 shrink-0" /> {rt.address}
+                    <p className="text-xs text-slate-800 font-bold mt-0.5">{rt.role}</p>
+                    <p className="text-[11px] text-slate-700 font-semibold mt-1 flex items-center gap-1">
+                      <Home className="w-3 h-3 text-slate-600 shrink-0" /> {rt.address}
                     </p>
                   </div>
 
@@ -585,11 +585,11 @@ export default function WargaTab() {
           {/* LEVEL 5: DAFTAR LAYANAN DARURAT & TANGGAP BENCANA */}
           <div className="space-y-4 pt-4 border-t border-slate-200/80 dark:border-slate-800">
             <div>
-              <h3 className="text-sm font-bold text-rose-800 dark:text-rose-400 uppercase tracking-wider flex items-center gap-2">
+              <h3 className="text-sm font-extrabold text-rose-800 dark:text-rose-400 uppercase tracking-wider flex items-center gap-2">
                 <Siren className="w-4 h-4 text-rose-600 animate-pulse" />
                 Layanan Tanggap Darurat & Fast Response Wilayah Ciparay
               </h3>
-              <p className="text-xs text-slate-500">
+              <p className="text-xs text-slate-700 font-medium">
                 Kontak siaga keamanan, mediasi kepolisian, ambulans, pemadam kebakaran, dan darurat kelistrikan.
               </p>
             </div>
@@ -604,7 +604,7 @@ export default function WargaTab() {
                   >
                     <div>
                       <div className="flex items-center justify-between">
-                        <span className="text-[10px] font-bold uppercase tracking-wider text-slate-500">
+                        <span className="text-[10px] font-extrabold uppercase tracking-wider text-slate-700">
                           {layanan.category}
                         </span>
                         <div className={`w-7 h-7 rounded-lg flex items-center justify-center ${layanan.color}`}>
@@ -615,7 +615,7 @@ export default function WargaTab() {
                       <h4 className={`font-extrabold text-sm mt-1.5 ${layanan.textColor}`}>
                         {layanan.name}
                       </h4>
-                      <p className="text-xs text-slate-600 dark:text-slate-300 mt-1 leading-relaxed">
+                      <p className="text-xs text-slate-700 dark:text-slate-200 font-medium mt-1 leading-relaxed">
                         {layanan.notes}
                       </p>
                     </div>
@@ -640,7 +640,7 @@ export default function WargaTab() {
       {viewMode === "DAFTAR" && (
         <div className="space-y-4 animate-in fade-in duration-300">
           <div className="p-4 bg-white/80 dark:bg-slate-900/80 backdrop-blur-md rounded-2xl border border-slate-200/80 dark:border-slate-800 shadow-sm flex items-center justify-between">
-            <span className="text-xs font-semibold text-slate-600 dark:text-slate-300">
+            <span className="text-xs font-bold text-slate-700 dark:text-slate-200">
               Menampilkan seluruh kontak pengurus RW 15 Giri Ciheulang & kontak darurat
             </span>
             <span className="text-xs font-bold text-emerald-600">Total 15 Kontak Siaga</span>
@@ -655,16 +655,16 @@ export default function WargaTab() {
               >
                 <div>
                   <div className="flex items-center justify-between">
-                    <span className="px-2 py-0.5 rounded-full text-[10px] font-bold bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-slate-300">
+                    <span className="px-2 py-0.5 rounded-full text-[10px] font-bold bg-slate-100 dark:bg-slate-800 text-slate-800 dark:text-slate-100">
                       {person.role}
                     </span>
-                    <span className="text-[11px] font-mono text-slate-400">{person.phone}</span>
+                    <span className="text-[11px] font-mono text-slate-700 font-bold">{person.phone}</span>
                   </div>
                   <h4 className="font-bold text-sm text-slate-900 dark:text-white mt-2">
                     {person.name}
                   </h4>
-                  <p className="text-xs text-slate-500 flex items-center gap-1 mt-1">
-                    <Home className="w-3.5 h-3.5 text-slate-400 shrink-0" /> {person.address}
+                  <p className="text-xs text-slate-700 font-medium flex items-center gap-1 mt-1">
+                    <Home className="w-3.5 h-3.5 text-slate-600 shrink-0" /> {person.address}
                   </p>
                 </div>
 

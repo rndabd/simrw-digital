@@ -715,12 +715,12 @@ export default function OfficerDashboard() {
             </div>
 
             {isLoadingPending ? (
-              <div className="p-8 text-center text-xs text-slate-500">Memuat antrean verifikasi...</div>
+              <div className="p-8 text-center text-xs text-slate-700 font-bold">Memuat antrean verifikasi...</div>
             ) : pendingResidents.length === 0 ? (
               <div className="p-8 bg-white rounded-2xl border border-slate-200 text-center space-y-2 shadow-xs">
                 <ShieldCheck className="w-10 h-10 text-emerald-500 mx-auto" />
-                <div className="text-xs font-bold text-slate-800">Semua Warga Sudah Terverifikasi</div>
-                <div className="text-[11px] text-slate-500">
+                <div className="text-xs font-bold text-slate-900">Semua Warga Sudah Terverifikasi</div>
+                <div className="text-[11px] text-slate-700 font-medium">
                   Tidak ada pendaftaran baru yang menunggu persetujuan di wilayah Anda.
                 </div>
               </div>
@@ -734,10 +734,10 @@ export default function OfficerDashboard() {
                     <div className="flex items-start justify-between">
                       <div>
                         <div className="text-sm font-bold text-slate-900">{resident.fullName}</div>
-                        <div className="text-xs text-slate-500">
+                        <div className="text-xs text-slate-700 font-medium">
                           {resident.addressBlock} • RT {resident.rtNumber} / RW {resident.rwNumber}
                         </div>
-                        <div className="text-xs text-emerald-700 font-mono mt-0.5">
+                        <div className="text-xs text-emerald-800 font-mono font-bold mt-0.5">
                           WA: {resident.phoneNumber}
                         </div>
                       </div>
@@ -748,10 +748,10 @@ export default function OfficerDashboard() {
 
                     <div className="p-2.5 rounded-xl bg-slate-50 border border-slate-200 flex items-center justify-between">
                       <div>
-                        <div className="text-[10px] text-slate-400 font-semibold uppercase">
+                        <div className="text-[10px] text-slate-700 font-extrabold uppercase">
                           NIK Warga (Terproteksi UU PDP)
                         </div>
-                        <div className="font-mono text-xs font-bold text-slate-800">
+                        <div className="font-mono text-xs font-bold text-slate-900">
                           {unmaskedNiks[resident.id] || resident.maskedNik}
                         </div>
                       </div>
@@ -825,9 +825,9 @@ export default function OfficerDashboard() {
             </div>
 
             {isLoadingRtRequests ? (
-              <div className="p-8 text-center text-xs text-slate-500">Memuat pendaftaran RT...</div>
+              <div className="p-8 text-center text-xs text-slate-700 font-bold">Memuat pendaftaran RT...</div>
             ) : rtRequests.length === 0 ? (
-              <div className="p-8 bg-white rounded-2xl border border-slate-200 text-center text-xs text-slate-500">
+              <div className="p-8 bg-white rounded-2xl border border-slate-200 text-center text-xs text-slate-700 font-medium">
                 Belum ada pendaftaran RT baru di lingkungan RW Anda.
               </div>
             ) : (
@@ -842,7 +842,7 @@ export default function OfficerDashboard() {
                         <div className="text-sm font-bold text-slate-900">
                           Rukun Tetangga (RT) {rt.rt_number}
                         </div>
-                        <div className="text-xs text-slate-500">
+                        <div className="text-xs text-slate-700 font-medium">
                           Masa Bakti: {rt.term_period || "2026-2031"}
                         </div>
                       </div>
@@ -864,11 +864,11 @@ export default function OfficerDashboard() {
                     </div>
 
                     <div className="p-3 rounded-xl bg-slate-50 border border-slate-200 text-xs space-y-1">
-                      <div className="text-slate-400 text-[10px] uppercase font-semibold">Calon Ketua RT:</div>
+                      <div className="text-slate-700 text-[10px] uppercase font-bold">Calon Ketua RT:</div>
                       <div className="font-bold text-slate-900">{rt.applicantName}</div>
-                      <div className="text-emerald-700 font-mono text-[11px]">WA: {rt.applicantPhone}</div>
+                      <div className="text-emerald-800 font-mono text-[11px] font-bold">WA: {rt.applicantPhone}</div>
                       {rt.sk_document_url && (
-                        <div className="text-slate-500 text-[11px] pt-1">
+                        <div className="text-slate-700 text-[11px] pt-1 font-medium">
                           SK Pemilihan: <span className="font-mono">{rt.sk_document_url}</span>
                         </div>
                       )}
@@ -927,7 +927,7 @@ export default function OfficerDashboard() {
                 </div>
                 <div className="grid grid-cols-3 gap-2">
                   <div>
-                    <label className="text-[10px] font-semibold text-slate-500 block mb-0.5">Bulan</label>
+                    <label className="text-[10px] font-bold text-slate-700 block mb-0.5">Bulan</label>
                     <input
                       type="text"
                       required
@@ -937,7 +937,7 @@ export default function OfficerDashboard() {
                     />
                   </div>
                   <div>
-                    <label className="text-[10px] font-semibold text-slate-500 block mb-0.5">Tahun</label>
+                    <label className="text-[10px] font-bold text-slate-700 block mb-0.5">Tahun</label>
                     <input
                       type="number"
                       required
@@ -947,7 +947,7 @@ export default function OfficerDashboard() {
                     />
                   </div>
                   <div>
-                    <label className="text-[10px] font-semibold text-slate-500 block mb-0.5">Nominal (Rp)</label>
+                    <label className="text-[10px] font-bold text-slate-700 block mb-0.5">Nominal (Rp)</label>
                     <input
                       type="number"
                       required
@@ -970,9 +970,9 @@ export default function OfficerDashboard() {
 
             {/* List of Pending Validation Bills */}
             {isLoadingDues ? (
-              <div className="p-8 text-center text-xs text-slate-500">Memuat data iuran...</div>
+              <div className="p-8 text-center text-xs text-slate-700 font-bold">Memuat data iuran...</div>
             ) : duesList.length === 0 ? (
-              <div className="p-8 bg-white rounded-2xl border border-slate-200 text-center text-xs text-slate-500">
+              <div className="p-8 bg-white rounded-2xl border border-slate-200 text-center text-xs text-slate-700 font-medium">
                 Belum ada data iuran yang tercatat.
               </div>
             ) : (
@@ -990,7 +990,7 @@ export default function OfficerDashboard() {
                       <div className="flex items-start justify-between">
                         <div>
                           <div className="text-xs font-bold text-slate-900">{bill.citizenName || "Warga"}</div>
-                          <div className="text-[11px] text-slate-500">
+                          <div className="text-[11px] text-slate-700 font-medium">
                             Iuran {bill.month} {bill.year} • RT {bill.rtNumber}
                           </div>
                           <div className="text-sm font-extrabold text-emerald-800 mt-0.5">
@@ -1131,7 +1131,7 @@ export default function OfficerDashboard() {
                       Rp {financeData.summary.netBalance.toLocaleString("id-ID")}
                     </div>
                   </div>
-                  <div className="text-[10px] text-slate-400 mt-2 pt-1.5 border-t border-slate-800">
+                  <div className="text-[10px] text-slate-300 font-medium mt-2 pt-1.5 border-t border-slate-800">
                     Saldo Awal + Masuk - Keluar
                   </div>
                 </div>
@@ -1153,13 +1153,13 @@ export default function OfficerDashboard() {
                     <button
                       type="button"
                       onClick={() => setShowSetInitBalanceModal(false)}
-                      className="p-1 rounded-lg text-slate-400 hover:text-slate-600"
+                      className="p-1 rounded-lg text-slate-600 hover:text-slate-900"
                     >
                       <X className="w-4 h-4" />
                     </button>
                   </div>
 
-                  <p className="text-xs text-slate-500">
+                  <p className="text-xs text-slate-700 font-medium">
                     Tetapkan saldo awal kas kepengurusan hasil serah terima jabatan (BAST) atau saldo penutupan periode sebelumnya.
                   </p>
 
@@ -1220,7 +1220,7 @@ export default function OfficerDashboard() {
 
               <div className="grid grid-cols-2 sm:grid-cols-4 gap-2">
                 <div>
-                  <label className="text-[10px] font-semibold text-slate-500 block mb-0.5">Tipe</label>
+                  <label className="text-[10px] font-bold text-slate-700 block mb-0.5">Tipe</label>
                   <select
                     value={txType}
                     onChange={(e) => setTxType(e.target.value as any)}
@@ -1232,7 +1232,7 @@ export default function OfficerDashboard() {
                 </div>
 
                 <div>
-                  <label className="text-[10px] font-semibold text-slate-500 block mb-0.5">Nominal (Rp)</label>
+                  <label className="text-[10px] font-bold text-slate-700 block mb-0.5">Nominal (Rp)</label>
                   <input
                     type="number"
                     required
@@ -1244,26 +1244,26 @@ export default function OfficerDashboard() {
                 </div>
 
                 <div>
-                  <label className="text-[10px] font-semibold text-slate-500 block mb-0.5">Kategori</label>
+                  <label className="text-[10px] font-bold text-slate-700 block mb-0.5">Kategori</label>
                   <input
                     type="text"
                     required
                     placeholder="Contoh: Lampu Jalan / Sampah"
                     value={txCategory}
                     onChange={(e) => setTxCategory(e.target.value)}
-                    className="w-full text-xs p-2 rounded-xl border border-slate-300"
+                    className="w-full text-xs p-2 rounded-xl border border-slate-300 font-medium"
                   />
                 </div>
 
                 <div>
-                  <label className="text-[10px] font-semibold text-slate-500 block mb-0.5">Deskripsi / Uraian</label>
+                  <label className="text-[10px] font-bold text-slate-700 block mb-0.5">Deskripsi / Uraian</label>
                   <input
                     type="text"
                     required
                     placeholder="Rincian penggunaan kas"
                     value={txDesc}
                     onChange={(e) => setTxDesc(e.target.value)}
-                    className="w-full text-xs p-2 rounded-xl border border-slate-300"
+                    className="w-full text-xs p-2 rounded-xl border border-slate-300 font-medium"
                   />
                 </div>
               </div>
@@ -1285,7 +1285,7 @@ export default function OfficerDashboard() {
               </div>
 
               {financeData?.transactions?.length === 0 ? (
-                <div className="text-xs text-slate-400 text-center py-4">Belum ada transaksi kas tercatat.</div>
+                <div className="text-xs text-slate-700 font-semibold text-center py-4">Belum ada transaksi kas tercatat.</div>
               ) : (
                 <div className="space-y-2">
                   {financeData?.transactions?.map((tx: any) => (
@@ -1295,7 +1295,7 @@ export default function OfficerDashboard() {
                     >
                       <div>
                         <div className="font-bold text-slate-900">{tx.description}</div>
-                        <div className="text-[10px] text-slate-400 mt-0.5">
+                        <div className="text-[10px] text-slate-600 font-medium mt-0.5">
                           Kategori: {tx.category} • Tanggal: {tx.date}
                         </div>
                       </div>
@@ -1336,9 +1336,9 @@ export default function OfficerDashboard() {
             </div>
 
             {isLoadingConsolidated ? (
-              <div className="p-8 text-center text-xs text-slate-500">Memuat laporan konsolidasi RT...</div>
+              <div className="p-8 text-center text-xs text-slate-700 font-bold">Memuat laporan konsolidasi RT...</div>
             ) : consolidatedRtReports.length === 0 ? (
-              <div className="p-8 bg-white rounded-2xl border border-slate-200 text-center text-xs text-slate-500">
+              <div className="p-8 bg-white rounded-2xl border border-slate-200 text-center text-xs text-slate-700 font-medium">
                 Tidak ada laporan RT yang ditemukan.
               </div>
             ) : (
@@ -1353,7 +1353,7 @@ export default function OfficerDashboard() {
                         <div className="text-base font-extrabold text-slate-900">
                           Rukun Tetangga (RT) {rt.rtNumber}
                         </div>
-                        <div className="text-xs text-slate-500">Ketua: {rt.leaderName}</div>
+                        <div className="text-xs text-slate-700 font-medium">Ketua: {rt.leaderName}</div>
                       </div>
                       <span className="px-2 py-0.5 rounded-full text-[10px] font-bold bg-emerald-100 text-emerald-800">
                         {rt.transactionCount} Mutasi
@@ -1362,15 +1362,15 @@ export default function OfficerDashboard() {
 
                     <div className="p-3 rounded-xl bg-slate-50 border border-slate-200 space-y-1.5 text-xs">
                       <div className="flex justify-between">
-                        <span className="text-slate-500">Saldo Awal Kas:</span>
+                        <span className="text-slate-700 font-medium">Saldo Awal Kas:</span>
                         <span className="font-bold text-slate-800">Rp {(rt.initialBalance ?? 0).toLocaleString("id-ID")}</span>
                       </div>
                       <div className="flex justify-between">
-                        <span className="text-slate-500">Pemasukan Berjalan:</span>
+                        <span className="text-slate-700 font-medium">Pemasukan Berjalan:</span>
                         <span className="font-bold text-emerald-700">Rp {(rt.operationalIncome ?? rt.totalIncome).toLocaleString("id-ID")}</span>
                       </div>
                       <div className="flex justify-between">
-                        <span className="text-slate-500">Pengeluaran Kas:</span>
+                        <span className="text-slate-700 font-medium">Pengeluaran Kas:</span>
                         <span className="font-bold text-rose-700">Rp {rt.totalExpense.toLocaleString("id-ID")}</span>
                       </div>
                       <div className="pt-1 border-t border-slate-200 flex justify-between font-bold">
@@ -1379,7 +1379,7 @@ export default function OfficerDashboard() {
                       </div>
                     </div>
 
-                    <div className="text-[11px] text-slate-500 space-y-1 pt-1 border-t border-slate-100">
+                    <div className="text-[11px] text-slate-700 space-y-1 pt-1 border-t border-slate-100 font-medium">
                       <div className="flex justify-between">
                         <span>Iuran Masuk Terkumpul:</span>
                         <strong className="text-slate-800">Rp {rt.totalDuesCollected.toLocaleString("id-ID")}</strong>
@@ -1430,18 +1430,18 @@ export default function OfficerDashboard() {
 
               <div className="grid grid-cols-1 md:grid-cols-3 gap-2">
                 <div className="md:col-span-2">
-                  <label className="text-[10px] font-semibold text-slate-500 block mb-0.5">Judul Kegiatan / Pengadaan</label>
+                  <label className="text-[10px] font-bold text-slate-700 block mb-0.5">Judul Kegiatan / Pengadaan</label>
                   <input
                     type="text"
                     required
                     placeholder="Contoh: Pengadaan CCTV Gang RT 02"
                     value={newFundTitle}
                     onChange={(e) => setNewFundTitle(e.target.value)}
-                    className="w-full text-xs p-2 rounded-xl border border-slate-300"
+                    className="w-full text-xs p-2 rounded-xl border border-slate-300 font-medium"
                   />
                 </div>
                 <div>
-                  <label className="text-[10px] font-semibold text-slate-500 block mb-0.5">Estimasi Anggaran (Rp)</label>
+                  <label className="text-[10px] font-bold text-slate-700 block mb-0.5">Estimasi Anggaran (Rp)</label>
                   <input
                     type="number"
                     required
@@ -1454,21 +1454,21 @@ export default function OfficerDashboard() {
               </div>
 
               <div>
-                <label className="text-[10px] font-semibold text-slate-500 block mb-0.5">Uraian Tujuan & Manfaat untuk Warga</label>
+                <label className="text-[10px] font-bold text-slate-700 block mb-0.5">Uraian Tujuan & Manfaat untuk Warga</label>
                 <textarea
                   rows={2}
                   required
                   placeholder="Jelaskan kebutuhan pengadaan atau kegiatan lingkungan..."
                   value={newFundPurpose}
                   onChange={(e) => setNewFundPurpose(e.target.value)}
-                  className="w-full text-xs p-2 rounded-xl border border-slate-300"
+                  className="w-full text-xs p-2 rounded-xl border border-slate-300 font-medium"
                 />
               </div>
 
               <button
                 type="submit"
                 disabled={isSubmittingFundReq}
-                className="py-2 px-3 rounded-xl bg-emerald-600 hover:bg-emerald-700 text-white font-bold text-xs flex items-center gap-1.5 transition-all"
+                className="py-2 px-3 rounded-xl bg-emerald-600 hover:bg-emerald-700 text-white font-bold text-xs flex items-center gap-1.5 transition-all shadow-sm"
               >
                 <Send className="w-3.5 h-3.5" />
                 {isSubmittingFundReq ? "Mengajukan..." : "Kirimkan Proposal Pengajuan Dana"}
@@ -1477,9 +1477,9 @@ export default function OfficerDashboard() {
 
             {/* List of Fund Requests */}
             {isLoadingFundReqs ? (
-              <div className="p-8 text-center text-xs text-slate-500">Memuat pengajuan dana...</div>
+              <div className="p-8 text-center text-xs text-slate-700 font-bold">Memuat pengajuan dana...</div>
             ) : fundRequests.length === 0 ? (
-              <div className="p-8 bg-white rounded-2xl border border-slate-200 text-center text-xs text-slate-500">
+              <div className="p-8 bg-white rounded-2xl border border-slate-200 text-center text-xs text-slate-700 font-medium">
                 Belum ada pengajuan dana kegiatan.
               </div>
             ) : (
@@ -1492,7 +1492,7 @@ export default function OfficerDashboard() {
                     <div className="flex items-start justify-between">
                       <div>
                         <div className="text-xs font-bold text-slate-900">{reqItem.title}</div>
-                        <div className="text-[11px] text-slate-500">
+                        <div className="text-[11px] text-slate-700 font-medium">
                           Wilayah RT {reqItem.rtNumber} / RW {reqItem.rwNumber} • Pemohon: {reqItem.applicantName}
                         </div>
                         <div className="text-sm font-extrabold text-emerald-800 mt-0.5">
@@ -1670,9 +1670,9 @@ export default function OfficerDashboard() {
             </div>
 
             {isLoadingAudit ? (
-              <div className="p-8 text-center text-xs text-slate-500">Memuat log audit...</div>
+              <div className="p-8 text-center text-xs text-slate-700 font-bold">Memuat log audit...</div>
             ) : auditLogs.length === 0 ? (
-              <div className="p-8 bg-white rounded-2xl border border-slate-200 text-center text-xs text-slate-500">
+              <div className="p-8 bg-white rounded-2xl border border-slate-200 text-center text-xs text-slate-700 font-medium">
                 Belum ada catatan audit log.
               </div>
             ) : (
@@ -1690,7 +1690,7 @@ export default function OfficerDashboard() {
                         >
                           {actionMeta.title}
                         </span>
-                        <span className="text-[10px] text-slate-400 font-medium shrink-0">
+                        <span className="text-[10px] text-slate-600 font-semibold shrink-0">
                           {new Date(log.timestamp).toLocaleTimeString("id-ID", {
                             hour: "2-digit",
                             minute: "2-digit",
@@ -1699,9 +1699,9 @@ export default function OfficerDashboard() {
                         </span>
                       </div>
 
-                      <div className="text-[11px] text-slate-600">
+                      <div className="text-[11px] text-slate-700 font-medium">
                         Oleh: <span className="font-bold text-slate-900">{log.actorName}</span> • IP:{" "}
-                        <span className="font-mono text-[10px] text-slate-400">{log.ip_address}</span>
+                        <span className="font-mono text-[10px] text-slate-600 font-semibold">{log.ip_address}</span>
                       </div>
 
                       <AuditPayloadViewer action={log.action} payload={log.payload} />

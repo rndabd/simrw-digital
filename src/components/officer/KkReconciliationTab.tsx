@@ -206,7 +206,7 @@ export default function KkReconciliationTab() {
               </span>
             </div>
             <h2 className="text-2xl font-bold">Rekonsiliasi KK vs Akun Warga SIM-RW</h2>
-            <p className="text-sm text-slate-300 mt-1 max-w-2xl">
+            <p className="text-sm text-slate-200 font-medium mt-1 max-w-2xl">
               Membandingkan data Kartu Keluarga (KK) di Buku Induk Sensus Kepengurusan dengan kepemilikan akun aktif warga di aplikasi SIM-RW.
             </p>
           </div>
@@ -227,15 +227,15 @@ export default function KkReconciliationTab() {
         {/* Total Master KK */}
         <div className="p-5 bg-white/80 dark:bg-slate-900/80 backdrop-blur-md rounded-2xl border border-slate-200/80 dark:border-slate-800 shadow-sm">
           <div className="flex items-center justify-between">
-            <span className="text-xs font-medium text-slate-500 dark:text-slate-400">Total KK di Sensus</span>
+            <span className="text-xs font-bold text-slate-700 dark:text-slate-200">Total KK di Sensus</span>
             <div className="w-8 h-8 rounded-xl bg-blue-100 dark:bg-blue-900/40 text-blue-600 dark:text-blue-400 flex items-center justify-center">
               <Home className="w-4 h-4" />
             </div>
           </div>
           <p className="text-2xl font-bold text-slate-800 dark:text-white mt-2">
-            {summary.totalMasterKk} <span className="text-xs font-normal text-slate-500">Keluarga</span>
+            {summary.totalMasterKk} <span className="text-xs font-bold text-slate-700">Keluarga</span>
           </p>
-          <p className="text-xs text-slate-500 dark:text-slate-400 mt-1">Tercatat di Buku Induk RT</p>
+          <p className="text-xs text-slate-700 dark:text-slate-300 mt-1 font-medium">Tercatat di Buku Induk RT</p>
         </div>
 
         {/* KK Terhubung */}
@@ -298,10 +298,10 @@ export default function KkReconciliationTab() {
           <div className="flex flex-wrap items-center gap-2">
             <button
               onClick={() => setActiveCategory("MATCHED")}
-              className={`flex items-center gap-2 px-4 py-2 rounded-xl text-xs font-semibold transition ${
+              className={`flex items-center gap-2 px-4 py-2 rounded-xl text-xs font-bold transition ${
                 activeCategory === "MATCHED"
                   ? "bg-emerald-600 text-white shadow-md shadow-emerald-500/20"
-                  : "bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-300 hover:bg-slate-200 dark:hover:bg-slate-700"
+                  : "bg-slate-100 dark:bg-slate-800 text-slate-800 dark:text-slate-100 hover:bg-slate-200 dark:hover:bg-slate-700"
               }`}
             >
               <CheckCircle2 className="w-4 h-4" />
@@ -310,7 +310,7 @@ export default function KkReconciliationTab() {
                 className={`px-2 py-0.5 rounded-full text-[10px] ${
                   activeCategory === "MATCHED"
                     ? "bg-emerald-700 text-white"
-                    : "bg-slate-200 dark:bg-slate-700 text-slate-700 dark:text-slate-300"
+                    : "bg-slate-200 dark:bg-slate-700 text-slate-800 dark:text-slate-100 font-bold"
                 }`}
               >
                 {summary.totalMatchedKk}
@@ -319,10 +319,10 @@ export default function KkReconciliationTab() {
 
             <button
               onClick={() => setActiveCategory("UNREGISTERED_APP")}
-              className={`flex items-center gap-2 px-4 py-2 rounded-xl text-xs font-semibold transition ${
+              className={`flex items-center gap-2 px-4 py-2 rounded-xl text-xs font-bold transition ${
                 activeCategory === "UNREGISTERED_APP"
                   ? "bg-amber-600 text-white shadow-md shadow-amber-500/20"
-                  : "bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-300 hover:bg-slate-200 dark:hover:bg-slate-700"
+                  : "bg-slate-100 dark:bg-slate-800 text-slate-800 dark:text-slate-100 hover:bg-slate-200 dark:hover:bg-slate-700"
               }`}
             >
               <AlertTriangle className="w-4 h-4" />
@@ -331,7 +331,7 @@ export default function KkReconciliationTab() {
                 className={`px-2 py-0.5 rounded-full text-[10px] ${
                   activeCategory === "UNREGISTERED_APP"
                     ? "bg-amber-700 text-white"
-                    : "bg-slate-200 dark:bg-slate-700 text-slate-700 dark:text-slate-300"
+                    : "bg-slate-200 dark:bg-slate-700 text-slate-800 dark:text-slate-100 font-bold"
                 }`}
               >
                 {summary.totalUnregisteredAppKk}
@@ -340,10 +340,10 @@ export default function KkReconciliationTab() {
 
             <button
               onClick={() => setActiveCategory("NOT_IN_MASTER")}
-              className={`flex items-center gap-2 px-4 py-2 rounded-xl text-xs font-semibold transition ${
+              className={`flex items-center gap-2 px-4 py-2 rounded-xl text-xs font-bold transition ${
                 activeCategory === "NOT_IN_MASTER"
                   ? "bg-purple-600 text-white shadow-md shadow-purple-500/20"
-                  : "bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-300 hover:bg-slate-200 dark:hover:bg-slate-700"
+                  : "bg-slate-100 dark:bg-slate-800 text-slate-800 dark:text-slate-100 hover:bg-slate-200 dark:hover:bg-slate-700"
               }`}
             >
               <HelpCircle className="w-4 h-4" />
@@ -352,7 +352,7 @@ export default function KkReconciliationTab() {
                 className={`px-2 py-0.5 rounded-full text-[10px] ${
                   activeCategory === "NOT_IN_MASTER"
                     ? "bg-purple-700 text-white"
-                    : "bg-slate-200 dark:bg-slate-700 text-slate-700 dark:text-slate-300"
+                    : "bg-slate-200 dark:bg-slate-700 text-slate-800 dark:text-slate-100 font-bold"
                 }`}
               >
                 {summary.totalUnregisteredMasterKk}
@@ -362,7 +362,7 @@ export default function KkReconciliationTab() {
 
           {/* Search Box */}
           <div className="relative min-w-[240px]">
-            <Search className="w-4 h-4 absolute left-3 top-1/2 -translate-y-1/2 text-slate-400" />
+            <Search className="w-4 h-4 absolute left-3 top-1/2 -translate-y-1/2 text-slate-600" />
             <input
               type="text"
               placeholder="Cari nama atau No. KK..."
@@ -378,7 +378,7 @@ export default function KkReconciliationTab() {
       {isLoading && (
         <div className="p-12 text-center bg-white/60 dark:bg-slate-900/60 rounded-3xl border border-slate-200/80 dark:border-slate-800">
           <RefreshCw className="w-8 h-8 text-indigo-500 animate-spin mx-auto mb-3" />
-          <p className="text-sm text-slate-600 dark:text-slate-400">Menghubungkan data kependudukan dan basis data akun...</p>
+          <p className="text-sm font-bold text-slate-800 dark:text-slate-100">Menghubungkan data kependudukan dan basis data akun...</p>
         </div>
       )}
 
@@ -397,7 +397,7 @@ export default function KkReconciliationTab() {
 
           {matchedKks.length === 0 ? (
             <div className="p-12 text-center bg-white/60 dark:bg-slate-900/60 rounded-3xl border border-dashed border-slate-300 dark:border-slate-800">
-              <p className="text-sm text-slate-500">Tidak ada data KK yang sesuai pencarian.</p>
+              <p className="text-sm font-bold text-slate-700 dark:text-slate-300">Tidak ada data KK yang sesuai pencarian.</p>
             </div>
           ) : (
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
@@ -422,44 +422,44 @@ export default function KkReconciliationTab() {
                             </span>
                           </div>
                           <div className="flex items-center gap-2 mt-1">
-                            <span className="text-xs font-mono text-slate-500 dark:text-slate-400">
+                            <span className="text-xs font-mono font-bold text-slate-800 dark:text-slate-200">
                               No. KK: {isUnmasked ? item.kkNumber : item.maskedKk}
                             </span>
                             <button
                               onClick={() => toggleKkVisibility(item.kkNumber)}
-                              className="text-slate-400 hover:text-slate-600 p-0.5 rounded"
+                              className="text-slate-600 hover:text-slate-900 font-bold p-0.5 rounded"
                               title={isUnmasked ? "Sembunyikan No. KK" : "Tampilkan No. KK"}
                             >
                               {isUnmasked ? <EyeOff className="w-3.5 h-3.5" /> : <Eye className="w-3.5 h-3.5" />}
                             </button>
                           </div>
-                          <p className="text-xs text-slate-500 dark:text-slate-400 mt-1 flex items-center gap-1">
-                            <Home className="w-3.5 h-3.5 shrink-0" /> {item.address}
+                          <p className="text-xs text-slate-700 dark:text-slate-300 font-medium mt-1 flex items-center gap-1">
+                            <Home className="w-3.5 h-3.5 shrink-0 text-slate-600" /> {item.address}
                           </p>
                         </div>
 
-                        <span className="px-2.5 py-1 rounded-xl text-xs font-semibold bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 border border-emerald-500/20 whitespace-nowrap">
+                        <span className="px-2.5 py-1 rounded-xl text-xs font-bold bg-emerald-500/10 text-emerald-700 dark:text-emerald-300 border border-emerald-500/20 whitespace-nowrap">
                           {item.registeredUsersCount} Akun Terhubung
                         </span>
                       </div>
 
                       {/* Registered Users List */}
-                      <div className="mt-4 p-3 bg-slate-50 dark:bg-slate-800/60 rounded-xl border border-slate-100 dark:border-slate-800">
-                        <p className="text-[11px] font-semibold text-slate-500 dark:text-slate-400 uppercase tracking-wider mb-2">
+                      <div className="mt-4 p-3 bg-slate-50 dark:bg-slate-800/60 rounded-xl border border-slate-200 dark:border-slate-700">
+                        <p className="text-[11px] font-bold text-slate-800 dark:text-slate-200 uppercase tracking-wider mb-2">
                           Akun SIM-RW Terdaftar di Keluarga Ini:
                         </p>
                         <div className="space-y-1.5">
                           {item.registeredUsers.map((u: any) => (
                             <div
                               key={u.id}
-                              className="flex items-center justify-between text-xs py-1 px-2 rounded-lg bg-white dark:bg-slate-900 border border-slate-200/60 dark:border-slate-800"
+                              className="flex items-center justify-between text-xs py-1 px-2 rounded-lg bg-white dark:bg-slate-900 border border-slate-200/80 dark:border-slate-800"
                             >
                               <div className="flex items-center gap-2">
                                 <div className="w-2 h-2 rounded-full bg-emerald-500" />
-                                <span className="font-semibold text-slate-700 dark:text-slate-200">{u.name}</span>
-                                {u.phone && <span className="text-slate-400 font-mono text-[11px]">({u.phone})</span>}
+                                <span className="font-bold text-slate-800 dark:text-slate-100">{u.name}</span>
+                                {u.phone && <span className="text-slate-600 dark:text-slate-300 font-mono font-medium text-[11px]">({u.phone})</span>}
                               </div>
-                              <span className="px-2 py-0.5 bg-emerald-50 dark:bg-emerald-950/60 text-emerald-600 dark:text-emerald-400 text-[10px] font-medium rounded-full">
+                              <span className="px-2 py-0.5 bg-emerald-50 dark:bg-emerald-950/60 text-emerald-700 dark:text-emerald-300 text-[10px] font-bold rounded-full border border-emerald-200">
                                 {u.status}
                               </span>
                             </div>
@@ -470,16 +470,16 @@ export default function KkReconciliationTab() {
                       {/* Expandable Family Members */}
                       {isExpanded && (
                         <div className="mt-3 p-3 bg-indigo-50/50 dark:bg-indigo-950/20 rounded-xl border border-indigo-100 dark:border-indigo-900/40 animate-in fade-in duration-200">
-                          <p className="text-[11px] font-semibold text-indigo-700 dark:text-indigo-300 uppercase tracking-wider mb-2">
+                          <p className="text-[11px] font-bold text-indigo-800 dark:text-indigo-200 uppercase tracking-wider mb-2">
                             Seluruh Jiwa Sensus ({item.totalMembers} Orang):
                           </p>
                           <div className="space-y-1">
                             {item.familyMembers.map((m: any, idx: number) => (
                               <div key={idx} className="flex items-center justify-between text-xs py-0.5">
-                                <span className="text-slate-700 dark:text-slate-300">
-                                  {m.name} <span className="text-slate-400">({m.relation})</span>
+                                <span className="text-slate-800 dark:text-slate-100 font-medium">
+                                  {m.name} <span className="text-slate-700 dark:text-slate-300 font-medium">({m.relation})</span>
                                 </span>
-                                <span className="font-mono text-[11px] text-slate-400">{m.maskedNik}</span>
+                                <span className="font-mono text-[11px] text-slate-700 dark:text-slate-300 font-semibold">{m.maskedNik}</span>
                               </div>
                             ))}
                           </div>
@@ -487,8 +487,8 @@ export default function KkReconciliationTab() {
                       )}
                     </div>
 
-                    <div className="mt-4 pt-3 border-t border-slate-100 dark:border-slate-800 flex items-center justify-between">
-                      <span className="text-xs text-slate-500">
+                    <div className="mt-4 pt-3 border-t border-slate-200 dark:border-slate-800 flex items-center justify-between">
+                      <span className="text-xs text-slate-700 dark:text-slate-300 font-bold">
                         Total {item.totalMembers} Anggota Keluarga
                       </span>
                       <button
@@ -530,7 +530,7 @@ export default function KkReconciliationTab() {
           {unregisteredAppKks.length === 0 ? (
             <div className="p-12 text-center bg-white/60 dark:bg-slate-900/60 rounded-3xl border border-dashed border-slate-300 dark:border-slate-800">
               <CheckCircle2 className="w-8 h-8 text-emerald-500 mx-auto mb-2" />
-              <p className="text-sm font-semibold text-slate-700 dark:text-slate-300">
+              <p className="text-sm font-bold text-slate-800 dark:text-slate-100">
                 Luar biasa! Seluruh KK di Sensus RT sudah memiliki akun aplikasi.
               </p>
             </div>
@@ -552,49 +552,49 @@ export default function KkReconciliationTab() {
                             <h3 className="font-bold text-base text-slate-800 dark:text-white">
                               {item.headOfFamily}
                             </h3>
-                            <span className="px-2 py-0.5 rounded-full text-[10px] font-semibold bg-amber-100 text-amber-700 dark:bg-amber-950/80 dark:text-amber-300 border border-amber-200 dark:border-amber-800">
+                            <span className="px-2 py-0.5 rounded-full text-[10px] font-bold bg-amber-100 text-amber-800 dark:bg-amber-950/80 dark:text-amber-300 border border-amber-300 dark:border-amber-800">
                               RT {item.rtNumber}
                             </span>
                           </div>
                           <div className="flex items-center gap-2 mt-1">
-                            <span className="text-xs font-mono text-slate-500 dark:text-slate-400">
+                            <span className="text-xs font-mono font-bold text-slate-800 dark:text-slate-200">
                               No. KK: {isUnmasked ? item.kkNumber : item.maskedKk}
                             </span>
                             <button
                               onClick={() => toggleKkVisibility(item.kkNumber)}
-                              className="text-slate-400 hover:text-slate-600 p-0.5 rounded"
+                              className="text-slate-600 hover:text-slate-900 font-bold p-0.5 rounded"
                               title={isUnmasked ? "Sembunyikan No. KK" : "Tampilkan No. KK"}
                             >
                               {isUnmasked ? <EyeOff className="w-3.5 h-3.5" /> : <Eye className="w-3.5 h-3.5" />}
                             </button>
                           </div>
-                          <p className="text-xs text-slate-500 dark:text-slate-400 mt-1 flex items-center gap-1">
-                            <Home className="w-3.5 h-3.5 shrink-0" /> {item.address}
+                          <p className="text-xs text-slate-700 dark:text-slate-300 font-medium mt-1 flex items-center gap-1">
+                            <Home className="w-3.5 h-3.5 shrink-0 text-slate-600" /> {item.address}
                           </p>
                           {item.phone && item.phone !== "-" && (
-                            <p className="text-xs text-slate-500 dark:text-slate-400 mt-0.5 flex items-center gap-1">
-                              <Phone className="w-3.5 h-3.5 shrink-0" /> {item.phone}
+                            <p className="text-xs text-slate-700 dark:text-slate-300 font-medium mt-0.5 flex items-center gap-1">
+                              <Phone className="w-3.5 h-3.5 shrink-0 text-slate-600" /> {item.phone}
                             </p>
                           )}
                         </div>
 
-                        <span className="px-2.5 py-1 rounded-xl text-xs font-semibold bg-amber-500/10 text-amber-600 dark:text-amber-400 border border-amber-500/20 whitespace-nowrap">
+                        <span className="px-2.5 py-1 rounded-xl text-xs font-bold bg-amber-500/10 text-amber-700 dark:text-amber-300 border border-amber-500/20 whitespace-nowrap">
                           Belum Aktif
                         </span>
                       </div>
 
-                      <div className="mt-4 p-3 bg-amber-50/60 dark:bg-amber-950/20 rounded-xl border border-amber-100 dark:border-amber-900/30">
-                        <p className="text-xs text-amber-800 dark:text-amber-300 font-medium">
+                      <div className="mt-4 p-3 bg-amber-50/80 dark:bg-amber-950/20 rounded-xl border border-amber-200 dark:border-amber-900/30">
+                        <p className="text-xs text-amber-900 dark:text-amber-300 font-bold">
                           Rekomendasi Tindakan:
                         </p>
-                        <p className="text-xs text-slate-600 dark:text-slate-400 mt-0.5">
+                        <p className="text-xs text-slate-700 dark:text-slate-200 font-medium mt-0.5">
                           Kunjungi atau hubungi keluarga ini untuk sosialisasi pendaftaran akun SIM-RW secara mandiri.
                         </p>
                       </div>
                     </div>
 
-                    <div className="mt-4 pt-3 border-t border-slate-100 dark:border-slate-800 flex items-center justify-between">
-                      <span className="text-xs text-slate-500">
+                    <div className="mt-4 pt-3 border-t border-slate-200 dark:border-slate-800 flex items-center justify-between">
+                      <span className="text-xs text-slate-700 dark:text-slate-300 font-bold">
                         {item.totalMembers} Jiwa dalam KK
                       </span>
                       <button
@@ -640,7 +640,7 @@ export default function KkReconciliationTab() {
           {unregisteredMasterKks.length === 0 ? (
             <div className="p-12 text-center bg-white/60 dark:bg-slate-900/60 rounded-3xl border border-dashed border-slate-300 dark:border-slate-800">
               <CheckCircle2 className="w-8 h-8 text-emerald-500 mx-auto mb-2" />
-              <p className="text-sm font-semibold text-slate-700 dark:text-slate-300">
+              <p className="text-sm font-bold text-slate-800 dark:text-slate-100">
                 Seluruh akun warga yang terdaftar sudah sinkron dengan Buku Induk Sensus RT.
               </p>
             </div>
@@ -661,47 +661,47 @@ export default function KkReconciliationTab() {
                             <h3 className="font-bold text-base text-slate-800 dark:text-white">
                               {item.userName}
                             </h3>
-                            <span className="px-2 py-0.5 rounded-full text-[10px] font-semibold bg-purple-100 text-purple-700 dark:bg-purple-950/80 dark:text-purple-300 border border-purple-200 dark:border-purple-800">
+                            <span className="px-2 py-0.5 rounded-full text-[10px] font-bold bg-purple-100 text-purple-800 dark:bg-purple-950/80 dark:text-purple-300 border border-purple-300 dark:border-purple-800">
                               RT {item.rtNumber}
                             </span>
                           </div>
                           <div className="flex items-center gap-2 mt-1">
-                            <span className="text-xs font-mono text-slate-500 dark:text-slate-400">
+                            <span className="text-xs font-mono font-bold text-slate-800 dark:text-slate-200">
                               No. KK Terinput: {isUnmasked ? item.kkNumber : item.maskedKk}
                             </span>
                             <button
                               onClick={() => toggleKkVisibility(item.kkNumber)}
-                              className="text-slate-400 hover:text-slate-600 p-0.5 rounded"
+                              className="text-slate-600 hover:text-slate-900 font-bold p-0.5 rounded"
                               title={isUnmasked ? "Sembunyikan No. KK" : "Tampilkan No. KK"}
                             >
                               {isUnmasked ? <EyeOff className="w-3.5 h-3.5" /> : <Eye className="w-3.5 h-3.5" />}
                             </button>
                           </div>
-                          <p className="text-xs text-slate-500 dark:text-slate-400 mt-1 flex items-center gap-1">
-                            <Phone className="w-3.5 h-3.5 shrink-0" /> {item.userPhone}
+                          <p className="text-xs text-slate-700 dark:text-slate-300 font-medium mt-1 flex items-center gap-1">
+                            <Phone className="w-3.5 h-3.5 shrink-0 text-slate-600" /> {item.userPhone}
                           </p>
-                          <p className="text-xs text-slate-500 dark:text-slate-400 mt-0.5 flex items-center gap-1">
-                            <Home className="w-3.5 h-3.5 shrink-0" /> {item.address}
+                          <p className="text-xs text-slate-700 dark:text-slate-300 font-medium mt-0.5 flex items-center gap-1">
+                            <Home className="w-3.5 h-3.5 shrink-0 text-slate-600" /> {item.address}
                           </p>
                         </div>
 
-                        <span className="px-2.5 py-1 rounded-xl text-xs font-semibold bg-purple-500/10 text-purple-600 dark:text-purple-400 border border-purple-500/20 whitespace-nowrap">
+                        <span className="px-2.5 py-1 rounded-xl text-xs font-bold bg-purple-500/10 text-purple-700 dark:text-purple-300 border border-purple-500/20 whitespace-nowrap">
                           {item.userStatus}
                         </span>
                       </div>
 
-                      <div className="mt-4 p-3 bg-purple-50/60 dark:bg-purple-950/20 rounded-xl border border-purple-100 dark:border-purple-900/30">
-                        <p className="text-xs text-purple-800 dark:text-purple-300 font-medium">
+                      <div className="mt-4 p-3 bg-purple-50/80 dark:bg-purple-950/20 rounded-xl border border-purple-200 dark:border-purple-900/30">
+                        <p className="text-xs text-purple-900 dark:text-purple-300 font-bold">
                           Status Anomali:
                         </p>
-                        <p className="text-xs text-slate-600 dark:text-slate-400 mt-0.5">
+                        <p className="text-xs text-slate-700 dark:text-slate-200 font-medium mt-0.5">
                           {item.actionNote}
                         </p>
                       </div>
                     </div>
 
-                    <div className="mt-4 pt-3 border-t border-slate-100 dark:border-slate-800 flex items-center justify-between">
-                      <span className="text-xs text-slate-500">
+                    <div className="mt-4 pt-3 border-t border-slate-200 dark:border-slate-800 flex items-center justify-between">
+                      <span className="text-xs text-slate-700 dark:text-slate-300 font-bold">
                         Daftar: {new Date(item.registeredAt).toLocaleDateString("id-ID")}
                       </span>
                       <button
@@ -728,13 +728,13 @@ export default function KkReconciliationTab() {
                 <h3 className="text-lg font-bold text-slate-800 dark:text-white">
                   Daftarkan ke Sensus Buku Induk RT
                 </h3>
-                <p className="text-xs text-slate-500 mt-0.5">
+                <p className="text-xs text-slate-700 dark:text-slate-300 font-medium mt-0.5">
                   Menambahkan KK dan Warga terdaftar ke database resmi RT 02
                 </p>
               </div>
               <button
                 onClick={() => setShowAdoptModal(false)}
-                className="text-slate-400 hover:text-slate-600 p-1 rounded-lg"
+                className="text-slate-600 hover:text-slate-900 font-bold p-1 rounded-lg"
               >
                 ✕
               </button>
@@ -743,21 +743,21 @@ export default function KkReconciliationTab() {
             <form onSubmit={handleAdoptToCensus} className="space-y-4 mt-4">
               <div className="p-3 bg-slate-50 dark:bg-slate-800/60 rounded-xl space-y-1">
                 <div className="flex justify-between text-xs">
-                  <span className="text-slate-500">Nama Warga:</span>
-                  <span className="font-semibold text-slate-800 dark:text-white">{adoptTarget.userName}</span>
+                  <span className="text-slate-700 font-bold">Nama Warga:</span>
+                  <span className="font-bold text-slate-900 dark:text-white">{adoptTarget.userName}</span>
                 </div>
                 <div className="flex justify-between text-xs">
-                  <span className="text-slate-500">No. Kartu Keluarga:</span>
-                  <span className="font-mono font-semibold text-indigo-600 dark:text-indigo-400">{adoptTarget.kkNumber}</span>
+                  <span className="text-slate-700 font-bold">No. Kartu Keluarga:</span>
+                  <span className="font-mono font-bold text-indigo-700 dark:text-indigo-400">{adoptTarget.kkNumber}</span>
                 </div>
                 <div className="flex justify-between text-xs">
-                  <span className="text-slate-500">Telepon / WhatsApp:</span>
-                  <span className="text-slate-800 dark:text-white">{adoptTarget.userPhone}</span>
+                  <span className="text-slate-700 font-bold">Telepon / WhatsApp:</span>
+                  <span className="text-slate-900 dark:text-white font-bold">{adoptTarget.userPhone}</span>
                 </div>
               </div>
 
               <div>
-                <label className="block text-xs font-semibold text-slate-700 dark:text-slate-300 mb-1">
+                <label className="block text-xs font-bold text-slate-900 dark:text-slate-100 mb-1">
                   Nomor Induk Kependudukan (NIK 16 Digit) *
                 </label>
                 <input
@@ -773,7 +773,7 @@ export default function KkReconciliationTab() {
 
               <div className="grid grid-cols-2 gap-3">
                 <div>
-                  <label className="block text-xs font-semibold text-slate-700 dark:text-slate-300 mb-1">
+                  <label className="block text-xs font-bold text-slate-900 dark:text-slate-100 mb-1">
                     Jenis Kelamin *
                   </label>
                   <select
@@ -786,7 +786,7 @@ export default function KkReconciliationTab() {
                   </select>
                 </div>
                 <div>
-                  <label className="block text-xs font-semibold text-slate-700 dark:text-slate-300 mb-1">
+                  <label className="block text-xs font-bold text-slate-900 dark:text-slate-100 mb-1">
                     Hubungan Keluarga *
                   </label>
                   <select
@@ -804,7 +804,7 @@ export default function KkReconciliationTab() {
 
               <div className="grid grid-cols-2 gap-3">
                 <div>
-                  <label className="block text-xs font-semibold text-slate-700 dark:text-slate-300 mb-1">
+                  <label className="block text-xs font-bold text-slate-900 dark:text-slate-100 mb-1">
                     Tanggal Lahir *
                   </label>
                   <input
@@ -817,7 +817,7 @@ export default function KkReconciliationTab() {
                   </input>
                 </div>
                 <div>
-                  <label className="block text-xs font-semibold text-slate-700 dark:text-slate-300 mb-1">
+                  <label className="block text-xs font-bold text-slate-900 dark:text-slate-100 mb-1">
                     Status Tempat Tinggal *
                   </label>
                   <select
@@ -836,7 +836,7 @@ export default function KkReconciliationTab() {
                 <button
                   type="button"
                   onClick={() => setShowAdoptModal(false)}
-                  className="px-4 py-2 text-xs font-semibold text-slate-600 dark:text-slate-400 hover:bg-slate-100 dark:hover:bg-slate-800 rounded-xl"
+                  className="px-4 py-2 text-xs font-bold text-slate-700 dark:text-slate-200 hover:bg-slate-100 dark:hover:bg-slate-800 rounded-xl"
                 >
                   Batal
                 </button>

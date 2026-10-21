@@ -426,10 +426,10 @@ export default function ReportDownloadTab() {
               <span className="px-3 py-1 bg-indigo-500/30 border border-indigo-400/40 text-indigo-200 text-xs font-semibold rounded-full uppercase tracking-wider">
                 Pusat Ekspor & Unduh Laporan
               </span>
-              <span className="text-xs text-slate-300">Resmi Berstempel Digital</span>
+              <span className="text-xs text-slate-200 font-semibold">Resmi Berstempel Digital</span>
             </div>
             <h2 className="text-2xl font-bold tracking-tight">Unduh Laporan Lingkungan RT / RW</h2>
-            <p className="text-sm text-slate-300 mt-1 max-w-2xl">
+            <p className="text-sm text-slate-200 font-medium mt-1 max-w-2xl">
               Fasilitas cetak PDF ber-Kop Surat resmi RW 15 Komplek Giri Ciheulang, Kec. Ciparay Kab. Bandung, serta unduh spreadsheet CSV untuk Microsoft Excel.
             </p>
           </div>
@@ -473,7 +473,7 @@ export default function ReportDownloadTab() {
           <h3 className="text-base font-bold text-slate-900 dark:text-white mt-3">
             Laporan Lengkap Komprehensif (Semua Laporan)
           </h3>
-          <p className="text-xs text-slate-500 dark:text-slate-400 mt-1 leading-relaxed">
+          <p className="text-xs text-slate-700 dark:text-slate-200 mt-1 leading-relaxed font-medium">
             Mencakup seluruh 7 modul: Keuangan, Iuran, Sensus Kependudukan, Mutasi, Rekonsiliasi, Pengaduan Warga, dan Jejak Audit UU PDP dalam satu bundel dokumen.
           </p>
         </div>
@@ -502,7 +502,7 @@ export default function ReportDownloadTab() {
           <h3 className="text-base font-bold text-slate-900 dark:text-white mt-3">
             Laporan Parsial (Pilih Modul Tertentu)
           </h3>
-          <p className="text-xs text-slate-500 dark:text-slate-400 mt-1 leading-relaxed">
+          <p className="text-xs text-slate-700 dark:text-slate-200 mt-1 leading-relaxed font-medium">
             Pilih modul atau bidang tertentu sesuai kebutuhan rapat pengurus atau kebutuhan pelaporan insidental (misal: hanya Kas Keuangan atau Sensus saja).
           </p>
         </div>
@@ -516,7 +516,7 @@ export default function ReportDownloadTab() {
               <h4 className="text-sm font-bold text-slate-900 dark:text-white">
                 Pilih Modul yang Ingin Dicantumkan dalam Laporan:
               </h4>
-              <p className="text-xs text-slate-500">Centang minimal 1 modul laporan</p>
+              <p className="text-xs text-slate-700 font-bold">Centang minimal 1 modul laporan</p>
             </div>
             <button
               onClick={handleSelectAllModules}
@@ -552,7 +552,7 @@ export default function ReportDownloadTab() {
                       <IconComp className="w-3.5 h-3.5 text-indigo-500" />
                       {mod.label}
                     </div>
-                    <p className="text-[11px] text-slate-500 leading-tight">{mod.desc}</p>
+                    <p className="text-[11px] text-slate-700 font-medium leading-tight">{mod.desc}</p>
                   </div>
                 </div>
               );
@@ -567,7 +567,7 @@ export default function ReportDownloadTab() {
           <h4 className="font-bold text-base text-slate-900 dark:text-white">
             Siap Mengekspor Dokumen Resmi
           </h4>
-          <p className="text-xs text-slate-500 mt-0.5">
+          <p className="text-xs text-slate-700 font-medium mt-0.5">
             Format: Kop Surat Resmi RW 15 Giri Ciheulang, Ciparay • Sesuai format kearsipan desa/kelurahan
           </p>
         </div>
