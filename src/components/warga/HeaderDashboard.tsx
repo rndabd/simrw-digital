@@ -2,7 +2,7 @@
 
 import React from "react";
 import { useAuth } from "@/context/AuthContext";
-import { Shield, Bell, CheckCircle2, Clock, AlertTriangle, ArrowRightLeft } from "lucide-react";
+import { Shield, Bell, CheckCircle2, Clock, AlertTriangle, ArrowRightLeft, LogOut } from "lucide-react";
 import { formatRoleList } from "@/lib/formatters";
 
 interface HeaderDashboardProps {
@@ -10,7 +10,7 @@ interface HeaderDashboardProps {
 }
 
 export default function HeaderDashboard({ onOpenNotifications }: HeaderDashboardProps) {
-  const { user, isOfficerMode, setOfficerMode } = useAuth();
+  const { user, isOfficerMode, setOfficerMode, logout } = useAuth();
 
   const getGreeting = () => {
     const hours = new Date().getHours();
@@ -92,11 +92,19 @@ export default function HeaderDashboard({ onOpenNotifications }: HeaderDashboard
         <div className="flex items-center gap-2">
           <button
             onClick={onOpenNotifications}
-            className="w-10 h-10 rounded-full bg-slate-100 hover:bg-slate-200 text-slate-700 flex items-center justify-center relative transition-colors"
+            className="w-9 h-9 rounded-full bg-slate-100 hover:bg-slate-200 text-slate-700 flex items-center justify-center relative transition-colors"
             title="Pemberitahuan Warga"
           >
-            <Bell className="w-5 h-5 text-slate-700" />
-            <span className="absolute top-2 right-2 w-2.5 h-2.5 bg-amber-500 rounded-full ring-2 ring-white animate-pulse" />
+            <Bell className="w-4.5 h-4.5 text-slate-700" />
+            <span className="absolute top-1.5 right-1.5 w-2 h-2 bg-amber-500 rounded-full ring-2 ring-white animate-pulse" />
+          </button>
+
+          <button
+            onClick={logout}
+            className="w-9 h-9 rounded-full bg-rose-600 hover:bg-rose-700 text-white flex items-center justify-center transition-colors shadow-sm"
+            title="Keluar Sesi"
+          >
+            <LogOut className="w-4 h-4" />
           </button>
         </div>
       </div>

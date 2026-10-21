@@ -123,20 +123,22 @@ export default function HomePage() {
     >
       {/* Super Admin Dashboard tab */}
       {activeTab === "admin" && user.isSuperAdmin ? (
-        <div className={!isDesktop ? "p-4 pb-24" : ""}>
+        <div className={!isDesktop ? "flex-1 overflow-y-auto p-4 pb-8" : ""}>
           <SuperAdminDashboard />
         </div>
       ) : isOfficerMode && user.isOfficer ? (
         /* Officer Dashboard */
-        <div className={!isDesktop ? "p-4 pb-24" : ""}>
+        <div className={!isDesktop ? "flex-1 overflow-y-auto p-4 pb-8" : ""}>
           <OfficerDashboard />
         </div>
       ) : (
         /* Citizen View */
-        <div className="min-h-full flex flex-col">
+        <div className={isDesktop ? "min-h-full flex flex-col" : "flex-1 flex flex-col h-full overflow-hidden"}>
           {/* Header (rendered in mobile mode, or compact sub-header) */}
           {!isDesktop && (
-            <HeaderDashboard onOpenNotifications={() => setShowNotificationsModal(true)} />
+            <div className="shrink-0 z-30">
+              <HeaderDashboard onOpenNotifications={() => setShowNotificationsModal(true)} />
+            </div>
           )}
 
           {/* Desktop Sub-Header Title */}
@@ -172,7 +174,7 @@ export default function HomePage() {
           )}
 
           {/* Main Tab Render */}
-          <div className="flex-1">
+          <div className={isDesktop ? "flex-1" : "flex-1 overflow-y-auto"}>
             {activeTab === "beranda" &&
               (isDesktop ? (
                 /* DESKTOP BERANDA (2-Column Grid) */
@@ -187,7 +189,7 @@ export default function HomePage() {
                 </div>
               ) : (
                 /* MOBILE BERANDA (Stacked Mobile View) */
-                <div className="p-4 space-y-5 pb-24">
+                <div className="p-4 space-y-5 pb-6">
                   <EKtpMiniCard />
                   <QuickActions onActionClick={handleQuickAction} />
                   <AnnouncementFeed onSelectAnnouncement={(ann) => setSelectedAnnouncement(ann)} />
@@ -195,27 +197,27 @@ export default function HomePage() {
               ))}
 
             {activeTab === "surat" && (
-              <div className={!isDesktop ? "p-4 pb-24" : ""}>
+              <div className={!isDesktop ? "p-4 pb-6" : ""}>
                 <SuratTab />
               </div>
             )}
             {activeTab === "iuran" && (
-              <div className={!isDesktop ? "p-4 pb-24" : ""}>
+              <div className={!isDesktop ? "p-4 pb-6" : ""}>
                 <IuranTab />
               </div>
             )}
             {activeTab === "pengaduan" && (
-              <div className={!isDesktop ? "p-4 pb-24" : ""}>
+              <div className={!isDesktop ? "p-4 pb-6" : ""}>
                 <PengaduanTab />
               </div>
             )}
             {activeTab === "warga" && (
-              <div className={!isDesktop ? "p-4 pb-24" : ""}>
+              <div className={!isDesktop ? "p-4 pb-6" : ""}>
                 <WargaTab />
               </div>
             )}
             {activeTab === "profil" && (
-              <div className={!isDesktop ? "p-4 pb-24" : ""}>
+              <div className={!isDesktop ? "p-4 pb-6" : ""}>
                 <ProfilTab />
               </div>
             )}

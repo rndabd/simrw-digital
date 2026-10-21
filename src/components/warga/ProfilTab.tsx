@@ -215,7 +215,7 @@ export default function ProfilTab() {
           {/* Logout Button */}
           <button
             onClick={logout}
-            className="w-full py-2.5 px-4 rounded-xl border border-rose-200 text-rose-700 hover:bg-rose-50 font-bold text-xs flex items-center justify-center gap-1.5 transition-colors"
+            className="w-full py-3 px-4 rounded-2xl bg-rose-600 hover:bg-rose-700 active:scale-95 text-white font-extrabold text-xs flex items-center justify-center gap-2 transition-all shadow-md shadow-rose-950/30"
           >
             <LogOut className="w-4 h-4" />
             Keluar dari Sesi Aplikasi

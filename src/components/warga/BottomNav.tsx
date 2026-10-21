@@ -29,9 +29,8 @@ export default function BottomNav({ activeTab, onChangeTab }: BottomNavProps) {
   ];
 
   return (
-    <nav className="fixed bottom-0 left-0 right-0 z-40 flex justify-center pointer-events-none">
-      <div className="w-full max-w-md bg-white/95 backdrop-blur-md border-t border-slate-200/90 shadow-lg px-2 py-1.5 flex items-center justify-around pointer-events-auto">
-        {tabs.map((tab) => {
+    <nav className="w-full bg-white/95 backdrop-blur-md border-t border-slate-200/90 shadow-xl px-2 py-1.5 flex items-center justify-around shrink-0 z-40">
+      {tabs.map((tab) => {
           const Icon = tab.icon;
           const isActive = activeTab === tab.key;
           return (
@@ -65,7 +64,6 @@ export default function BottomNav({ activeTab, onChangeTab }: BottomNavProps) {
             </button>
           );
         })}
-      </div>
     </nav>
   );
 }

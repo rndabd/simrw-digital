@@ -641,6 +641,33 @@
   ],
   "audit_logs": [
     {
+      "id": "c39d344b-bbec-43be-a125-e571e4a028be",
+      "user_id": "user-warga-01",
+      "action": "USER_LOGIN",
+      "resource": "AUTH",
+      "payload": null,
+      "ip_address": "202.51.228.33",
+      "timestamp": "2026-10-21T12:50:34.270Z"
+    },
+    {
+      "id": "9bb41a6d-0a4b-4fa9-b6d7-4eff24cedcee",
+      "user_id": "user-rt-01",
+      "action": "USER_LOGIN",
+      "resource": "AUTH",
+      "payload": null,
+      "ip_address": "202.51.228.33",
+      "timestamp": "2026-10-21T12:50:12.778Z"
+    },
+    {
+      "id": "83956c35-94f5-46bf-9e51-169b79da8e03",
+      "user_id": "user-rt-01",
+      "action": "USER_LOGIN",
+      "resource": "AUTH",
+      "payload": null,
+      "ip_address": "202.51.228.33",
+      "timestamp": "2026-10-21T12:49:48.144Z"
+    },
+    {
       "id": "29f17d53-e7fe-45e6-b069-6e6847d15c0a",
       "user_id": "user-super-admin",
       "action": "USER_LOGIN",

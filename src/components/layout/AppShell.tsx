@@ -74,11 +74,11 @@ export default function AppShell({
 
         {/* Mobile Mockup Device Container */}
         <div
-          className="w-full max-w-md min-h-screen md:min-h-[840px] md:max-h-[90vh] flex flex-col shadow-2xl relative overflow-y-auto no-scrollbar md:rounded-[2.5rem] md:border-[8px] md:border-slate-800 bg-cover bg-center bg-no-repeat relative z-10"
+          className="w-full max-w-md h-screen md:h-[840px] max-h-screen md:max-h-[90vh] flex flex-col shadow-2xl relative overflow-hidden md:rounded-[2.5rem] md:border-[8px] md:border-slate-800 bg-cover bg-center bg-no-repeat z-10"
           style={{ backgroundImage: "url('/bg-mobile.jpg')" }}
         >
           <div className="hidden md:block w-32 h-4 bg-slate-800 rounded-b-xl mx-auto absolute top-0 left-1/2 -translate-x-1/2 z-50 pointer-events-none" />
-          <div className="flex-1 flex flex-col bg-slate-950/45 backdrop-blur-[2px] min-h-full">
+          <div className="flex-1 flex flex-col bg-slate-950/45 backdrop-blur-[2px] h-full overflow-hidden relative">
             {children}
           </div>
         </div>
@@ -144,6 +144,17 @@ export default function AppShell({
             >
               <Bell className="w-4 h-4" />
               <span className="absolute top-1.5 right-1.5 w-2 h-2 bg-amber-500 rounded-full" />
+            </button>
+          )}
+
+          {user && (
+            <button
+              onClick={logout}
+              className="px-3 py-1.5 rounded-xl bg-rose-600 hover:bg-rose-700 active:scale-95 text-white font-extrabold text-xs flex items-center gap-1.5 shadow-md shadow-rose-950/30 transition-all border border-rose-500/40"
+              title="Keluar dari Akun"
+            >
+              <LogOut className="w-3.5 h-3.5" />
+              <span className="hidden sm:inline">Keluar Sesi</span>
             </button>
           )}
         </div>
@@ -263,10 +274,10 @@ export default function AppShell({
             {/* Logout button */}
             <button
               onClick={logout}
-              className="w-full py-2.5 px-3 rounded-xl bg-white/90 backdrop-blur-md border border-rose-200 text-rose-700 hover:bg-rose-50 text-xs font-bold flex items-center justify-center gap-1.5 transition-colors shadow-sm"
+              className="w-full py-2.5 px-3 rounded-xl bg-rose-600 hover:bg-rose-700 active:scale-95 text-white text-xs font-extrabold flex items-center justify-center gap-2 transition-all shadow-md shadow-rose-950/30"
             >
               <LogOut className="w-4 h-4" />
-              Keluar Akun
+              Keluar Sesi
             </button>
           </aside>
         )}

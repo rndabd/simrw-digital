@@ -18,11 +18,12 @@ import {
   Send,
   X,
   Check,
+  LogOut,
 } from "lucide-react";
 import { formatAuditAction, AuditPayloadViewer, formatRoleName } from "@/lib/formatters";
 
 export default function SuperAdminDashboard() {
-  const { user } = useAuth();
+  const { user, logout } = useAuth();
   const [activeTab, setActiveTab] = useState<"rw_requests" | "all_rws" | "rollover_wizard" | "rollover_history" | "audit">("rw_requests");
 
   // RW Requests & List State
@@ -209,6 +210,14 @@ export default function SuperAdminDashboard() {
               <span className="w-2.5 h-2.5 rounded-full bg-emerald-400 animate-pulse" />
               <span>Multi-Tenant System Active</span>
             </div>
+            <button
+              onClick={logout}
+              className="px-3.5 py-1.5 rounded-xl bg-rose-600 hover:bg-rose-700 active:scale-95 text-white font-extrabold text-xs flex items-center gap-1.5 shadow-md shadow-rose-950/40 transition-all border border-rose-500/40"
+              title="Keluar Sesi Super Admin"
+            >
+              <LogOut className="w-3.5 h-3.5" />
+              <span>Keluar Sesi</span>
+            </button>
           </div>
         </div>
 
@@ -279,7 +288,7 @@ export default function SuperAdminDashboard() {
       {/* TAB 1: PERMOHONAN RW BARU */}
       {activeTab === "rw_requests" && (
         <div className="space-y-4">
-          <div className="flex items-center justify-between">
+          <div className="p-4 rounded-2xl bg-white/95 backdrop-blur-md border border-white/80 shadow-xs flex items-center justify-between">
             <div>
               <h3 className="text-sm font-extrabold text-slate-900 uppercase tracking-wider flex items-center gap-2">
                 <Clock className="w-4 h-4 text-amber-600" />
@@ -379,7 +388,7 @@ export default function SuperAdminDashboard() {
       {/* TAB 2: DAFTAR SELURUH RW & RT */}
       {activeTab === "all_rws" && (
         <div className="space-y-4">
-          <div>
+          <div className="p-4 rounded-2xl bg-white/95 backdrop-blur-md border border-white/80 shadow-xs">
             <h3 className="text-sm font-extrabold text-slate-900 uppercase tracking-wider flex items-center gap-2">
               <Building2 className="w-4 h-4 text-emerald-600" />
               Direktori Seluruh RW & RT Terdaftar
@@ -441,7 +450,7 @@ export default function SuperAdminDashboard() {
       {/* TAB 3: ROLLOVER KEPENGURUSAN 5 TAHUN & HANDOVER PEKERJAAN */}
       {activeTab === "rollover_wizard" && (
         <div className="space-y-4">
-          <div>
+          <div className="p-4 rounded-2xl bg-white/95 backdrop-blur-md border border-white/80 shadow-xs">
             <h3 className="text-sm font-extrabold text-slate-900 uppercase tracking-wider flex items-center gap-2">
               <RotateCw className="w-4 h-4 text-emerald-600" />
               Fungsi Rollover 5 Tahun & Serah Terima Pekerjaan (BAST)
@@ -587,7 +596,7 @@ export default function SuperAdminDashboard() {
       {/* TAB 4: ARSIP BAST & RIWAYAT ROLLOVER */}
       {activeTab === "rollover_history" && (
         <div className="space-y-4">
-          <div>
+          <div className="p-4 rounded-2xl bg-white/95 backdrop-blur-md border border-white/80 shadow-xs">
             <h3 className="text-sm font-extrabold text-slate-900 uppercase tracking-wider flex items-center gap-2">
               <History className="w-4 h-4 text-emerald-600" />
               Arsip Berita Acara Serah Terima (BAST) & Jejak Rollover
@@ -653,7 +662,7 @@ export default function SuperAdminDashboard() {
       {/* TAB 5: JEJAK AUDIT GLOBAL */}
       {activeTab === "audit" && (
         <div className="space-y-4">
-          <div>
+          <div className="p-4 rounded-2xl bg-white/95 backdrop-blur-md border border-white/80 shadow-xs">
             <h3 className="text-sm font-extrabold text-slate-900 uppercase tracking-wider flex items-center gap-2">
               <Lock className="w-4 h-4 text-emerald-600" />
               Jejak Audit Global UU PDP (Seluruh RW)
