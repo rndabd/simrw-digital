@@ -314,17 +314,17 @@ export default function AuthView() {
   return (
     <div className="min-h-full py-8 px-3 sm:px-6 flex flex-col justify-center">
       {/* Brand Header */}
-      <div className="text-center space-y-1.5 mb-5">
+      <div className="text-center space-y-2 mb-4 bg-slate-900/80 backdrop-blur-md p-4 sm:p-5 rounded-3xl border border-slate-700/60 shadow-xl max-w-lg mx-auto w-full text-white">
         <div className="inline-flex items-center justify-center w-12 h-12 rounded-2xl bg-emerald-600 text-white shadow-lg shadow-emerald-600/30">
           <ShieldCheck className="w-7 h-7" />
         </div>
-        <h1 className="text-xl font-extrabold text-slate-900 tracking-tight">
+        <h1 className="text-xl sm:text-2xl font-extrabold text-white tracking-tight drop-shadow-sm">
           SIM-RW Digital
         </h1>
-        <p className="text-xs font-bold text-emerald-800 max-w-sm mx-auto">
+        <p className="text-xs font-bold text-emerald-300 max-w-sm mx-auto">
           Inisiasi RW 15 Komplek Giri Ciheulang, Kec. Ciparay Kab. Bandung
         </p>
-        <p className="text-[11px] text-slate-600 font-medium max-w-sm mx-auto">
+        <p className="text-[11px] text-slate-300 font-medium max-w-sm mx-auto">
           Sistem Pelayanan Warga & Kepengurusan RT/RW Terintegrasi Terproteksi UU PDP No. 27/2022
         </p>
       </div>
@@ -1074,7 +1074,7 @@ export default function AuthView() {
             3. PINTASAN UJI COBA AKUN DEMO (1-CLICK)
             ========================================================================= */}
         <div className="pt-3 border-t border-slate-200">
-          <div className="text-[11px] font-bold uppercase tracking-wider text-slate-400 text-center mb-2">
+          <div className="text-[11px] font-extrabold uppercase tracking-wider text-slate-700 text-center mb-2">
             Pintasan Uji Coba Cepat (1-Click Demo):
           </div>
           <div className="grid grid-cols-2 md:grid-cols-3 gap-1.5">

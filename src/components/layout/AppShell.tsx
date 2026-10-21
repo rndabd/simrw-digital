@@ -74,11 +74,11 @@ export default function AppShell({
 
         {/* Mobile Mockup Device Container */}
         <div
-          className="w-full max-w-md min-h-screen md:min-h-[840px] md:max-h-[90vh] flex flex-col shadow-2xl relative overflow-y-auto no-scrollbar md:rounded-[2.5rem] md:border-[8px] md:border-slate-800 bg-cover bg-top bg-no-repeat relative z-10"
+          className="w-full max-w-md min-h-screen md:min-h-[840px] md:max-h-[90vh] flex flex-col shadow-2xl relative overflow-y-auto no-scrollbar md:rounded-[2.5rem] md:border-[8px] md:border-slate-800 bg-cover bg-center bg-no-repeat relative z-10"
           style={{ backgroundImage: "url('/bg-mobile.jpg')" }}
         >
           <div className="hidden md:block w-32 h-4 bg-slate-800 rounded-b-xl mx-auto absolute top-0 left-1/2 -translate-x-1/2 z-50 pointer-events-none" />
-          <div className="flex-1 flex flex-col bg-slate-900/10 backdrop-blur-[1.5px] min-h-full">
+          <div className="flex-1 flex flex-col bg-slate-950/35 backdrop-blur-[1.5px] min-h-full">
             {children}
           </div>
         </div>
@@ -93,7 +93,7 @@ export default function AppShell({
       style={{ backgroundImage: "url('/bg-desktop.jpeg')" }}
     >
       {/* Light soft veil for contrast & readability */}
-      <div className="absolute inset-0 bg-slate-900/15 pointer-events-none" />
+      <div className="absolute inset-0 bg-slate-950/25 pointer-events-none" />
 
       {/* Top Universal Civic Bar */}
       <header className="bg-slate-900/90 backdrop-blur-md text-white border-b border-slate-800/80 sticky top-0 z-50 px-6 py-2.5 flex items-center justify-between shadow-md relative">

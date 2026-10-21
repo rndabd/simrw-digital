@@ -194,13 +194,13 @@ export default function PengaduanTab() {
 
       {/* Sub Tabs: Pengaduan Saya vs Lingkungan */}
       <div className="flex items-center justify-between">
-        <div className="flex items-center gap-1.5 bg-slate-100 p-1 rounded-xl text-xs font-bold text-slate-600">
+        <div className="flex items-center gap-1.5 bg-slate-900/80 backdrop-blur-md p-1 rounded-xl text-xs font-bold text-slate-300 border border-slate-700/60 shadow-md">
           <button
             onClick={() => setActiveSubTab("my")}
             className={`px-3 py-1.5 rounded-lg transition-all ${
               activeSubTab === "my"
-                ? "bg-white text-emerald-800 shadow-xs font-extrabold"
-                : "hover:text-slate-900"
+                ? "bg-emerald-600 text-white shadow-xs font-extrabold"
+                : "text-slate-300 hover:text-white"
             }`}
           >
             Pengaduan Saya
@@ -209,8 +209,8 @@ export default function PengaduanTab() {
             onClick={() => setActiveSubTab("community")}
             className={`px-3 py-1.5 rounded-lg transition-all ${
               activeSubTab === "community"
-                ? "bg-white text-emerald-800 shadow-xs font-extrabold"
-                : "hover:text-slate-900"
+                ? "bg-emerald-600 text-white shadow-xs font-extrabold"
+                : "text-slate-300 hover:text-white"
             }`}
           >
             Aduan Publik RT
@@ -219,7 +219,7 @@ export default function PengaduanTab() {
 
         <button
           onClick={fetchComplaints}
-          className="p-2 rounded-xl bg-white border border-slate-200 text-slate-600 hover:bg-slate-50 text-xs font-semibold flex items-center gap-1 shadow-2xs"
+          className="p-2 rounded-xl bg-slate-900/80 backdrop-blur-md border border-slate-700/60 text-slate-200 hover:bg-slate-800 text-xs font-semibold flex items-center gap-1 shadow-md"
           title="Segarkan data"
         >
           <RefreshCw className={`w-3.5 h-3.5 ${isLoading ? "animate-spin" : ""}`} />

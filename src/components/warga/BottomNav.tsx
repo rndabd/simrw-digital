@@ -40,14 +40,14 @@ export default function BottomNav({ activeTab, onChangeTab }: BottomNavProps) {
               onClick={() => onChangeTab(tab.key)}
               className={`flex-1 flex flex-col items-center justify-center py-1.5 px-1 relative rounded-xl transition-all ${
                 isActive
-                  ? "text-emerald-700 font-bold"
-                  : "text-slate-500 hover:text-slate-800 font-medium"
+                  ? "text-emerald-700 font-extrabold"
+                  : "text-slate-600 hover:text-slate-900 font-semibold"
               }`}
             >
               <div className="relative">
                 <Icon
                   className={`w-5 h-5 transition-transform ${
-                    isActive ? "scale-110 text-emerald-600 stroke-[2.3]" : "stroke-[1.8]"
+                    isActive ? "scale-110 text-emerald-600 stroke-[2.3]" : "text-slate-500 stroke-[1.8]"
                   }`}
                 />
                 {tab.badge && (
@@ -56,7 +56,7 @@ export default function BottomNav({ activeTab, onChangeTab }: BottomNavProps) {
                   </span>
                 )}
               </div>
-              <span className={`text-[10px] mt-1 tracking-tight ${isActive ? "text-emerald-700" : "text-slate-500"}`}>
+              <span className={`text-[10px] mt-1 tracking-tight ${isActive ? "text-emerald-700 font-extrabold" : "text-slate-600 font-semibold"}`}>
                 {tab.label}
               </span>
               {isActive && (

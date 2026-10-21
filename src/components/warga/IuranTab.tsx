@@ -99,14 +99,18 @@ export default function IuranTab() {
 
   return (
     <div className="space-y-5 pb-20">
-      <div>
-        <h2 className="text-sm font-bold text-slate-900 uppercase tracking-wider flex items-center gap-1.5">
-          <CreditCard className="w-4 h-4 text-emerald-600" />
-          Iuran & Kas Lingkungan Warga
-        </h2>
-        <p className="text-xs text-slate-500">
-          Transparansi iuran kebersihan, penerangan jalan, dan kas keamanan RT setempat.
-        </p>
+      <div className="p-4 rounded-2xl bg-gradient-to-r from-slate-900 via-emerald-950 to-slate-900 text-white shadow-lg flex items-center justify-between">
+        <div className="flex items-center gap-3">
+          <div className="w-10 h-10 rounded-xl bg-emerald-500/20 border border-emerald-400/30 flex items-center justify-center text-emerald-300 shrink-0">
+            <CreditCard className="w-5 h-5" />
+          </div>
+          <div>
+            <h2 className="text-sm font-extrabold text-white">Iuran & Kas Lingkungan Warga</h2>
+            <p className="text-[11px] text-slate-300">
+              Transparansi iuran kebersihan, penerangan jalan, dan kas keamanan RT setempat.
+            </p>
+          </div>
+        </div>
       </div>
 
       {/* Summary Card */}
@@ -304,8 +308,10 @@ export default function IuranTab() {
 
       {/* Daftar Tagihan */}
       <div className="space-y-3">
-        <div className="text-xs font-bold text-slate-700 uppercase tracking-wider px-1">
-          Daftar Tagihan Iuran Warga
+        <div className="flex items-center gap-1.5 px-1">
+          <div className="text-xs font-extrabold text-white uppercase tracking-wider px-2.5 py-1 rounded-lg bg-slate-900/80 backdrop-blur-xs border border-white/10 shadow-sm">
+            Daftar Tagihan Iuran Warga
+          </div>
         </div>
 
         {isLoading ? (

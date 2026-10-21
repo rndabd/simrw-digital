@@ -641,6 +641,24 @@
   ],
   "audit_logs": [
     {
+      "id": "3351c126-f372-4106-ab6b-98b77f22a075",
+      "user_id": "user-rt-01",
+      "action": "USER_LOGIN",
+      "resource": "AUTH",
+      "payload": null,
+      "ip_address": "202.51.228.33",
+      "timestamp": "2026-10-21T11:44:27.602Z"
+    },
+    {
+      "id": "1c0f6b77-c426-41ed-9829-bc1fa20a9a5e",
+      "user_id": "user-rt-01",
+      "action": "USER_LOGIN",
+      "resource": "AUTH",
+      "payload": null,
+      "ip_address": "202.51.228.33",
+      "timestamp": "2026-10-21T11:29:53.355Z"
+    },
+    {
       "id": "fac99081-31a8-4dbd-8d45-20b410ba30e9",
       "user_id": "user-warga-01",
       "action": "USER_LOGIN",

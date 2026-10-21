@@ -697,18 +697,18 @@ export default function OfficerDashboard() {
         {/* TAB 1: VERIFIKASI WARGA BARU */}
         {activeTab === "pending" && (
           <div className="space-y-3">
-            <div className="flex items-center justify-between">
+            <div className="flex items-center justify-between bg-white/95 backdrop-blur-md p-3.5 rounded-2xl border border-white/80 shadow-xs">
               <div>
-                <h3 className="text-xs font-bold text-slate-800 uppercase tracking-wider">
+                <h3 className="text-xs font-extrabold text-slate-900 uppercase tracking-wider">
                   Antrean Verifikasi Warga Baru
                 </h3>
-                <p className="text-[11px] text-slate-500">
+                <p className="text-[11px] text-slate-600 font-medium">
                   Periksa keabsahan KTP fisik & alamat sebelum menyetujui akun warga.
                 </p>
               </div>
               <button
                 onClick={fetchPendingResidents}
-                className="p-1.5 rounded-lg bg-white border border-slate-200 text-slate-600 hover:bg-slate-50 text-xs shadow-2xs"
+                className="p-1.5 rounded-lg bg-slate-100 hover:bg-slate-200 border border-slate-200 text-slate-700 text-xs shadow-2xs"
               >
                 <RefreshCw className={`w-3.5 h-3.5 ${isLoadingPending ? "animate-spin" : ""}`} />
               </button>
@@ -806,19 +806,19 @@ export default function OfficerDashboard() {
         {/* TAB 2: APPROVAL PENDAFTARAN KETUA RT (KHUSUS PENGURUS RW) */}
         {activeTab === "rt_approvals" && isRwOfficer && (
           <div className="space-y-4">
-            <div className="flex items-center justify-between">
+            <div className="flex items-center justify-between bg-white/95 backdrop-blur-md p-3.5 rounded-2xl border border-white/80 shadow-xs">
               <div>
-                <h3 className="text-xs font-bold text-slate-800 uppercase tracking-wider flex items-center gap-1.5">
+                <h3 className="text-xs font-extrabold text-slate-900 uppercase tracking-wider flex items-center gap-1.5">
                   <Building2 className="w-4 h-4 text-emerald-600" />
                   Approval Pendaftaran Satuan & Ketua RT Baru
                 </h3>
-                <p className="text-[11px] text-slate-500">
+                <p className="text-[11px] text-slate-600 font-medium">
                   Calon Ketua RT yang mendaftar di bawah RW {user?.rw?.number || "05"} wajib disahkan oleh Pengurus RW.
                 </p>
               </div>
               <button
                 onClick={fetchRtRequests}
-                className="p-1.5 rounded-lg bg-white border border-slate-200 text-slate-600 hover:bg-slate-50 text-xs shadow-2xs"
+                className="p-1.5 rounded-lg bg-slate-100 hover:bg-slate-200 border border-slate-200 text-slate-700 text-xs shadow-2xs"
               >
                 <RefreshCw className={`w-3.5 h-3.5 ${isLoadingRtRequests ? "animate-spin" : ""}`} />
               </button>
@@ -900,19 +900,19 @@ export default function OfficerDashboard() {
         {/* TAB 3: VALIDASI PEMBAYARAN IURAN OLEH BENDAHARA */}
         {activeTab === "dues_validation" && (
           <div className="space-y-4">
-            <div className="flex items-center justify-between">
+            <div className="flex items-center justify-between bg-white/95 backdrop-blur-md p-3.5 rounded-2xl border border-white/80 shadow-xs">
               <div>
-                <h3 className="text-xs font-bold text-slate-800 uppercase tracking-wider flex items-center gap-1.5">
+                <h3 className="text-xs font-extrabold text-slate-900 uppercase tracking-wider flex items-center gap-1.5">
                   <CreditCard className="w-4 h-4 text-emerald-600" />
                   Antrean Validasi Pembayaran Iuran Warga
                 </h3>
-                <p className="text-[11px] text-slate-500">
+                <p className="text-[11px] text-slate-600 font-medium">
                   Warga yang telah mentransfer iuran wajib divalidasi oleh Bendahara sebelum dana tercatat sah di Kas RT.
                 </p>
               </div>
               <button
                 onClick={fetchDuesList}
-                className="p-1.5 rounded-lg bg-white border border-slate-200 text-slate-600 hover:bg-slate-50 text-xs shadow-2xs"
+                className="p-1.5 rounded-lg bg-slate-100 hover:bg-slate-200 border border-slate-200 text-slate-700 text-xs shadow-2xs"
               >
                 <RefreshCw className={`w-3.5 h-3.5 ${isLoadingDues ? "animate-spin" : ""}`} />
               </button>
@@ -1050,19 +1050,19 @@ export default function OfficerDashboard() {
         {/* TAB 4: BUKU KAS & LAPORAN KEUANGAN INTERNAL */}
         {activeTab === "finances" && (
           <div className="space-y-4">
-            <div className="flex items-center justify-between">
+            <div className="flex items-center justify-between bg-white/95 backdrop-blur-md p-3.5 rounded-2xl border border-white/80 shadow-xs">
               <div>
-                <h3 className="text-xs font-bold text-slate-800 uppercase tracking-wider flex items-center gap-1.5">
+                <h3 className="text-xs font-extrabold text-slate-900 uppercase tracking-wider flex items-center gap-1.5">
                   <Wallet className="w-4 h-4 text-emerald-600" />
                   Buku Kas & Keuangan {isRwOfficer ? "RW 05" : `RT ${user?.rt?.number || "02"}`}
                 </h3>
-                <p className="text-[11px] text-slate-500">
+                <p className="text-[11px] text-slate-600 font-medium">
                   Pembukuan arus kas masuk, pengeluaran operasional, dan saldo riil terverifikasi.
                 </p>
               </div>
               <button
                 onClick={fetchFinances}
-                className="p-1.5 rounded-lg bg-white border border-slate-200 text-slate-600 hover:bg-slate-50 text-xs shadow-2xs"
+                className="p-1.5 rounded-lg bg-slate-100 hover:bg-slate-200 border border-slate-200 text-slate-700 text-xs shadow-2xs"
               >
                 <RefreshCw className={`w-3.5 h-3.5 ${isLoadingFinance ? "animate-spin" : ""}`} />
               </button>
@@ -1317,19 +1317,19 @@ export default function OfficerDashboard() {
         {/* TAB 5: LAPORAN KONSOLIDASI SELURUH RT (KHUSUS PENGURUS RW) */}
         {activeTab === "rw_consolidated" && isRwOfficer && (
           <div className="space-y-4">
-            <div className="flex items-center justify-between">
+            <div className="flex items-center justify-between bg-white/95 backdrop-blur-md p-3.5 rounded-2xl border border-white/80 shadow-xs">
               <div>
-                <h3 className="text-xs font-bold text-slate-800 uppercase tracking-wider flex items-center gap-1.5">
+                <h3 className="text-xs font-extrabold text-slate-900 uppercase tracking-wider flex items-center gap-1.5">
                   <Building2 className="w-4 h-4 text-emerald-600" />
                   Laporan Keuangan Konsolidasi Seluruh RT (Wilayah RW 05)
                 </h3>
-                <p className="text-[11px] text-slate-500">
+                <p className="text-[11px] text-slate-600 font-medium">
                   Ketua dan Kepengurusan RW dapat memantau saldo kas dan kepatuhan iuran dari seluruh unit RT binaan.
                 </p>
               </div>
               <button
                 onClick={fetchConsolidatedReports}
-                className="p-1.5 rounded-lg bg-white border border-slate-200 text-slate-600 hover:bg-slate-50 text-xs shadow-2xs"
+                className="p-1.5 rounded-lg bg-slate-100 hover:bg-slate-200 border border-slate-200 text-slate-700 text-xs shadow-2xs"
               >
                 <RefreshCw className={`w-3.5 h-3.5 ${isLoadingConsolidated ? "animate-spin" : ""}`} />
               </button>
@@ -1403,19 +1403,19 @@ export default function OfficerDashboard() {
         {/* TAB 6: PENGAJUAN DANA BERJENJANG (APPROVAL RT & RW) */}
         {activeTab === "fund_requests" && (
           <div className="space-y-4">
-            <div className="flex items-center justify-between">
+            <div className="flex items-center justify-between bg-white/95 backdrop-blur-md p-3.5 rounded-2xl border border-white/80 shadow-xs">
               <div>
-                <h3 className="text-xs font-bold text-slate-800 uppercase tracking-wider flex items-center gap-1.5">
+                <h3 className="text-xs font-extrabold text-slate-900 uppercase tracking-wider flex items-center gap-1.5">
                   <DollarSign className="w-4 h-4 text-emerald-600" />
                   Pengajuan Dana Kegiatan & Anggaran (Hierarki RT & RW)
                 </h3>
-                <p className="text-[11px] text-slate-500">
+                <p className="text-[11px] text-slate-600 font-medium">
                   Alur persetujuan berjenjang: Diajukan oleh RT ➔ Ditinjau Ketua RT ➔ Disetujui Pengurus RW.
                 </p>
               </div>
               <button
                 onClick={fetchFundRequests}
-                className="p-1.5 rounded-lg bg-white border border-slate-200 text-slate-600 hover:bg-slate-50 text-xs shadow-2xs"
+                className="p-1.5 rounded-lg bg-slate-100 hover:bg-slate-200 border border-slate-200 text-slate-700 text-xs shadow-2xs"
               >
                 <RefreshCw className={`w-3.5 h-3.5 ${isLoadingFundReqs ? "animate-spin" : ""}`} />
               </button>
@@ -1569,11 +1569,11 @@ export default function OfficerDashboard() {
         {/* TAB 7: SIARAN PENGUMUMAN WARGA */}
         {activeTab === "broadcast" && (
           <div className="space-y-3">
-            <div>
-              <h3 className="text-xs font-bold text-slate-800 uppercase tracking-wider">
+            <div className="bg-white/95 backdrop-blur-md p-3.5 rounded-2xl border border-white/80 shadow-xs">
+              <h3 className="text-xs font-extrabold text-slate-900 uppercase tracking-wider">
                 Siarkan Pengumuman & Pemberitahuan Warga
               </h3>
-              <p className="text-[11px] text-slate-500">
+              <p className="text-[11px] text-slate-600 font-medium">
                 Pengumuman resmi akan langsung disebarluaskan dan diterima ponsel seluruh warga.
               </p>
             </div>
@@ -1585,7 +1585,7 @@ export default function OfficerDashboard() {
               </div>
             )}
 
-            <form onSubmit={handleSendBroadcast} className="p-4 rounded-2xl bg-white border border-slate-200 shadow-xs space-y-3">
+            <form onSubmit={handleSendBroadcast} className="p-4 rounded-2xl bg-white/95 backdrop-blur-md border border-white/80 shadow-xs space-y-3">
               <div>
                 <label className="text-xs font-bold text-slate-700 block mb-1">Jangkauan Penerima Pengumuman</label>
                 <select
@@ -1651,19 +1651,19 @@ export default function OfficerDashboard() {
         {/* TAB 8: AUDIT LOG UU PDP */}
         {activeTab === "audit" && (
           <div className="space-y-3">
-            <div className="flex items-center justify-between">
+            <div className="flex items-center justify-between bg-white/95 backdrop-blur-md p-3.5 rounded-2xl border border-white/80 shadow-xs">
               <div>
-                <h3 className="text-xs font-bold text-slate-800 uppercase tracking-wider flex items-center gap-1.5">
+                <h3 className="text-xs font-extrabold text-slate-900 uppercase tracking-wider flex items-center gap-1.5">
                   <Lock className="w-3.5 h-3.5 text-emerald-600" />
                   Jejak Audit Kepatuhan UU PDP
                 </h3>
-                <p className="text-[11px] text-slate-500">
+                <p className="text-[11px] text-slate-600 font-medium">
                   Log rekaman mutlak setiap akses NIK, perubahan status, dan interaksi data privasi warga.
                 </p>
               </div>
               <button
                 onClick={fetchAuditLogs}
-                className="p-1.5 rounded-lg bg-white border border-slate-200 text-slate-600 hover:bg-slate-50 text-xs shadow-2xs"
+                className="p-1.5 rounded-lg bg-slate-100 hover:bg-slate-200 border border-slate-200 text-slate-700 text-xs shadow-2xs"
               >
                 <RefreshCw className={`w-3.5 h-3.5 ${isLoadingAudit ? "animate-spin" : ""}`} />
               </button>
