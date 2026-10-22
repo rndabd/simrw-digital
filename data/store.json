@@ -641,6 +641,24 @@
   ],
   "audit_logs": [
     {
+      "id": "2cb5289e-ed85-4909-b25b-f15acf2072cb",
+      "user_id": "user-rw-01",
+      "action": "USER_LOGIN",
+      "resource": "AUTH",
+      "payload": null,
+      "ip_address": "::1",
+      "timestamp": "2026-10-22T05:35:13.601Z"
+    },
+    {
+      "id": "389cc780-1f86-49e8-8257-36854c5dd7fd",
+      "user_id": "user-rt-01",
+      "action": "USER_LOGIN",
+      "resource": "AUTH",
+      "payload": null,
+      "ip_address": "::1",
+      "timestamp": "2026-10-22T05:31:16.051Z"
+    },
+    {
       "id": "2691f57d-642c-4abf-9f32-64b872bcbf09",
       "user_id": "user-rt-01",
       "action": "USER_LOGIN",

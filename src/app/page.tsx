@@ -17,12 +17,13 @@ import ProfilTab from "@/components/warga/ProfilTab";
 import PengaduanTab from "@/components/warga/PengaduanTab";
 import OfficerDashboard from "@/components/officer/OfficerDashboard";
 import SuperAdminDashboard from "@/components/admin/SuperAdminDashboard";
-import { Siren, X, MessageSquare, Bell, Building2 } from "lucide-react";
+import { Siren, X, MessageSquare, Bell, Building2, Phone } from "lucide-react";
 
 export default function HomePage() {
   const { user, isLoading, isOfficerMode } = useAuth();
   const { isDesktop } = useViewMode();
   const [activeTab, setActiveTab] = useState<NavTab | "admin" | "pengaduan">("beranda");
+  const [wargaSubTab, setWargaSubTab] = useState<"BAGAN" | "KONTAK" | "DARURAT">("BAGAN");
   const [forceReady, setForceReady] = useState(false);
 
   // If user is Super Admin, default to "admin" tab
@@ -79,13 +80,16 @@ export default function HomePage() {
   const handleQuickAction = (key: string) => {
     if (key === "surat") setActiveTab("surat");
     else if (key === "iuran") setActiveTab("iuran");
-    else if (key === "kontak") setActiveTab("warga");
-    else if (key === "darurat") {
+    else if (key === "kontak") {
+      setWargaSubTab("KONTAK");
+      setActiveTab("warga");
+    } else if (key === "darurat") {
       setEmergencySent(false);
       setShowEmergencyModal(true);
     } else if (key === "lapor") {
       setActiveTab("pengaduan");
     } else if (key === "inforw") {
+      setWargaSubTab("BAGAN");
       setActiveTab("warga");
     }
   };
@@ -213,7 +217,7 @@ export default function HomePage() {
             )}
             {activeTab === "warga" && (
               <div className={!isDesktop ? "p-4 pb-6" : ""}>
-                <WargaTab />
+                <WargaTab initialTab={wargaSubTab} />
               </div>
             )}
             {activeTab === "profil" && (
@@ -260,6 +264,21 @@ export default function HomePage() {
                 className="flex-1 py-3 rounded-xl bg-rose-600 hover:bg-rose-700 text-white font-extrabold text-xs shadow-lg shadow-rose-600/30 flex items-center justify-center gap-1.5"
               >
                 {emergencySent ? "Mengirim Sinyal..." : "BUNYIKAN SOS"}
+              </button>
+            </div>
+
+            <div className="pt-2 border-t border-slate-100">
+              <button
+                type="button"
+                onClick={() => {
+                  setShowEmergencyModal(false);
+                  setWargaSubTab("DARURAT");
+                  setActiveTab("warga");
+                }}
+                className="w-full py-2 px-3 rounded-xl bg-rose-50 hover:bg-rose-100 text-rose-800 text-xs font-bold border border-rose-200 flex items-center justify-center gap-1.5 transition"
+              >
+                <Phone className="w-3.5 h-3.5 text-rose-600" />
+                <span>Lihat Layanan Tanggap Darurat & Fast Response</span>
               </button>
             </div>
           </div>
