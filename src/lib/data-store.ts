@@ -218,6 +218,23 @@ export interface DataStoreSchema {
     created_at: string;
     updated_at: string;
   }>;
+  emergency_contacts?: Array<{
+    id: string;
+    rw_id: string;
+    name: string;
+    category: string;
+    phone: string;
+    altPhone?: string;
+    notes: string;
+    type: "WILAYAH" | "INTERNAL";
+    created_at: string;
+    updated_at: string;
+  }>;
+  wilayah_configs?: Array<{
+    rw_id: string;
+    wilayah_name: string;
+    notes?: string;
+  }>;
 }
 
 // Initial Multi-RW & Multi-RT Seed Data
@@ -1379,6 +1396,13 @@ export function getStore(): DataStoreSchema {
       const pendingUser = memoryStore!.users.find((u) => u.id === "user-pending-01");
       if (pendingUser && !pendingUser.household_id) {
         pendingUser.household_id = "hh-03";
+      }
+
+      if (!memoryStore!.emergency_contacts) {
+        memoryStore!.emergency_contacts = [];
+      }
+      if (!memoryStore!.wilayah_configs) {
+        memoryStore!.wilayah_configs = [];
       }
 
       return memoryStore!;
