@@ -641,6 +641,30 @@
   ],
   "audit_logs": [
     {
+      "id": "732af6cc-5aff-44e0-895f-20c3013d4ef5",
+      "user_id": "officer",
+      "action": "DELETE_EMERGENCY_CONTACT",
+      "resource": "EMERGENCY_CONTACT",
+      "payload": {
+        "id": "wilayah-rw-05-coblong-1"
+      },
+      "ip_address": "127.0.0.1",
+      "timestamp": "2026-10-22T06:07:32.505Z"
+    },
+    {
+      "id": "e2d33312-97d1-48ed-b6db-602609baea68",
+      "user_id": "officer",
+      "action": "CREATE_EMERGENCY_CONTACT",
+      "resource": "EMERGENCY_CONTACT",
+      "payload": {
+        "id": "emg-1792649235986-12r9",
+        "name": "Pos Satpam Khusus RW 08",
+        "type": "INTERNAL"
+      },
+      "ip_address": "127.0.0.1",
+      "timestamp": "2026-10-22T06:07:15.988Z"
+    },
+    {
       "id": "c2febb3c-8f41-4d18-8e13-c9453665621d",
       "user_id": "officer",
       "action": "CREATE_EMERGENCY_CONTACT",
@@ -2123,18 +2147,6 @@
   ],
   "emergency_contacts": [
     {
-      "id": "wilayah-rw-05-coblong-1",
-      "rw_id": "rw-05-coblong",
-      "name": "Ambulans Siaga & Puskesmas DTP Coblong",
-      "category": "MEDIS & AMBULANS",
-      "phone": "0225950045",
-      "altPhone": "119",
-      "notes": "Pelayanan Medis Darurat 24 Jam, Bidan Siaga & Rujukan Ambulans Coblong",
-      "type": "WILAYAH",
-      "created_at": "2026-10-22T06:02:22.881Z",
-      "updated_at": "2026-10-22T06:02:22.881Z"
-    },
-    {
       "id": "wilayah-rw-05-coblong-2",
       "rw_id": "rw-05-coblong",
       "name": "Polsek Coblong (SPKT Siaga 24 Jam)",
@@ -2257,7 +2269,148 @@
       "type": "WILAYAH",
       "created_at": "2026-10-22T06:02:42.684Z",
       "updated_at": "2026-10-22T06:02:42.684Z"
+    },
+    {
+      "id": "wilayah-rw-08-coblong-1",
+      "rw_id": "rw-08-coblong",
+      "name": "Ambulans Siaga & Puskesmas DTP Coblong",
+      "category": "MEDIS & AMBULANS",
+      "phone": "0225950045",
+      "altPhone": "119",
+      "notes": "Pelayanan Medis Darurat 24 Jam, Bidan Siaga & Rujukan Ambulans Coblong",
+      "type": "WILAYAH",
+      "created_at": "2026-10-22T06:07:15.927Z",
+      "updated_at": "2026-10-22T06:07:15.927Z"
+    },
+    {
+      "id": "wilayah-rw-08-coblong-2",
+      "rw_id": "rw-08-coblong",
+      "name": "Polsek Coblong (SPKT Siaga 24 Jam)",
+      "category": "KEPOLISIAN / KAMTIBMAS",
+      "phone": "0225950110",
+      "altPhone": "110",
+      "notes": "Pengaduan Kriminalitas, Penindakan Keamanan, Mediasi & Call Center 110",
+      "type": "WILAYAH",
+      "created_at": "2026-10-22T06:07:15.927Z",
+      "updated_at": "2026-10-22T06:07:15.927Z"
+    },
+    {
+      "id": "wilayah-rw-08-coblong-3",
+      "rw_id": "rw-08-coblong",
+      "name": "Bripka Mulyadi (Bhabinkamtibmas Sukamaju)",
+      "category": "BHABINKAMTIBMAS POLRI",
+      "phone": "081299991122",
+      "notes": "Pembina Kamtibmas Wilayah Desa/Kelurahan Sukamaju",
+      "type": "WILAYAH",
+      "created_at": "2026-10-22T06:07:15.927Z",
+      "updated_at": "2026-10-22T06:07:15.927Z"
+    },
+    {
+      "id": "wilayah-rw-08-coblong-4",
+      "rw_id": "rw-08-coblong",
+      "name": "Pemadam Kebakaran Pos Coblong",
+      "category": "PEMADAM KEBAKARAN (DAMKAR)",
+      "phone": "0225950113",
+      "altPhone": "113",
+      "notes": "Diskar PB: Penyelamatan Api, Evakuasi Satwa Berbahaya & Bencana Darurat",
+      "type": "WILAYAH",
+      "created_at": "2026-10-22T06:07:15.927Z",
+      "updated_at": "2026-10-22T06:07:15.927Z"
+    },
+    {
+      "id": "wilayah-rw-08-coblong-5",
+      "rw_id": "rw-08-coblong",
+      "name": "PLN Gangguan & Bahaya Listrik Coblong",
+      "category": "GANGGUAN LISTRIK",
+      "phone": "123",
+      "altPhone": "022123",
+      "notes": "Kabel Putus, Trafo Meledak, Korsleting Bahaya & Padam Tidak Terjadwal",
+      "type": "WILAYAH",
+      "created_at": "2026-10-22T06:07:15.927Z",
+      "updated_at": "2026-10-22T06:07:15.927Z"
+    },
+    {
+      "id": "wilayah-rw-08-coblong-6",
+      "rw_id": "rw-08-coblong",
+      "name": "Koramil / Babinsa TNI AD (Coblong)",
+      "category": "BABINSA KORAMIL",
+      "phone": "0225950220",
+      "notes": "Mitra Kamtibmas Teritorial & Bantuan Tanggap Bencana Koramil Coblong",
+      "type": "WILAYAH",
+      "created_at": "2026-10-22T06:07:15.927Z",
+      "updated_at": "2026-10-22T06:07:15.927Z"
+    },
+    {
+      "id": "wilayah-rw-08-coblong-7",
+      "rw_id": "rw-08-coblong",
+      "name": "BPBD Kota Bandung (Pusdalops Bencana)",
+      "category": "TANGGAP BENCANA BPBD",
+      "phone": "02285872525",
+      "notes": "Penanganan Bencana Banjir, Tanah Longsor, Pohon Tumbang & Cuaca Ekstrem",
+      "type": "WILAYAH",
+      "created_at": "2026-10-22T06:07:15.927Z",
+      "updated_at": "2026-10-22T06:07:15.927Z"
+    },
+    {
+      "id": "internal-rw-08-coblong-1",
+      "rw_id": "rw-08-coblong",
+      "name": "Pos Ronda & Satpam Gerbang Utama 24 Jam",
+      "category": "KAMTIBMAS RW / SATPAM",
+      "phone": "081200000099",
+      "notes": "Portal Masuk Lingkungan RW 08 • Siaga HT Channel 4 • Alarm SOS",
+      "type": "INTERNAL",
+      "created_at": "2026-10-22T06:07:15.927Z",
+      "updated_at": "2026-10-22T06:07:15.927Z"
+    },
+    {
+      "id": "internal-rw-08-coblong-2",
+      "rw_id": "rw-08-coblong",
+      "name": "Koordinator Keamanan & Trantib RW",
+      "category": "KAMTIBMAS RW / SATPAM",
+      "phone": "081200000005",
+      "notes": "Koordinator Keamanan Lingkungan & Siskamling RW 08",
+      "type": "INTERNAL",
+      "created_at": "2026-10-22T06:07:15.927Z",
+      "updated_at": "2026-10-22T06:07:15.927Z"
+    },
+    {
+      "id": "internal-rw-08-coblong-3",
+      "rw_id": "rw-08-coblong",
+      "name": "Ketua RW 08 (Jalur Eskalasi)",
+      "category": "PIMPINAN RW / RT",
+      "phone": "081200000001",
+      "notes": "Eskalasi Tertinggi Kepengurusan RW 08 & Hubungan Pemerintahan Desa",
+      "type": "INTERNAL",
+      "created_at": "2026-10-22T06:07:15.927Z",
+      "updated_at": "2026-10-22T06:07:15.927Z"
+    },
+    {
+      "id": "internal-rw-08-coblong-4",
+      "rw_id": "rw-08-coblong",
+      "name": "Satgas Saluran Air & Drainase Lingkungan",
+      "category": "SARPRAS & AIR",
+      "phone": "081200000006",
+      "notes": "Penanganan Drainase Tersumbat, Genangan Air & Sarana Prasarana Lingkungan",
+      "type": "INTERNAL",
+      "created_at": "2026-10-22T06:07:15.927Z",
+      "updated_at": "2026-10-22T06:07:15.927Z"
+    },
+    {
+      "id": "emg-1792649235986-12r9",
+      "rw_id": "rw-08-coblong",
+      "name": "Pos Satpam Khusus RW 08",
+      "category": "KAMTIBMAS RW / SATPAM",
+      "phone": "081999888777",
+      "notes": "Gerbang RW 08",
+      "type": "INTERNAL",
+      "created_at": "2026-10-22T06:07:15.986Z",
+      "updated_at": "2026-10-22T06:07:15.986Z"
     }
   ],
-  "wilayah_configs": []
+  "wilayah_configs": [
+    {
+      "rw_id": "rw-08-coblong",
+      "wilayah_name": "Wilayah Khusus RW 08 Coblong Timur"
+    }
+  ]
 }
