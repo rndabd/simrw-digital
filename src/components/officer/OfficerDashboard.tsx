@@ -30,6 +30,11 @@ import {
   Database,
   GitCompare,
   MessageSquare,
+  Layers,
+  CheckCircle2,
+  Sparkles,
+  ChevronRight,
+  LayoutGrid,
 } from "lucide-react";
 import { formatAuditAction, AuditPayloadViewer, formatRoleList, formatRoleName } from "@/lib/formatters";
 import MasterResidentsTab from "./MasterResidentsTab";
@@ -63,6 +68,38 @@ export default function OfficerDashboard() {
     | "complaints"
     | "reports"
   >("pending");
+
+  type OfficerPillar = "KEPENDUDUKAN" | "KEUANGAN" | "LAYANAN" | "LAPORAN";
+  const [selectedPillar, setSelectedPillar] = useState<OfficerPillar>("KEPENDUDUKAN");
+  const [navViewMode, setNavViewMode] = useState<"PILLARS" | "ALL_GRID">("PILLARS");
+
+  const switchTab = (
+    tab:
+      | "pending"
+      | "rt_approvals"
+      | "dues_validation"
+      | "finances"
+      | "rw_consolidated"
+      | "fund_requests"
+      | "broadcast"
+      | "audit"
+      | "residents"
+      | "reconciliation"
+      | "statistics"
+      | "complaints"
+      | "reports"
+  ) => {
+    setActiveTab(tab);
+    if (["pending", "residents", "reconciliation", "statistics"].includes(tab)) {
+      setSelectedPillar("KEPENDUDUKAN");
+    } else if (["dues_validation", "finances", "rw_consolidated", "fund_requests"].includes(tab)) {
+      setSelectedPillar("KEUANGAN");
+    } else if (["complaints", "broadcast", "rt_approvals"].includes(tab)) {
+      setSelectedPillar("LAYANAN");
+    } else {
+      setSelectedPillar("LAPORAN");
+    }
+  };
 
   // State for Saldo Awal Modal
   const [showSetInitBalanceModal, setShowSetInitBalanceModal] = useState(false);
@@ -220,6 +257,14 @@ export default function OfficerDashboard() {
       setIsLoadingAudit(false);
     }
   };
+
+  // Initial load for executive KPI summary cards
+  useEffect(() => {
+    fetchPendingResidents();
+    fetchDuesList();
+    fetchFinances();
+    if (isRwOfficer) fetchRtRequests();
+  }, [isRwOfficer]);
 
   useEffect(() => {
     if (activeTab === "pending") fetchPendingResidents();
@@ -536,160 +581,652 @@ export default function OfficerDashboard() {
   return (
     <div className="space-y-5 pb-20">
       {/* Officer Header Banner Card */}
-      <div className="p-5 md:p-6 rounded-3xl bg-gradient-to-r from-slate-900 via-emerald-950 to-slate-900 text-white shadow-xl relative overflow-hidden">
-        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
-          <div className="flex items-center gap-3">
-            <div className="w-12 h-12 rounded-2xl bg-emerald-500/20 border border-emerald-400/30 flex items-center justify-center text-emerald-300 shrink-0">
-              <ShieldCheck className="w-7 h-7" />
+      <div className="p-5 md:p-6 rounded-3xl bg-gradient-to-r from-slate-900 via-emerald-950 to-slate-900 text-white shadow-xl relative overflow-hidden border border-emerald-900/40">
+        <div className="relative z-10 flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+          <div className="flex items-center gap-3.5">
+            <div className="w-12 h-12 md:w-14 md:h-14 rounded-2xl bg-gradient-to-br from-emerald-500/30 to-emerald-700/20 border border-emerald-400/40 flex items-center justify-center text-emerald-300 shrink-0 shadow-inner">
+              <ShieldCheck className="w-7 h-7 md:w-8 md:h-8" />
             </div>
             <div>
-              <div className="text-[11px] uppercase tracking-wider text-emerald-400 font-bold flex items-center gap-1.5">
+              <div className="text-[11px] uppercase tracking-wider text-emerald-400 font-extrabold flex items-center gap-1.5">
+                <span className="w-2 h-2 rounded-full bg-emerald-400 animate-pulse"></span>
                 <span>PANEL KEPENGURUSAN {isRwOfficer ? "RW" : "RT"}</span>
               </div>
-              <h2 className="text-lg md:text-xl font-extrabold text-white tracking-tight mt-0.5">
+              <h2 className="text-lg md:text-2xl font-black text-white tracking-tight mt-0.5">
                 {isRwOfficer
                   ? `Rukun Warga (RW) ${user?.rw?.number || "05"} - Sukamaju`
                   : `Rukun Tetangga (RT) ${user?.rt?.number || "02"} / RW ${user?.rw?.number || "05"}`}
               </h2>
-              <div className="text-xs text-slate-300 mt-0.5">
-                Pengurus: <span className="font-bold text-white">{user?.fullName}</span> •{" "}
-                <span className="text-emerald-300 font-semibold">{formatRoleList(user?.roles)}</span>
+              <div className="text-xs text-slate-300 mt-1 flex flex-wrap items-center gap-1.5">
+                <span>Pengurus:</span>
+                <span className="font-bold text-white bg-white/10 px-2 py-0.5 rounded-md">{user?.fullName}</span>
+                <span className="text-slate-400">•</span>
+                <span className="text-emerald-300 font-semibold bg-emerald-900/40 border border-emerald-500/30 px-2 py-0.5 rounded-md">
+                  {formatRoleList(user?.roles)}
+                </span>
               </div>
             </div>
           </div>
 
           <button
             onClick={() => setOfficerMode(false)}
-            className="px-3.5 py-2 rounded-xl bg-slate-800/90 hover:bg-slate-700/90 border border-slate-700 text-xs text-emerald-400 font-bold flex items-center gap-1.5 self-start sm:self-center transition-all shadow-xs"
+            className="px-4 py-2.5 rounded-xl bg-slate-800/90 hover:bg-slate-700/90 border border-slate-700 text-xs text-emerald-300 font-bold flex items-center gap-2 self-start sm:self-center transition-all shadow-md hover:shadow-lg active:scale-95"
           >
             <ArrowLeft className="w-4 h-4" />
-            Kembali ke Mode Warga
+            <span>Kembali ke Mode Warga</span>
           </button>
         </div>
+      </div>
 
-        {/* Tab Navigation Grid */}
-        <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6 gap-1.5 mt-5 bg-slate-800/90 p-1.5 rounded-2xl text-xs font-bold text-slate-300">
-          <button
-            onClick={() => setActiveTab("pending")}
-            className={`py-2 px-1 rounded-xl text-center transition-all ${
-              activeTab === "pending" ? "bg-emerald-600 text-white shadow-xs font-extrabold" : "hover:text-white"
-            }`}
-          >
-            Verif Akun ({pendingResidents.length})
-          </button>
+      {/* Executive KPI Summary Cards (Quick Status & Jump) */}
+      <div className="grid grid-cols-2 lg:grid-cols-4 gap-3">
+        {/* KPI 1: Verifikasi Warga */}
+        <button
+          onClick={() => switchTab("pending")}
+          className={`p-3.5 sm:p-4 rounded-2xl text-left transition-all relative overflow-hidden flex flex-col justify-between border ${
+            activeTab === "pending"
+              ? "bg-emerald-950/20 border-emerald-500 ring-2 ring-emerald-500/20 shadow-md"
+              : "bg-white/90 hover:bg-white border-slate-200/80 hover:border-slate-300 shadow-xs hover:shadow-sm"
+          }`}
+        >
+          <div className="flex items-center justify-between w-full mb-2">
+            <div className={`w-9 h-9 rounded-xl flex items-center justify-center ${
+              pendingResidents.length > 0 ? "bg-amber-100 text-amber-700" : "bg-emerald-100 text-emerald-700"
+            }`}>
+              <Users className="w-5 h-5" />
+            </div>
+            <span className={`text-[10px] font-extrabold px-2 py-0.5 rounded-full ${
+              pendingResidents.length > 0 ? "bg-amber-100 text-amber-800" : "bg-emerald-100 text-emerald-800"
+            }`}>
+              {pendingResidents.length > 0 ? `${pendingResidents.length} Menunggu` : "Tertib"}
+            </span>
+          </div>
+          <div>
+            <div className="text-[11px] font-semibold text-slate-500">Verifikasi Warga</div>
+            <div className="text-xl sm:text-2xl font-black text-slate-900 mt-0.5">
+              {pendingResidents.length} <span className="text-xs font-semibold text-slate-400 font-normal">Antrean</span>
+            </div>
+            <div className="text-[10px] text-slate-500 mt-1 flex items-center gap-1">
+              <span>{pendingResidents.length > 0 ? "Perlu ditinjau segera" : "Semua akun tervalidasi"}</span>
+              <ChevronRight className="w-3 h-3 text-slate-400 ml-auto" />
+            </div>
+          </div>
+        </button>
 
-          {isRwOfficer && (
+        {/* KPI 2: Validasi Iuran */}
+        <button
+          onClick={() => switchTab("dues_validation")}
+          className={`p-3.5 sm:p-4 rounded-2xl text-left transition-all relative overflow-hidden flex flex-col justify-between border ${
+            activeTab === "dues_validation"
+              ? "bg-emerald-950/20 border-emerald-500 ring-2 ring-emerald-500/20 shadow-md"
+              : "bg-white/90 hover:bg-white border-slate-200/80 hover:border-slate-300 shadow-xs hover:shadow-sm"
+          }`}
+        >
+          <div className="flex items-center justify-between w-full mb-2">
+            <div className={`w-9 h-9 rounded-xl flex items-center justify-center ${
+              pendingDues.length > 0 ? "bg-amber-100 text-amber-700" : "bg-blue-100 text-blue-700"
+            }`}>
+              <CreditCard className="w-5 h-5" />
+            </div>
+            <span className={`text-[10px] font-extrabold px-2 py-0.5 rounded-full ${
+              pendingDues.length > 0 ? "bg-amber-100 text-amber-800" : "bg-slate-100 text-slate-700"
+            }`}>
+              {pendingDues.length > 0 ? `${pendingDues.length} Bukti` : "Selesai"}
+            </span>
+          </div>
+          <div>
+            <div className="text-[11px] font-semibold text-slate-500">Validasi Iuran</div>
+            <div className="text-xl sm:text-2xl font-black text-slate-900 mt-0.5">
+              {pendingDues.length} <span className="text-xs font-semibold text-slate-400 font-normal">Slip</span>
+            </div>
+            <div className="text-[10px] text-slate-500 mt-1 flex items-center gap-1">
+              <span>{pendingDues.length > 0 ? "Perlu konfirmasi transfer" : "Tidak ada slip tertunda"}</span>
+              <ChevronRight className="w-3 h-3 text-slate-400 ml-auto" />
+            </div>
+          </div>
+        </button>
+
+        {/* KPI 3: Saldo Kas */}
+        <button
+          onClick={() => switchTab("finances")}
+          className={`p-3.5 sm:p-4 rounded-2xl text-left transition-all relative overflow-hidden flex flex-col justify-between border ${
+            activeTab === "finances"
+              ? "bg-emerald-950/20 border-emerald-500 ring-2 ring-emerald-500/20 shadow-md"
+              : "bg-white/90 hover:bg-white border-slate-200/80 hover:border-slate-300 shadow-xs hover:shadow-sm"
+          }`}
+        >
+          <div className="flex items-center justify-between w-full mb-2">
+            <div className="w-9 h-9 rounded-xl bg-emerald-100 text-emerald-700 flex items-center justify-center">
+              <Wallet className="w-5 h-5" />
+            </div>
+            <span className="text-[10px] font-extrabold px-2 py-0.5 rounded-full bg-emerald-100 text-emerald-800">
+              Kas Riil
+            </span>
+          </div>
+          <div>
+            <div className="text-[11px] font-semibold text-slate-500">Saldo Kas {isRwOfficer ? "RW" : "RT"}</div>
+            <div className="text-base sm:text-lg font-black text-emerald-700 mt-0.5 truncate">
+              {financeData?.summary ? `Rp ${Number(financeData.summary.netBalance).toLocaleString("id-ID")}` : "Rp ..."}
+            </div>
+            <div className="text-[10px] text-slate-500 mt-1 flex items-center gap-1">
+              <span>Buku kas & pembukuan</span>
+              <ChevronRight className="w-3 h-3 text-slate-400 ml-auto" />
+            </div>
+          </div>
+        </button>
+
+        {/* KPI 4: Aspirasi & Siaran */}
+        <button
+          onClick={() => switchTab("complaints")}
+          className={`p-3.5 sm:p-4 rounded-2xl text-left transition-all relative overflow-hidden flex flex-col justify-between border ${
+            activeTab === "complaints"
+              ? "bg-emerald-950/20 border-emerald-500 ring-2 ring-emerald-500/20 shadow-md"
+              : "bg-white/90 hover:bg-white border-slate-200/80 hover:border-slate-300 shadow-xs hover:shadow-sm"
+          }`}
+        >
+          <div className="flex items-center justify-between w-full mb-2">
+            <div className="w-9 h-9 rounded-xl bg-purple-100 text-purple-700 flex items-center justify-center">
+              <MessageSquare className="w-5 h-5" />
+            </div>
+            <span className="text-[10px] font-extrabold px-2 py-0.5 rounded-full bg-purple-100 text-purple-800">
+              Aspirasi
+            </span>
+          </div>
+          <div>
+            <div className="text-[11px] font-semibold text-slate-500">Pengaduan & Siaran</div>
+            <div className="text-xl sm:text-2xl font-black text-slate-900 mt-0.5">
+              Siaga <span className="text-xs font-semibold text-slate-400 font-normal">Aktif</span>
+            </div>
+            <div className="text-[10px] text-slate-500 mt-1 flex items-center gap-1">
+              <span>Respon warga & woro-woro</span>
+              <ChevronRight className="w-3 h-3 text-slate-400 ml-auto" />
+            </div>
+          </div>
+        </button>
+      </div>
+
+      {/* 3. Navigation Pillar Bar & Sub-Tabs */}
+      <div className="bg-white/95 backdrop-blur-md rounded-2xl border border-slate-200/90 shadow-xs p-3 sm:p-4 space-y-3">
+        {/* View mode switcher & category header */}
+        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2.5 pb-2 border-b border-slate-100">
+          <div>
+            <div className="text-xs font-black text-slate-900 tracking-wide uppercase flex items-center gap-1.5">
+              <Layers className="w-4 h-4 text-emerald-600" />
+              <span>Menu Administrasi & Pelayanan</span>
+            </div>
+            <div className="text-[11px] text-slate-500 mt-0.5">
+              Pilih pilar operasional untuk mengelola fungsi kepengurusan
+            </div>
+          </div>
+
+          <div className="flex items-center bg-slate-100 p-0.5 rounded-xl border border-slate-200 text-xs font-bold shrink-0 self-start sm:self-auto">
             <button
-              onClick={() => setActiveTab("rt_approvals")}
-              className={`py-2 px-1 rounded-xl text-center transition-all ${
-                activeTab === "rt_approvals" ? "bg-emerald-600 text-white shadow-xs font-extrabold" : "hover:text-white"
+              onClick={() => setNavViewMode("PILLARS")}
+              className={`px-3 py-1.5 rounded-lg flex items-center gap-1.5 transition-all ${
+                navViewMode === "PILLARS"
+                  ? "bg-white text-emerald-700 font-extrabold shadow-xs"
+                  : "text-slate-600 hover:text-slate-900"
               }`}
             >
-              Approval RT ({pendingRts.length})
+              <Layers className="w-3.5 h-3.5" />
+              <span>Kategori</span>
             </button>
-          )}
-
-          <button
-            onClick={() => setActiveTab("residents")}
-            className={`py-2 px-1 rounded-xl text-center transition-all ${
-              activeTab === "residents" ? "bg-emerald-600 text-white shadow-xs font-extrabold" : "hover:text-white"
-            }`}
-          >
-            Sensus Penduduk
-          </button>
-
-          <button
-            onClick={() => setActiveTab("reconciliation")}
-            className={`py-2 px-1 rounded-xl text-center transition-all ${
-              activeTab === "reconciliation" ? "bg-emerald-600 text-white shadow-xs font-extrabold" : "hover:text-white"
-            }`}
-          >
-            Rekonsiliasi KK
-          </button>
-
-          <button
-            onClick={() => setActiveTab("statistics")}
-            className={`py-2 px-1 rounded-xl text-center transition-all ${
-              activeTab === "statistics" ? "bg-emerald-600 text-white shadow-xs font-extrabold" : "hover:text-white"
-            }`}
-          >
-            Statistik & Mutasi
-          </button>
-
-          <button
-            onClick={() => setActiveTab("complaints")}
-            className={`py-2 px-1 rounded-xl text-center transition-all ${
-              activeTab === "complaints" ? "bg-emerald-600 text-white shadow-xs font-extrabold" : "hover:text-white"
-            }`}
-          >
-            Pengaduan Warga
-          </button>
-
-          <button
-            onClick={() => setActiveTab("dues_validation")}
-            className={`py-2 px-1 rounded-xl text-center transition-all ${
-              activeTab === "dues_validation" ? "bg-emerald-600 text-white shadow-xs font-extrabold" : "hover:text-white"
-            }`}
-          >
-            Validasi Iuran ({pendingDues.length})
-          </button>
-
-          <button
-            onClick={() => setActiveTab("finances")}
-            className={`py-2 px-1 rounded-xl text-center transition-all ${
-              activeTab === "finances" ? "bg-emerald-600 text-white shadow-xs font-extrabold" : "hover:text-white"
-            }`}
-          >
-            Buku Kas {isRwOfficer ? "RW" : "RT"}
-          </button>
-
-          {isRwOfficer && (
             <button
-              onClick={() => setActiveTab("rw_consolidated")}
-              className={`py-2 px-1 rounded-xl text-center transition-all ${
-                activeTab === "rw_consolidated" ? "bg-emerald-600 text-white shadow-xs font-extrabold" : "hover:text-white"
+              onClick={() => setNavViewMode("ALL_GRID")}
+              className={`px-3 py-1.5 rounded-lg flex items-center gap-1.5 transition-all ${
+                navViewMode === "ALL_GRID"
+                  ? "bg-white text-emerald-700 font-extrabold shadow-xs"
+                  : "text-slate-600 hover:text-slate-900"
               }`}
             >
-              Laporan Semua RT
+              <LayoutGrid className="w-3.5 h-3.5" />
+              <span>Semua Menu</span>
             </button>
-          )}
-
-          <button
-            onClick={() => setActiveTab("fund_requests")}
-            className={`py-2 px-1 rounded-xl text-center transition-all ${
-              activeTab === "fund_requests" ? "bg-emerald-600 text-white shadow-xs font-extrabold" : "hover:text-white"
-            }`}
-          >
-            Pengajuan Dana
-          </button>
-
-          <button
-            onClick={() => setActiveTab("broadcast")}
-            className={`py-2 px-1 rounded-xl text-center transition-all ${
-              activeTab === "broadcast" ? "bg-emerald-600 text-white shadow-xs font-extrabold" : "hover:text-white"
-            }`}
-          >
-            Siaran Warga
-          </button>
-
-          <button
-            onClick={() => setActiveTab("audit")}
-            className={`py-2 px-1 rounded-xl text-center transition-all ${
-              activeTab === "audit" ? "bg-emerald-600 text-white shadow-xs font-extrabold" : "hover:text-white"
-            }`}
-          >
-            Audit UU PDP
-          </button>
-
-          <button
-            onClick={() => setActiveTab("reports")}
-            className={`py-2 px-1 rounded-xl text-center transition-all ${
-              activeTab === "reports" ? "bg-emerald-600 text-white shadow-xs font-extrabold" : "hover:text-white"
-            }`}
-          >
-            Unduh Laporan
-          </button>
+          </div>
         </div>
+
+        {navViewMode === "PILLARS" ? (
+          <div className="space-y-3">
+            {/* Primary Category / Pillar Tabs */}
+            <div className="grid grid-cols-2 md:grid-cols-4 gap-2">
+              {/* Pillar 1: Kependudukan */}
+              <button
+                onClick={() => {
+                  setSelectedPillar("KEPENDUDUKAN");
+                  if (!["pending", "residents", "reconciliation", "statistics"].includes(activeTab)) {
+                    setActiveTab("pending");
+                  }
+                }}
+                className={`p-2.5 rounded-xl text-left transition-all border flex items-center justify-between ${
+                  selectedPillar === "KEPENDUDUKAN"
+                    ? "bg-emerald-600 text-white border-emerald-600 shadow-xs"
+                    : "bg-slate-50 hover:bg-slate-100 text-slate-700 border-slate-200"
+                }`}
+              >
+                <div className="flex items-center gap-2">
+                  <Users className={`w-4 h-4 ${selectedPillar === "KEPENDUDUKAN" ? "text-white" : "text-emerald-600"}`} />
+                  <span className="text-xs font-extrabold">Kependudukan</span>
+                </div>
+                {pendingResidents.length > 0 && (
+                  <span className={`px-1.5 py-0.5 rounded-full text-[10px] font-black ${
+                    selectedPillar === "KEPENDUDUKAN" ? "bg-white text-emerald-800" : "bg-amber-100 text-amber-800"
+                  }`}>
+                    {pendingResidents.length}
+                  </span>
+                )}
+              </button>
+
+              {/* Pillar 2: Keuangan */}
+              <button
+                onClick={() => {
+                  setSelectedPillar("KEUANGAN");
+                  if (!["dues_validation", "finances", "rw_consolidated", "fund_requests"].includes(activeTab)) {
+                    setActiveTab("dues_validation");
+                  }
+                }}
+                className={`p-2.5 rounded-xl text-left transition-all border flex items-center justify-between ${
+                  selectedPillar === "KEUANGAN"
+                    ? "bg-emerald-600 text-white border-emerald-600 shadow-xs"
+                    : "bg-slate-50 hover:bg-slate-100 text-slate-700 border-slate-200"
+                }`}
+              >
+                <div className="flex items-center gap-2">
+                  <Wallet className={`w-4 h-4 ${selectedPillar === "KEUANGAN" ? "text-white" : "text-emerald-600"}`} />
+                  <span className="text-xs font-extrabold">Keuangan & Kas</span>
+                </div>
+                {pendingDues.length > 0 && (
+                  <span className={`px-1.5 py-0.5 rounded-full text-[10px] font-black ${
+                    selectedPillar === "KEUANGAN" ? "bg-white text-emerald-800" : "bg-amber-100 text-amber-800"
+                  }`}>
+                    {pendingDues.length}
+                  </span>
+                )}
+              </button>
+
+              {/* Pillar 3: Layanan Warga */}
+              <button
+                onClick={() => {
+                  setSelectedPillar("LAYANAN");
+                  if (!["complaints", "broadcast", "rt_approvals"].includes(activeTab)) {
+                    setActiveTab("complaints");
+                  }
+                }}
+                className={`p-2.5 rounded-xl text-left transition-all border flex items-center justify-between ${
+                  selectedPillar === "LAYANAN"
+                    ? "bg-emerald-600 text-white border-emerald-600 shadow-xs"
+                    : "bg-slate-50 hover:bg-slate-100 text-slate-700 border-slate-200"
+                }`}
+              >
+                <div className="flex items-center gap-2">
+                  <MessageSquare className={`w-4 h-4 ${selectedPillar === "LAYANAN" ? "text-white" : "text-emerald-600"}`} />
+                  <span className="text-xs font-extrabold">Layanan & Siaran</span>
+                </div>
+                {isRwOfficer && pendingRts.length > 0 && (
+                  <span className={`px-1.5 py-0.5 rounded-full text-[10px] font-black ${
+                    selectedPillar === "LAYANAN" ? "bg-white text-emerald-800" : "bg-amber-100 text-amber-800"
+                  }`}>
+                    {pendingRts.length}
+                  </span>
+                )}
+              </button>
+
+              {/* Pillar 4: Laporan & Audit */}
+              <button
+                onClick={() => {
+                  setSelectedPillar("LAPORAN");
+                  if (!["reports", "audit"].includes(activeTab)) {
+                    setActiveTab("reports");
+                  }
+                }}
+                className={`p-2.5 rounded-xl text-left transition-all border flex items-center justify-between ${
+                  selectedPillar === "LAPORAN"
+                    ? "bg-emerald-600 text-white border-emerald-600 shadow-xs"
+                    : "bg-slate-50 hover:bg-slate-100 text-slate-700 border-slate-200"
+                }`}
+              >
+                <div className="flex items-center gap-2">
+                  <FileText className={`w-4 h-4 ${selectedPillar === "LAPORAN" ? "text-white" : "text-emerald-600"}`} />
+                  <span className="text-xs font-extrabold">Laporan & Audit</span>
+                </div>
+              </button>
+            </div>
+
+            {/* Sub-Tabs for Active Pillar */}
+            <div className="flex flex-wrap gap-1.5 p-1.5 bg-slate-50 rounded-xl border border-slate-200/80">
+              {selectedPillar === "KEPENDUDUKAN" && (
+                <>
+                  <button
+                    onClick={() => switchTab("pending")}
+                    className={`py-2 px-3 rounded-lg text-xs font-bold flex items-center gap-2 transition-all ${
+                      activeTab === "pending"
+                        ? "bg-slate-900 text-white shadow-xs"
+                        : "bg-white text-slate-700 hover:bg-slate-100 border border-slate-200/60"
+                    }`}
+                  >
+                    <span>Verifikasi Akun Baru</span>
+                    {pendingResidents.length > 0 && (
+                      <span className="px-1.5 py-0.2 rounded-full text-[10px] font-extrabold bg-amber-400 text-slate-950">
+                        {pendingResidents.length}
+                      </span>
+                    )}
+                  </button>
+                  <button
+                    onClick={() => switchTab("residents")}
+                    className={`py-2 px-3 rounded-lg text-xs font-bold flex items-center gap-2 transition-all ${
+                      activeTab === "residents"
+                        ? "bg-slate-900 text-white shadow-xs"
+                        : "bg-white text-slate-700 hover:bg-slate-100 border border-slate-200/60"
+                    }`}
+                  >
+                    <Database className="w-3.5 h-3.5 text-emerald-600" />
+                    <span>Master Sensus Penduduk</span>
+                  </button>
+                  <button
+                    onClick={() => switchTab("reconciliation")}
+                    className={`py-2 px-3 rounded-lg text-xs font-bold flex items-center gap-2 transition-all ${
+                      activeTab === "reconciliation"
+                        ? "bg-slate-900 text-white shadow-xs"
+                        : "bg-white text-slate-700 hover:bg-slate-100 border border-slate-200/60"
+                    }`}
+                  >
+                    <GitCompare className="w-3.5 h-3.5 text-blue-600" />
+                    <span>Rekonsiliasi No KK</span>
+                  </button>
+                  <button
+                    onClick={() => switchTab("statistics")}
+                    className={`py-2 px-3 rounded-lg text-xs font-bold flex items-center gap-2 transition-all ${
+                      activeTab === "statistics"
+                        ? "bg-slate-900 text-white shadow-xs"
+                        : "bg-white text-slate-700 hover:bg-slate-100 border border-slate-200/60"
+                    }`}
+                  >
+                    <BarChart3 className="w-3.5 h-3.5 text-purple-600" />
+                    <span>Statistik & Mutasi Demografi</span>
+                  </button>
+                </>
+              )}
+
+              {selectedPillar === "KEUANGAN" && (
+                <>
+                  <button
+                    onClick={() => switchTab("dues_validation")}
+                    className={`py-2 px-3 rounded-lg text-xs font-bold flex items-center gap-2 transition-all ${
+                      activeTab === "dues_validation"
+                        ? "bg-slate-900 text-white shadow-xs"
+                        : "bg-white text-slate-700 hover:bg-slate-100 border border-slate-200/60"
+                    }`}
+                  >
+                    <span>Validasi Pembayaran Iuran</span>
+                    {pendingDues.length > 0 && (
+                      <span className="px-1.5 py-0.2 rounded-full text-[10px] font-extrabold bg-amber-400 text-slate-950">
+                        {pendingDues.length}
+                      </span>
+                    )}
+                  </button>
+                  <button
+                    onClick={() => switchTab("finances")}
+                    className={`py-2 px-3 rounded-lg text-xs font-bold flex items-center gap-2 transition-all ${
+                      activeTab === "finances"
+                        ? "bg-slate-900 text-white shadow-xs"
+                        : "bg-white text-slate-700 hover:bg-slate-100 border border-slate-200/60"
+                    }`}
+                  >
+                    <Wallet className="w-3.5 h-3.5 text-emerald-600" />
+                    <span>Buku Kas Lingkungan {isRwOfficer ? "RW" : "RT"}</span>
+                  </button>
+                  {isRwOfficer && (
+                    <button
+                      onClick={() => switchTab("rw_consolidated")}
+                      className={`py-2 px-3 rounded-lg text-xs font-bold flex items-center gap-2 transition-all ${
+                        activeTab === "rw_consolidated"
+                          ? "bg-slate-900 text-white shadow-xs"
+                          : "bg-white text-slate-700 hover:bg-slate-100 border border-slate-200/60"
+                      }`}
+                    >
+                      <Building2 className="w-3.5 h-3.5 text-indigo-600" />
+                      <span>Laporan Konsolidasi Seluruh RT</span>
+                    </button>
+                  )}
+                  <button
+                    onClick={() => switchTab("fund_requests")}
+                    className={`py-2 px-3 rounded-lg text-xs font-bold flex items-center gap-2 transition-all ${
+                      activeTab === "fund_requests"
+                        ? "bg-slate-900 text-white shadow-xs"
+                        : "bg-white text-slate-700 hover:bg-slate-100 border border-slate-200/60"
+                    }`}
+                  >
+                    <DollarSign className="w-3.5 h-3.5 text-amber-600" />
+                    <span>Pengajuan Dana Kas & LPJ</span>
+                  </button>
+                </>
+              )}
+
+              {selectedPillar === "LAYANAN" && (
+                <>
+                  <button
+                    onClick={() => switchTab("complaints")}
+                    className={`py-2 px-3 rounded-lg text-xs font-bold flex items-center gap-2 transition-all ${
+                      activeTab === "complaints"
+                        ? "bg-slate-900 text-white shadow-xs"
+                        : "bg-white text-slate-700 hover:bg-slate-100 border border-slate-200/60"
+                    }`}
+                  >
+                    <MessageSquare className="w-3.5 h-3.5 text-purple-600" />
+                    <span>Pengaduan & Aspirasi Warga</span>
+                  </button>
+                  <button
+                    onClick={() => switchTab("broadcast")}
+                    className={`py-2 px-3 rounded-lg text-xs font-bold flex items-center gap-2 transition-all ${
+                      activeTab === "broadcast"
+                        ? "bg-slate-900 text-white shadow-xs"
+                        : "bg-white text-slate-700 hover:bg-slate-100 border border-slate-200/60"
+                    }`}
+                  >
+                    <Send className="w-3.5 h-3.5 text-emerald-600" />
+                    <span>Siaran Pengumuman Resmi</span>
+                  </button>
+                  {isRwOfficer && (
+                    <button
+                      onClick={() => switchTab("rt_approvals")}
+                      className={`py-2 px-3 rounded-lg text-xs font-bold flex items-center gap-2 transition-all ${
+                        activeTab === "rt_approvals"
+                          ? "bg-slate-900 text-white shadow-xs"
+                          : "bg-white text-slate-700 hover:bg-slate-100 border border-slate-200/60"
+                      }`}
+                    >
+                      <ShieldCheck className="w-3.5 h-3.5 text-blue-600" />
+                      <span>Approval Pengurus RT</span>
+                      {pendingRts.length > 0 && (
+                        <span className="px-1.5 py-0.2 rounded-full text-[10px] font-extrabold bg-amber-400 text-slate-950">
+                          {pendingRts.length}
+                        </span>
+                      )}
+                    </button>
+                  )}
+                </>
+              )}
+
+              {selectedPillar === "LAPORAN" && (
+                <>
+                  <button
+                    onClick={() => switchTab("reports")}
+                    className={`py-2 px-3 rounded-lg text-xs font-bold flex items-center gap-2 transition-all ${
+                      activeTab === "reports"
+                        ? "bg-slate-900 text-white shadow-xs"
+                        : "bg-white text-slate-700 hover:bg-slate-100 border border-slate-200/60"
+                    }`}
+                  >
+                    <FileText className="w-3.5 h-3.5 text-emerald-600" />
+                    <span>Unduh Laporan Resmi & Ekspor</span>
+                  </button>
+                  <button
+                    onClick={() => switchTab("audit")}
+                    className={`py-2 px-3 rounded-lg text-xs font-bold flex items-center gap-2 transition-all ${
+                      activeTab === "audit"
+                        ? "bg-slate-900 text-white shadow-xs"
+                        : "bg-white text-slate-700 hover:bg-slate-100 border border-slate-200/60"
+                    }`}
+                  >
+                    <Lock className="w-3.5 h-3.5 text-rose-600" />
+                    <span>Log Audit Kepatuhan (UU PDP 27/2022)</span>
+                  </button>
+                </>
+              )}
+            </div>
+          </div>
+        ) : (
+          /* Grid View for all tabs (grouped by pillar) */
+          <div className="space-y-3 pt-1">
+            <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6 gap-2 text-xs font-bold text-slate-700">
+              <button
+                onClick={() => switchTab("pending")}
+                className={`py-2.5 px-2 rounded-xl text-center border transition-all ${
+                  activeTab === "pending"
+                    ? "bg-emerald-600 text-white border-emerald-600 shadow-xs font-black"
+                    : "bg-white hover:bg-slate-50 border-slate-200 text-slate-700"
+                }`}
+              >
+                Verif Akun ({pendingResidents.length})
+              </button>
+
+              {isRwOfficer && (
+                <button
+                  onClick={() => switchTab("rt_approvals")}
+                  className={`py-2.5 px-2 rounded-xl text-center border transition-all ${
+                    activeTab === "rt_approvals"
+                      ? "bg-emerald-600 text-white border-emerald-600 shadow-xs font-black"
+                      : "bg-white hover:bg-slate-50 border-slate-200 text-slate-700"
+                  }`}
+                >
+                  Approval RT ({pendingRts.length})
+                </button>
+              )}
+
+              <button
+                onClick={() => switchTab("residents")}
+                className={`py-2.5 px-2 rounded-xl text-center border transition-all ${
+                  activeTab === "residents"
+                    ? "bg-emerald-600 text-white border-emerald-600 shadow-xs font-black"
+                    : "bg-white hover:bg-slate-50 border-slate-200 text-slate-700"
+                }`}
+              >
+                Sensus Penduduk
+              </button>
+
+              <button
+                onClick={() => switchTab("reconciliation")}
+                className={`py-2.5 px-2 rounded-xl text-center border transition-all ${
+                  activeTab === "reconciliation"
+                    ? "bg-emerald-600 text-white border-emerald-600 shadow-xs font-black"
+                    : "bg-white hover:bg-slate-50 border-slate-200 text-slate-700"
+                }`}
+              >
+                Rekonsiliasi KK
+              </button>
+
+              <button
+                onClick={() => switchTab("statistics")}
+                className={`py-2.5 px-2 rounded-xl text-center border transition-all ${
+                  activeTab === "statistics"
+                    ? "bg-emerald-600 text-white border-emerald-600 shadow-xs font-black"
+                    : "bg-white hover:bg-slate-50 border-slate-200 text-slate-700"
+                }`}
+              >
+                Statistik & Mutasi
+              </button>
+
+              <button
+                onClick={() => switchTab("complaints")}
+                className={`py-2.5 px-2 rounded-xl text-center border transition-all ${
+                  activeTab === "complaints"
+                    ? "bg-emerald-600 text-white border-emerald-600 shadow-xs font-black"
+                    : "bg-white hover:bg-slate-50 border-slate-200 text-slate-700"
+                }`}
+              >
+                Pengaduan Warga
+              </button>
+
+              <button
+                onClick={() => switchTab("dues_validation")}
+                className={`py-2.5 px-2 rounded-xl text-center border transition-all ${
+                  activeTab === "dues_validation"
+                    ? "bg-emerald-600 text-white border-emerald-600 shadow-xs font-black"
+                    : "bg-white hover:bg-slate-50 border-slate-200 text-slate-700"
+                }`}
+              >
+                Validasi Iuran ({pendingDues.length})
+              </button>
+
+              <button
+                onClick={() => switchTab("finances")}
+                className={`py-2.5 px-2 rounded-xl text-center border transition-all ${
+                  activeTab === "finances"
+                    ? "bg-emerald-600 text-white border-emerald-600 shadow-xs font-black"
+                    : "bg-white hover:bg-slate-50 border-slate-200 text-slate-700"
+                }`}
+              >
+                Buku Kas {isRwOfficer ? "RW" : "RT"}
+              </button>
+
+              {isRwOfficer && (
+                <button
+                  onClick={() => switchTab("rw_consolidated")}
+                  className={`py-2.5 px-2 rounded-xl text-center border transition-all ${
+                    activeTab === "rw_consolidated"
+                      ? "bg-emerald-600 text-white border-emerald-600 shadow-xs font-black"
+                      : "bg-white hover:bg-slate-50 border-slate-200 text-slate-700"
+                  }`}
+                >
+                  Laporan Semua RT
+                </button>
+              )}
+
+              <button
+                onClick={() => switchTab("fund_requests")}
+                className={`py-2.5 px-2 rounded-xl text-center border transition-all ${
+                  activeTab === "fund_requests"
+                    ? "bg-emerald-600 text-white border-emerald-600 shadow-xs font-black"
+                    : "bg-white hover:bg-slate-50 border-slate-200 text-slate-700"
+                }`}
+              >
+                Pengajuan Dana
+              </button>
+
+              <button
+                onClick={() => switchTab("broadcast")}
+                className={`py-2.5 px-2 rounded-xl text-center border transition-all ${
+                  activeTab === "broadcast"
+                    ? "bg-emerald-600 text-white border-emerald-600 shadow-xs font-black"
+                    : "bg-white hover:bg-slate-50 border-slate-200 text-slate-700"
+                }`}
+              >
+                Siaran Warga
+              </button>
+
+              <button
+                onClick={() => switchTab("audit")}
+                className={`py-2.5 px-2 rounded-xl text-center border transition-all ${
+                  activeTab === "audit"
+                    ? "bg-emerald-600 text-white border-emerald-600 shadow-xs font-black"
+                    : "bg-white hover:bg-slate-50 border-slate-200 text-slate-700"
+                }`}
+              >
+                Audit UU PDP
+              </button>
+
+              <button
+                onClick={() => switchTab("reports")}
+                className={`py-2.5 px-2 rounded-xl text-center border transition-all ${
+                  activeTab === "reports"
+                    ? "bg-emerald-600 text-white border-emerald-600 shadow-xs font-black"
+                    : "bg-white hover:bg-slate-50 border-slate-200 text-slate-700"
+                }`}
+              >
+                Unduh Laporan
+              </button>
+            </div>
+          </div>
+        )}
       </div>
 
       {/* Main Tab Content */}
