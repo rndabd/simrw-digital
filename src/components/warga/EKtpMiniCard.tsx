@@ -84,10 +84,18 @@ export default function EKtpMiniCard() {
           </div>
         </div>
 
-        {/* QR Code / Status Verification Column */}
-        <div className="col-span-1 flex flex-col items-center justify-center p-2 rounded-xl bg-white/10 backdrop-blur-sm border border-white/10">
-          <QrCode className="w-12 h-12 text-white" />
-          <div className="mt-1.5 flex items-center gap-1 text-[10px] font-extrabold text-emerald-300">
+        {/* QR Code / Avatar Photo Verification Column */}
+        <div className="col-span-1 flex flex-col items-center justify-center p-1.5 rounded-xl bg-white/10 backdrop-blur-sm border border-white/15">
+          {user.avatarUrl ? (
+            <img
+              src={user.avatarUrl}
+              alt={user.fullName}
+              className="w-12 h-14 object-cover rounded-lg border border-white/30 shadow-xs"
+            />
+          ) : (
+            <QrCode className="w-12 h-12 text-white" />
+          )}
+          <div className="mt-1 flex items-center gap-1 text-[9px] font-extrabold text-emerald-300">
             <UserCheck className="w-3 h-3 text-emerald-300" />
             <span>TERVERIFIKASI</span>
           </div>

@@ -93,6 +93,27 @@ export default function HeaderDashboard({ onOpenNotifications }: HeaderDashboard
         </div>
 
         <div className="flex items-center gap-2">
+          {user && (
+            <div className="relative">
+              {user.avatarUrl ? (
+                <img
+                  src={user.avatarUrl}
+                  alt={user.fullName}
+                  className="w-9 h-9 rounded-full object-cover border-2 border-emerald-600 shadow-xs"
+                />
+              ) : (
+                <div className="w-9 h-9 rounded-full bg-emerald-100 text-emerald-800 font-bold text-xs flex items-center justify-center border border-emerald-300 shadow-xs">
+                  {user.fullName?.charAt(0) || "W"}
+                </div>
+              )}
+              {user.isOfficer && (
+                <span className="absolute -bottom-0.5 -right-0.5 w-3.5 h-3.5 bg-emerald-600 rounded-full border-2 border-white flex items-center justify-center" title="Pengurus RT/RW">
+                  <Shield className="w-2 h-2 text-white" />
+                </span>
+              )}
+            </div>
+          )}
+
           <button
             onClick={onOpenNotifications}
             className="w-9 h-9 rounded-full bg-slate-100 hover:bg-slate-200 text-slate-700 flex items-center justify-center relative transition-colors"

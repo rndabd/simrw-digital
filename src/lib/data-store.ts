@@ -48,6 +48,10 @@ export interface DataStoreSchema {
     nik_encrypted: string;
     full_name: string;
     phone_number: string;
+    email?: string;
+    avatar_url?: string;
+    is_phone_verified?: boolean;
+    is_email_verified?: boolean;
     password_hash: string;
     ktp_doc_url: string;
     status: "UNVERIFIED" | "PENDING_VERIFICATION" | "VERIFIED_ACTIVE" | "REJECTED" | "SUSPENDED";
@@ -234,6 +238,14 @@ export interface DataStoreSchema {
     rw_id: string;
     wilayah_name: string;
     notes?: string;
+  }>;
+  verification_otps?: Array<{
+    id: string;
+    target: string;
+    code: string;
+    type: "PHONE_VERIFICATION" | "EMAIL_VERIFICATION" | "PASSWORD_RESET";
+    expires_at: string;
+    created_at: string;
   }>;
 }
 
@@ -1403,6 +1415,9 @@ export function getStore(): DataStoreSchema {
       }
       if (!memoryStore!.wilayah_configs) {
         memoryStore!.wilayah_configs = [];
+      }
+      if (!memoryStore!.verification_otps) {
+        memoryStore!.verification_otps = [];
       }
 
       return memoryStore!;

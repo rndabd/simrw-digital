@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState } from "react";
+import React, { useState, useRef } from "react";
 import { useAuth } from "@/context/AuthContext";
 import EKtpMiniCard from "./EKtpMiniCard";
 import {
@@ -12,10 +12,36 @@ import {
   FileUp,
   AlertTriangle,
   Lock,
+  Camera,
+  Mail,
+  MessageSquare,
+  CheckCircle2,
+  AlertCircle,
+  RefreshCw,
+  X,
+  Phone,
+  ArrowRight,
+  ShieldCheck,
 } from "lucide-react";
 
 export default function ProfilTab() {
   const { user, isOfficerMode, setOfficerMode, quickLogin, logout, refreshProfile } = useAuth();
+
+  // State for Avatar Upload
+  const avatarInputRef = useRef<HTMLInputElement>(null);
+  const [isUploadingAvatar, setIsUploadingAvatar] = useState(false);
+  const [avatarUploadError, setAvatarUploadError] = useState<string | null>(null);
+  const [avatarUploadSuccess, setAvatarUploadSuccess] = useState<string | null>(null);
+
+  // State for OTP Verification Modal
+  const [showOtpModal, setShowOtpModal] = useState(false);
+  const [otpChannel, setOtpChannel] = useState<"WHATSAPP" | "EMAIL">("WHATSAPP");
+  const [otpTarget, setOtpTarget] = useState("");
+  const [otpCode, setOtpCode] = useState("");
+  const [otpStep, setOtpStep] = useState<1 | 2>(1);
+  const [otpLoading, setOtpLoading] = useState(false);
+  const [otpError, setOtpError] = useState<string | null>(null);
+  const [otpSuccess, setOtpSuccess] = useState<string | null>(null);
 
   // State for Officer Application Form
   const [showApplyModal, setShowApplyModal] = useState(false);
@@ -23,6 +49,119 @@ export default function ProfilTab() {
   const [skDocName, setSkDocName] = useState("SK-Kepengurusan-RT.pdf");
   const [isApplying, setIsApplying] = useState(false);
   const [applyMessage, setApplyMessage] = useState<string | null>(null);
+
+  const handleAvatarFileSelected = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+
+    if (!file.type.startsWith("image/")) {
+      setAvatarUploadError("Format berkas harus berupa gambar (JPG, PNG, WEBP).");
+      return;
+    }
+    if (file.size > 5 * 1024 * 1024) {
+      setAvatarUploadError("Ukuran foto maksimal 5 MB.");
+      return;
+    }
+
+    setIsUploadingAvatar(true);
+    setAvatarUploadError(null);
+    setAvatarUploadSuccess(null);
+
+    try {
+      const formData = new FormData();
+      formData.append("file", file);
+
+      const res = await fetch("/api/v1/user/avatar", {
+        method: "POST",
+        body: formData,
+      });
+      const json = await res.json();
+      if (json.success) {
+        setAvatarUploadSuccess("Foto profil berhasil diperbarui!");
+        await refreshProfile();
+        setTimeout(() => setAvatarUploadSuccess(null), 3000);
+      } else {
+        setAvatarUploadError(json.message || "Gagal mengunggah foto profil.");
+      }
+    } catch (err: any) {
+      setAvatarUploadError(err.message || "Koneksi terputus saat mengunggah foto.");
+    } finally {
+      setIsUploadingAvatar(false);
+    }
+  };
+
+  const openOtpVerification = (channel: "WHATSAPP" | "EMAIL") => {
+    setOtpChannel(channel);
+    setOtpTarget(channel === "WHATSAPP" ? user?.phoneNumber || "" : user?.email || "");
+    setOtpStep(1);
+    setOtpCode("");
+    setOtpError(null);
+    setOtpSuccess(null);
+    setShowOtpModal(true);
+  };
+
+  const handleSendOtp = async (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!otpTarget) {
+      setOtpError(`Harap masukkan ${otpChannel === "EMAIL" ? "alamat email" : "nomor WhatsApp"} tujuan.`);
+      return;
+    }
+    setOtpLoading(true);
+    setOtpError(null);
+    try {
+      const res = await fetch("/api/v1/auth/otp/send", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          target: otpTarget,
+          channel: otpChannel,
+          purpose: `Verifikasi ${otpChannel === "EMAIL" ? "Email" : "Nomor WhatsApp"} Akun SIM-RW`,
+        }),
+      });
+      const json = await res.json();
+      if (json.success) {
+        setOtpStep(2);
+        setOtpSuccess(json.message || `Kode OTP telah dikirimkan ke ${otpTarget}.`);
+      } else {
+        setOtpError(json.message || "Gagal mengirimkan kode OTP.");
+      }
+    } catch (err: any) {
+      setOtpError(err.message || "Koneksi bermasalah.");
+    } finally {
+      setOtpLoading(false);
+    }
+  };
+
+  const handleVerifyOtp = async (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!otpCode || otpCode.length < 4) {
+      setOtpError("Harap masukkan kode OTP yang diterima.");
+      return;
+    }
+    setOtpLoading(true);
+    setOtpError(null);
+    try {
+      const res = await fetch("/api/v1/auth/otp/verify", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ target: otpTarget, code: otpCode, channel: otpChannel }),
+      });
+      const json = await res.json();
+      if (json.success) {
+        setOtpSuccess(json.message || "Verifikasi berhasil!");
+        await refreshProfile();
+        setTimeout(() => {
+          setShowOtpModal(false);
+        }, 1500);
+      } else {
+        setOtpError(json.message || "Kode OTP tidak valid atau telah kedaluwarsa.");
+      }
+    } catch (err: any) {
+      setOtpError(err.message || "Koneksi bermasalah.");
+    } finally {
+      setOtpLoading(false);
+    }
+  };
 
   const handleApplyOfficer = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -54,10 +193,191 @@ export default function ProfilTab() {
 
   return (
     <div className="space-y-6 pb-20">
+      {/* 1. Header Profil & Foto Avatar */}
+      <div className="p-6 rounded-3xl bg-white border border-slate-200/90 shadow-sm">
+        <div className="flex flex-col sm:flex-row items-center gap-5">
+          {/* Avatar Container with Upload overlay */}
+          <div className="relative group shrink-0">
+            <input
+              ref={avatarInputRef}
+              type="file"
+              accept="image/*"
+              className="hidden"
+              onChange={handleAvatarFileSelected}
+            />
+            <div className="w-24 h-24 rounded-full overflow-hidden border-4 border-emerald-500/30 bg-emerald-50 shadow-md flex items-center justify-center">
+              {user?.avatarUrl ? (
+                <img
+                  src={user.avatarUrl}
+                  alt={user.fullName}
+                  className="w-full h-full object-cover"
+                />
+              ) : (
+                <span className="text-3xl font-extrabold text-emerald-800">
+                  {user?.fullName?.charAt(0) || "W"}
+                </span>
+              )}
+            </div>
+
+            {/* Camera / Edit button */}
+            <button
+              type="button"
+              onClick={() => avatarInputRef.current?.click()}
+              disabled={isUploadingAvatar}
+              className="absolute bottom-0 right-0 p-2 rounded-full bg-emerald-700 hover:bg-emerald-800 text-white shadow-lg transition-transform hover:scale-105 active:scale-95 disabled:opacity-70"
+              title="Ubah Foto Profil"
+            >
+              {isUploadingAvatar ? (
+                <RefreshCw className="w-4 h-4 animate-spin" />
+              ) : (
+                <Camera className="w-4 h-4" />
+              )}
+            </button>
+          </div>
+
+          {/* User Profile Info */}
+          <div className="text-center sm:text-left flex-1 space-y-1">
+            <div className="flex flex-wrap items-center justify-center sm:justify-start gap-2">
+              <h2 className="text-xl font-extrabold text-slate-900 tracking-tight">
+                {user?.fullName || "Warga SIM-RW"}
+              </h2>
+              {user?.isOfficer && (
+                <span className="px-2.5 py-0.5 rounded-full text-[11px] font-extrabold bg-emerald-100 text-emerald-800 border border-emerald-300 flex items-center gap-1">
+                  <ShieldCheck className="w-3.5 h-3.5" />
+                  Pengurus Lingkungan
+                </span>
+              )}
+            </div>
+
+            <p className="text-xs text-slate-500 flex items-center justify-center sm:justify-start gap-2">
+              <span>{user?.addressBlock || "Alamat Terdata"}</span>
+              <span>•</span>
+              <span>RT {user?.rt?.number || "02"} / RW {user?.rw?.number || "05"}</span>
+            </p>
+
+            <div className="pt-1 flex flex-wrap items-center justify-center sm:justify-start gap-2">
+              <span className="text-xs font-mono font-medium text-slate-600 bg-slate-100 px-2.5 py-1 rounded-lg">
+                📱 {user?.phoneNumber || "-"}
+              </span>
+              {user?.email && (
+                <span className="text-xs font-medium text-slate-600 bg-slate-100 px-2.5 py-1 rounded-lg">
+                  ✉️ {user.email}
+                </span>
+              )}
+            </div>
+
+            {avatarUploadSuccess && (
+              <div className="text-xs text-emerald-700 font-bold flex items-center justify-center sm:justify-start gap-1 pt-1">
+                <CheckCircle2 className="w-3.5 h-3.5" />
+                {avatarUploadSuccess}
+              </div>
+            )}
+            {avatarUploadError && (
+              <div className="text-xs text-rose-600 font-bold flex items-center justify-center sm:justify-start gap-1 pt-1">
+                <AlertCircle className="w-3.5 h-3.5" />
+                {avatarUploadError}
+              </div>
+            )}
+          </div>
+        </div>
+      </div>
+
+      {/* 2. Grid Informasi Kartu & Verifikasi Kontak */}
       <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 items-start">
-        {/* Left Column: E-KTP Card & UU PDP Badges */}
+        {/* Left Column: E-KTP Card, Status Verifikasi & Security Badges */}
         <div className="lg:col-span-5 space-y-4">
           <EKtpMiniCard />
+
+          {/* STATUS VERIFIKASI KONTAK (WHATSAPP & EMAIL) */}
+          <div className="p-5 rounded-3xl bg-white border border-slate-200/90 shadow-2xs space-y-3.5">
+            <div className="space-y-0.5">
+              <div className="text-xs font-extrabold text-slate-900 flex items-center gap-1.5">
+                <ShieldCheck className="w-4 h-4 text-emerald-600" />
+                Status Verifikasi Kontak Akun
+              </div>
+              <p className="text-[11px] text-slate-500">
+                Pilih kanal verifikasi terdaftar untuk keamanan akses & notifikasi
+              </p>
+            </div>
+
+            {/* WhatsApp Verification Card */}
+            <div className="p-3.5 rounded-2xl bg-slate-50 border border-slate-200/80 flex items-center justify-between gap-3">
+              <div className="flex items-center gap-3">
+                <div className={`w-9 h-9 rounded-xl flex items-center justify-center shrink-0 ${
+                  user?.isPhoneVerified ? "bg-emerald-100 text-emerald-700" : "bg-amber-100 text-amber-700"
+                }`}>
+                  <MessageSquare className="w-4.5 h-4.5" />
+                </div>
+                <div>
+                  <div className="text-xs font-bold text-slate-800 flex items-center gap-1.5">
+                    WhatsApp
+                    {user?.isPhoneVerified ? (
+                      <span className="text-[10px] font-extrabold text-emerald-700 bg-emerald-100 px-2 py-0.5 rounded-full">
+                        ✓ Terverifikasi
+                      </span>
+                    ) : (
+                      <span className="text-[10px] font-extrabold text-amber-800 bg-amber-100 px-2 py-0.5 rounded-full">
+                        ⚠ Belum Verif
+                      </span>
+                    )}
+                  </div>
+                  <div className="text-[11px] text-slate-500 font-mono">
+                    {user?.phoneNumber || "Nomor belum disetel"}
+                  </div>
+                </div>
+              </div>
+
+              {!user?.isPhoneVerified && (
+                <button
+                  type="button"
+                  onClick={() => openOtpVerification("WHATSAPP")}
+                  className="px-3 py-1.5 rounded-xl bg-emerald-600 hover:bg-emerald-700 text-white text-xs font-bold transition-all shadow-xs shrink-0"
+                >
+                  Verifikasi
+                </button>
+              )}
+            </div>
+
+            {/* Email Verification Card */}
+            <div className="p-3.5 rounded-2xl bg-slate-50 border border-slate-200/80 flex items-center justify-between gap-3">
+              <div className="flex items-center gap-3">
+                <div className={`w-9 h-9 rounded-xl flex items-center justify-center shrink-0 ${
+                  user?.isEmailVerified ? "bg-emerald-100 text-emerald-700" : "bg-amber-100 text-amber-700"
+                }`}>
+                  <Mail className="w-4.5 h-4.5" />
+                </div>
+                <div className="min-w-0">
+                  <div className="text-xs font-bold text-slate-800 flex items-center gap-1.5">
+                    Email
+                    {user?.isEmailVerified ? (
+                      <span className="text-[10px] font-extrabold text-emerald-700 bg-emerald-100 px-2 py-0.5 rounded-full">
+                        ✓ Terverifikasi
+                      </span>
+                    ) : (
+                      <span className="text-[10px] font-extrabold text-amber-800 bg-amber-100 px-2 py-0.5 rounded-full">
+                        ⚠ Belum Verif
+                      </span>
+                    )}
+                  </div>
+                  <div className="text-[11px] text-slate-500 truncate">
+                    {user?.email || "Email belum ditambahkan"}
+                  </div>
+                </div>
+              </div>
+
+              <button
+                type="button"
+                onClick={() => openOtpVerification("EMAIL")}
+                className={`px-3 py-1.5 rounded-xl text-xs font-bold transition-all shadow-xs shrink-0 ${
+                  user?.isEmailVerified
+                    ? "bg-slate-200 hover:bg-slate-300 text-slate-700"
+                    : "bg-emerald-600 hover:bg-emerald-700 text-white"
+                }`}
+              >
+                {user?.isEmailVerified ? "Ubah" : "Verifikasi"}
+              </button>
+            </div>
+          </div>
 
           {/* Mode Pengurus Switcher (if officer) */}
           {user?.isOfficer && (
@@ -222,6 +542,140 @@ export default function ProfilTab() {
           </button>
         </div>
       </div>
+
+      {/* 3. MODAL VERIFIKASI OTP (WHATSAPP ATAU EMAIL) */}
+      {showOtpModal && (
+        <div className="fixed inset-0 z-50 bg-slate-900/60 backdrop-blur-sm flex items-center justify-center p-4 overflow-y-auto">
+          <div className="bg-white rounded-3xl max-w-md w-full p-6 shadow-2xl border border-slate-100 relative animate-in fade-in zoom-in duration-200">
+            {/* Header */}
+            <div className="flex items-start justify-between mb-4">
+              <div className="flex items-center gap-3">
+                <div className={`w-10 h-10 rounded-2xl flex items-center justify-center shrink-0 ${
+                  otpChannel === "EMAIL" ? "bg-indigo-100 text-indigo-700" : "bg-emerald-100 text-emerald-700"
+                }`}>
+                  {otpChannel === "EMAIL" ? <Mail className="w-5 h-5" /> : <MessageSquare className="w-5 h-5" />}
+                </div>
+                <div>
+                  <h3 className="text-base font-extrabold text-slate-900">
+                    Verifikasi {otpChannel === "EMAIL" ? "Alamat Email" : "Nomor WhatsApp"}
+                  </h3>
+                  <p className="text-xs text-slate-500">
+                    Pastikan kepemilikan akun Anda terverifikasi resmi
+                  </p>
+                </div>
+              </div>
+              <button
+                type="button"
+                onClick={() => setShowOtpModal(false)}
+                className="p-1.5 rounded-full text-slate-400 hover:text-slate-700 hover:bg-slate-100 transition-colors"
+              >
+                <X className="w-5 h-5" />
+              </button>
+            </div>
+
+            {/* Error & Success alerts */}
+            {otpError && (
+              <div className="mb-4 p-3 rounded-xl bg-rose-50 border border-rose-200 text-rose-700 text-xs flex items-start gap-2">
+                <AlertCircle className="w-4 h-4 shrink-0 mt-0.5" />
+                <div>{otpError}</div>
+              </div>
+            )}
+            {otpSuccess && (
+              <div className="mb-4 p-3 rounded-xl bg-emerald-50 border border-emerald-200 text-emerald-800 text-xs flex items-start gap-2 font-medium">
+                <CheckCircle2 className="w-4 h-4 shrink-0 mt-0.5 text-emerald-600" />
+                <div>{otpSuccess}</div>
+              </div>
+            )}
+
+            {/* STEP 1: KIRIM KODE OTP */}
+            {otpStep === 1 && (
+              <form onSubmit={handleSendOtp} className="space-y-4">
+                <div>
+                  <label className="text-xs font-semibold text-slate-700 block mb-1">
+                    {otpChannel === "EMAIL" ? "Alamat Email Anda" : "Nomor WhatsApp / HP Terdaftar"}
+                  </label>
+                  <input
+                    type={otpChannel === "EMAIL" ? "email" : "tel"}
+                    required
+                    value={otpTarget}
+                    onChange={(e) => setOtpTarget(e.target.value)}
+                    placeholder={otpChannel === "EMAIL" ? "contoh@domain.com" : "08xxxxxxxxxx"}
+                    className="w-full text-xs p-3 rounded-xl border border-slate-300 font-medium focus:ring-2 focus:ring-emerald-500"
+                  />
+                </div>
+
+                <button
+                  type="submit"
+                  disabled={otpLoading}
+                  className="w-full py-3 px-4 rounded-xl bg-emerald-600 hover:bg-emerald-700 text-white font-bold text-xs flex items-center justify-center gap-2 shadow-sm transition-all"
+                >
+                  {otpLoading ? (
+                    <>
+                      <RefreshCw className="w-4 h-4 animate-spin" />
+                      Mengirimkan Kode OTP...
+                    </>
+                  ) : (
+                    <>
+                      Kirim Kode OTP (6 Digit)
+                      <ArrowRight className="w-4 h-4" />
+                    </>
+                  )}
+                </button>
+              </form>
+            )}
+
+            {/* STEP 2: INPUT KODE OTP & VERIFIKASI */}
+            {otpStep === 2 && (
+              <form onSubmit={handleVerifyOtp} className="space-y-4">
+                <div>
+                  <label className="text-xs font-semibold text-slate-700 block mb-1">
+                    Masukkan 6 Digit Kode OTP
+                  </label>
+                  <input
+                    type="text"
+                    required
+                    maxLength={6}
+                    value={otpCode}
+                    onChange={(e) => setOtpCode(e.target.value.replace(/\D/g, "").slice(0, 6))}
+                    placeholder="Contoh: 123456"
+                    className="w-full text-center text-lg tracking-widest font-mono font-extrabold p-3 rounded-xl border border-slate-300 focus:ring-2 focus:ring-emerald-500"
+                  />
+                  <p className="text-[11px] text-slate-500 mt-1.5 text-center">
+                    Kode dikirim ke <strong>{otpTarget}</strong>
+                  </p>
+                </div>
+
+                <div className="flex gap-2">
+                  <button
+                    type="button"
+                    onClick={() => {
+                      setOtpStep(1);
+                      setOtpError(null);
+                    }}
+                    className="w-1/3 py-2.5 px-3 rounded-xl bg-slate-100 hover:bg-slate-200 text-slate-700 font-bold text-xs"
+                  >
+                    Kirim Ulang
+                  </button>
+                  <button
+                    type="submit"
+                    disabled={otpLoading || otpCode.length < 6}
+                    className="w-2/3 py-2.5 px-4 rounded-xl bg-emerald-600 hover:bg-emerald-700 disabled:opacity-50 text-white font-bold text-xs flex items-center justify-center gap-2 shadow-sm transition-all"
+                  >
+                    {otpLoading ? (
+                      <RefreshCw className="w-4 h-4 animate-spin" />
+                    ) : (
+                      <>
+                        <CheckCircle2 className="w-4 h-4" />
+                        Verifikasi Kode
+                      </>
+                    )}
+                  </button>
+                </div>
+              </form>
+            )}
+          </div>
+        </div>
+      )}
     </div>
   );
 }

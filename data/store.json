@@ -641,6 +641,60 @@
   ],
   "audit_logs": [
     {
+      "id": "1a1e579f-12f9-4e32-b514-34c853b681df",
+      "user_id": "user-super-admin",
+      "action": "USER_LOGIN",
+      "resource": "AUTH",
+      "payload": null,
+      "ip_address": "::1",
+      "timestamp": "2026-10-24T10:16:38.151Z"
+    },
+    {
+      "id": "3fdb3743-02bc-4e43-b9ac-82e4cc6850cd",
+      "user_id": "user-rt-01",
+      "action": "USER_LOGIN",
+      "resource": "AUTH",
+      "payload": null,
+      "ip_address": "202.51.228.1",
+      "timestamp": "2026-10-24T09:53:21.069Z"
+    },
+    {
+      "id": "84f86cc5-112a-4f41-a0b0-cbe9418523f5",
+      "user_id": "user-rt-01",
+      "action": "USER_LOGIN",
+      "resource": "AUTH",
+      "payload": null,
+      "ip_address": "202.51.228.1",
+      "timestamp": "2026-10-24T09:23:52.385Z"
+    },
+    {
+      "id": "5d137024-43f5-4820-92b7-9511b4541e63",
+      "user_id": "user-rt-01",
+      "action": "USER_LOGIN",
+      "resource": "AUTH",
+      "payload": null,
+      "ip_address": "202.51.228.1",
+      "timestamp": "2026-10-24T09:23:49.388Z"
+    },
+    {
+      "id": "3b47495c-078b-4e42-adae-89a50b471e6b",
+      "user_id": "user-rt-01",
+      "action": "USER_LOGIN",
+      "resource": "AUTH",
+      "payload": null,
+      "ip_address": "::1",
+      "timestamp": "2026-10-24T09:23:23.445Z"
+    },
+    {
+      "id": "488d0618-8dc7-44d6-9d06-1ab70fb3b18d",
+      "user_id": "user-rt-01",
+      "action": "USER_LOGIN",
+      "resource": "AUTH",
+      "payload": null,
+      "ip_address": "202.51.228.1",
+      "timestamp": "2026-10-24T07:53:33.415Z"
+    },
+    {
       "id": "57027286-cc7b-4343-a235-c34411171649",
       "user_id": "user-rw-01",
       "action": "USER_LOGIN",

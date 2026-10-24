@@ -23,6 +23,8 @@ export async function POST(req: NextRequest) {
     let rwId = "";
     let rtId = "";
     let addressBlock = "";
+    let email = "";
+    let verificationMethod: "WHATSAPP" | "EMAIL" = "WHATSAPP";
     let ktpDocUrl = "/uploads/sample-ktp.jpg";
 
     if (contentType.includes("multipart/form-data")) {
@@ -31,6 +33,8 @@ export async function POST(req: NextRequest) {
       kk = (formData.get("kk") as string) || "";
       fullName = (formData.get("fullName") as string) || "";
       phoneNumber = (formData.get("phoneNumber") as string) || "";
+      email = (formData.get("email") as string) || "";
+      verificationMethod = ((formData.get("verificationMethod") as string) === "EMAIL" ? "EMAIL" : "WHATSAPP");
       password = (formData.get("password") as string) || "";
       rwId = (formData.get("rwId") as string) || "";
       rtId = (formData.get("rtId") as string) || "";
@@ -48,11 +52,20 @@ export async function POST(req: NextRequest) {
       kk = body.kk;
       fullName = body.fullName;
       phoneNumber = body.phoneNumber;
+      email = body.email || "";
+      verificationMethod = body.verificationMethod === "EMAIL" ? "EMAIL" : "WHATSAPP";
       password = body.password;
       rwId = body.rwId;
       rtId = body.rtId;
       addressBlock = body.addressBlock;
       if (body.ktpDocUrl) ktpDocUrl = body.ktpDocUrl;
+    }
+
+    if (verificationMethod === "EMAIL" && !email) {
+      return NextResponse.json(
+        { success: false, message: "Email wajib diisi jika memilih verifikasi melalui Email" },
+        { status: 400 }
+      );
     }
 
     // 1. Validasi NIK
@@ -123,6 +136,9 @@ export async function POST(req: NextRequest) {
     }
 
     // 6. Save User with PENDING_VERIFICATION
+    const isEmailVerified = verificationMethod === "EMAIL";
+    const isPhoneVerified = verificationMethod === "WHATSAPP";
+
     const newUser = {
       id: newUserId,
       rw_id: rwId,
@@ -132,6 +148,9 @@ export async function POST(req: NextRequest) {
       nik_encrypted: nikEncrypted,
       full_name: fullName.trim(),
       phone_number: phoneNumber.trim(),
+      email: email.trim() ? email.trim() : undefined,
+      is_phone_verified: isPhoneVerified,
+      is_email_verified: isEmailVerified,
       password_hash: passwordHash,
       ktp_doc_url: ktpDocUrl,
       status: "PENDING_VERIFICATION" as const,

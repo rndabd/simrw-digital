@@ -7,6 +7,10 @@ export interface UserProfile {
   id: string;
   fullName: string;
   phoneNumber: string;
+  email?: string;
+  avatarUrl?: string;
+  isPhoneVerified?: boolean;
+  isEmailVerified?: boolean;
   status: "UNVERIFIED" | "PENDING_VERIFICATION" | "VERIFIED_ACTIVE" | "REJECTED" | "SUSPENDED";
   maskedNik: string;
   rejectionNote?: string;
