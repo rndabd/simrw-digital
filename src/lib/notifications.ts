@@ -54,9 +54,32 @@ async function processNextNotification() {
   job.attempts += 1;
 
   try {
-    // In production, this calls FCM admin.messaging().send({ topic: ... })
-    // Simulate latency < 50ms
-    await new Promise((resolve) => setTimeout(resolve, 30));
+    // If FCM_SERVER_KEY is configured in .env, dispatch live push notification to Firebase
+    if (process.env.FCM_SERVER_KEY) {
+      const recipient = job.payload.topic ? `/topics/${job.payload.topic}` : job.payload.recipientUserId;
+      try {
+        const fcmRes = await fetch("https://fcm.googleapis.com/fcm/send", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `key=${process.env.FCM_SERVER_KEY}`,
+          },
+          body: JSON.stringify({
+            to: recipient,
+            notification: {
+              title: job.payload.title,
+              body: job.payload.body,
+              sound: "default",
+            },
+            data: job.payload.data || {},
+          }),
+        });
+        const fcmJson = await fcmRes.json();
+        console.log(`[FCM Live HTTP] Response for topic "${job.payload.topic}":`, fcmJson);
+      } catch (fcmErr) {
+        console.error(`[FCM Live HTTP] Send failed:`, fcmErr);
+      }
+    }
 
     job.status = "SENT";
     job.processedAt = new Date().toISOString();
@@ -88,6 +111,29 @@ export async function manageFCMTopicSubscription(
   action: "SUBSCRIBE" | "UNSUBSCRIBE"
 ) {
   console.log(`[FCM Topic] ${action} ${tokens.length} token(s) to topic: ${topic}`);
+
+  if (process.env.FCM_SERVER_KEY && tokens.length > 0) {
+    try {
+      const actionUrl =
+        action === "SUBSCRIBE"
+          ? "https://iid.googleapis.com/iid/v1:batchAdd"
+          : "https://iid.googleapis.com/iid/v1:batchRemove";
+      await fetch(actionUrl, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `key=${process.env.FCM_SERVER_KEY}`,
+        },
+        body: JSON.stringify({
+          to: `/topics/${topic}`,
+          registration_tokens: tokens,
+        }),
+      });
+    } catch (e) {
+      console.error(`[FCM Topic Live Subscription Error]:`, e);
+    }
+  }
+
   return { success: true, topic, action, count: tokens.length };
 }
 

@@ -1,6 +1,7 @@
 "use client";
 
 import React, { createContext, useContext, useState, useEffect, ReactNode } from "react";
+import { initPushNotifications } from "@/lib/push-notifications";
 
 export interface UserProfile {
   id: string;
@@ -73,6 +74,12 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   useEffect(() => {
     fetchProfile();
   }, []);
+
+  useEffect(() => {
+    if (user?.id) {
+      initPushNotifications();
+    }
+  }, [user?.id]);
 
   const login = async (phoneNumber: string, password: string) => {
     setIsLoading(true);
