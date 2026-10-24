@@ -22,6 +22,9 @@ export function getEmailTransporter() {
       user,
       pass,
     },
+    tls: {
+      rejectUnauthorized: false,
+    },
   });
 }
 
