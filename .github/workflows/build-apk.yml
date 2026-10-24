@@ -6,6 +6,9 @@ on:
     tags: [ 'v*' ]
   workflow_dispatch:
 
+permissions:
+  contents: write
+
 jobs:
   build:
     name: Build Debug APK
@@ -27,6 +30,9 @@ jobs:
       - name: Build Next.js Web App
         run: npm run build
 
+      - name: Sync Capacitor Android
+        run: npx cap sync android
+
       - name: Set up JDK 17
         uses: actions/setup-java@v4
         with:
@@ -42,10 +48,21 @@ jobs:
           cd android
           ./gradlew assembleDebug --stacktrace
 
-      - name: Upload Debug APK
+      - name: Upload Debug APK Artifact
         uses: actions/upload-artifact@v4
         with:
           name: SIM-RW-Digital-Debug-APK
           path: android/app/build/outputs/apk/debug/app-debug.apk
           retention-days: 30
 
+      - name: Release APK Download
+        if: startsWith(github.ref, 'refs/tags/v')
+        uses: softprops/action-gh-release@v2
+        with:
+          files: android/app/build/outputs/apk/debug/app-debug.apk
+          name: Release ${{ github.ref_name }} (APK Android)
+          generate_release_notes: true
+          draft: false
+          prerelease: false
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
