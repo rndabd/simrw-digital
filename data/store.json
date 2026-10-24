@@ -641,6 +641,42 @@
   ],
   "audit_logs": [
     {
+      "id": "57027286-cc7b-4343-a235-c34411171649",
+      "user_id": "user-rw-01",
+      "action": "USER_LOGIN",
+      "resource": "AUTH",
+      "payload": null,
+      "ip_address": "::1",
+      "timestamp": "2026-10-24T04:48:35.377Z"
+    },
+    {
+      "id": "2705b677-5232-4213-9a1a-17e9040a5747",
+      "user_id": "user-rw-01",
+      "action": "USER_LOGIN",
+      "resource": "AUTH",
+      "payload": null,
+      "ip_address": "114.122.102.1",
+      "timestamp": "2026-10-22T06:28:46.513Z"
+    },
+    {
+      "id": "a38872ec-9362-43a3-901b-189817890447",
+      "user_id": "user-rw-01",
+      "action": "USER_LOGIN",
+      "resource": "AUTH",
+      "payload": null,
+      "ip_address": "114.122.102.1",
+      "timestamp": "2026-10-22T06:28:02.565Z"
+    },
+    {
+      "id": "c52a907e-5d1a-464a-8458-6c747475d82c",
+      "user_id": "user-rw-01",
+      "action": "USER_LOGIN",
+      "resource": "AUTH",
+      "payload": null,
+      "ip_address": "202.51.228.1",
+      "timestamp": "2026-10-22T06:22:30.732Z"
+    },
+    {
       "id": "732af6cc-5aff-44e0-895f-20c3013d4ef5",
       "user_id": "officer",
       "action": "DELETE_EMERGENCY_CONTACT",
