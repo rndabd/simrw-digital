@@ -37,3 +37,6 @@ next-env.d.ts
 *.iml
 android/.idea/
 
+# Android build outputs
+*.apk
+

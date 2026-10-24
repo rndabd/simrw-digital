@@ -581,15 +581,15 @@ export default function OfficerDashboard() {
   return (
     <div className="space-y-5 pb-20">
       {/* Officer Header Banner Card */}
-      <div className="p-5 md:p-6 rounded-3xl bg-gradient-to-r from-slate-900 via-emerald-950 to-slate-900 text-white shadow-xl relative overflow-hidden border border-emerald-900/40">
+      <div className="p-5 md:p-6 rounded-3xl bg-slate-900 text-white shadow-xl relative overflow-hidden border-2 border-emerald-600">
         <div className="relative z-10 flex flex-col sm:flex-row sm:items-center justify-between gap-4">
           <div className="flex items-center gap-3.5">
-            <div className="w-12 h-12 md:w-14 md:h-14 rounded-2xl bg-gradient-to-br from-emerald-500/30 to-emerald-700/20 border border-emerald-400/40 flex items-center justify-center text-emerald-300 shrink-0 shadow-inner">
+            <div className="w-12 h-12 md:w-14 md:h-14 rounded-2xl bg-emerald-900 border-2 border-emerald-400 flex items-center justify-center text-emerald-300 shrink-0 shadow-md">
               <ShieldCheck className="w-7 h-7 md:w-8 md:h-8" />
             </div>
             <div>
               <div className="text-[11px] uppercase tracking-wider text-emerald-400 font-extrabold flex items-center gap-1.5">
-                <span className="w-2 h-2 rounded-full bg-emerald-400 animate-pulse"></span>
+                <span className="w-2.5 h-2.5 rounded-full bg-emerald-400"></span>
                 <span>PANEL KEPENGURUSAN {isRwOfficer ? "RW" : "RT"}</span>
               </div>
               <h2 className="text-lg md:text-2xl font-black text-white tracking-tight mt-0.5">
@@ -597,11 +597,11 @@ export default function OfficerDashboard() {
                   ? `Rukun Warga (RW) ${user?.rw?.number || "05"} - Sukamaju`
                   : `Rukun Tetangga (RT) ${user?.rt?.number || "02"} / RW ${user?.rw?.number || "05"}`}
               </h2>
-              <div className="text-xs text-slate-300 mt-1 flex flex-wrap items-center gap-1.5">
+              <div className="text-xs text-slate-200 mt-1 flex flex-wrap items-center gap-1.5 font-medium">
                 <span>Pengurus:</span>
-                <span className="font-bold text-white bg-white/10 px-2 py-0.5 rounded-md">{user?.fullName}</span>
+                <span className="font-bold text-white bg-slate-800 border border-slate-700 px-2 py-0.5 rounded-md">{user?.fullName}</span>
                 <span className="text-slate-400">•</span>
-                <span className="text-emerald-300 font-semibold bg-emerald-900/40 border border-emerald-500/30 px-2 py-0.5 rounded-md">
+                <span className="text-emerald-300 font-bold bg-emerald-950 border border-emerald-500 px-2 py-0.5 rounded-md">
                   {formatRoleList(user?.roles)}
                 </span>
               </div>
@@ -610,7 +610,7 @@ export default function OfficerDashboard() {
 
           <button
             onClick={() => setOfficerMode(false)}
-            className="px-4 py-2.5 rounded-xl bg-slate-800/90 hover:bg-slate-700/90 border border-slate-700 text-xs text-emerald-300 font-bold flex items-center gap-2 self-start sm:self-center transition-all shadow-md hover:shadow-lg active:scale-95"
+            className="px-4 py-2.5 rounded-xl bg-slate-800 hover:bg-slate-700 border-2 border-slate-600 text-xs text-emerald-300 font-bold flex items-center gap-2 self-start sm:self-center transition-all shadow-md active:scale-95"
           >
             <ArrowLeft className="w-4 h-4" />
             <span>Kembali ke Mode Warga</span>
@@ -618,37 +618,37 @@ export default function OfficerDashboard() {
         </div>
       </div>
 
-      {/* Executive KPI Summary Cards (Quick Status & Jump) */}
+      {/* Executive KPI Summary Cards (Quick Status & Jump - 100% Solid) */}
       <div className="grid grid-cols-2 lg:grid-cols-4 gap-3">
         {/* KPI 1: Verifikasi Warga */}
         <button
           onClick={() => switchTab("pending")}
-          className={`p-3.5 sm:p-4 rounded-2xl text-left transition-all relative overflow-hidden flex flex-col justify-between border ${
+          className={`p-3.5 sm:p-4 rounded-2xl text-left transition-all relative overflow-hidden flex flex-col justify-between border-2 ${
             activeTab === "pending"
-              ? "bg-emerald-950/20 border-emerald-500 ring-2 ring-emerald-500/20 shadow-md"
-              : "bg-white/90 hover:bg-white border-slate-200/80 hover:border-slate-300 shadow-xs hover:shadow-sm"
+              ? "bg-emerald-50 border-emerald-600 shadow-md ring-2 ring-emerald-500"
+              : "bg-white hover:bg-slate-50 border-slate-300 hover:border-slate-400 shadow-sm"
           }`}
         >
           <div className="flex items-center justify-between w-full mb-2">
-            <div className={`w-9 h-9 rounded-xl flex items-center justify-center ${
-              pendingResidents.length > 0 ? "bg-amber-100 text-amber-700" : "bg-emerald-100 text-emerald-700"
+            <div className={`w-9 h-9 rounded-xl flex items-center justify-center font-bold ${
+              pendingResidents.length > 0 ? "bg-amber-100 text-amber-800 border border-amber-300" : "bg-emerald-100 text-emerald-800 border border-emerald-300"
             }`}>
               <Users className="w-5 h-5" />
             </div>
-            <span className={`text-[10px] font-extrabold px-2 py-0.5 rounded-full ${
-              pendingResidents.length > 0 ? "bg-amber-100 text-amber-800" : "bg-emerald-100 text-emerald-800"
+            <span className={`text-[10px] font-black px-2 py-0.5 rounded-full ${
+              pendingResidents.length > 0 ? "bg-amber-400 text-slate-950 font-black" : "bg-emerald-100 text-emerald-900 border border-emerald-300"
             }`}>
               {pendingResidents.length > 0 ? `${pendingResidents.length} Menunggu` : "Tertib"}
             </span>
           </div>
           <div>
-            <div className="text-[11px] font-semibold text-slate-500">Verifikasi Warga</div>
+            <div className="text-[11px] font-bold text-slate-600">Verifikasi Warga</div>
             <div className="text-xl sm:text-2xl font-black text-slate-900 mt-0.5">
-              {pendingResidents.length} <span className="text-xs font-semibold text-slate-400 font-normal">Antrean</span>
+              {pendingResidents.length} <span className="text-xs font-semibold text-slate-500 font-normal">Antrean</span>
             </div>
-            <div className="text-[10px] text-slate-500 mt-1 flex items-center gap-1">
+            <div className="text-[10px] text-slate-600 font-medium mt-1 flex items-center gap-1">
               <span>{pendingResidents.length > 0 ? "Perlu ditinjau segera" : "Semua akun tervalidasi"}</span>
-              <ChevronRight className="w-3 h-3 text-slate-400 ml-auto" />
+              <ChevronRight className="w-3.5 h-3.5 text-slate-500 ml-auto" />
             </div>
           </div>
         </button>
@@ -656,32 +656,32 @@ export default function OfficerDashboard() {
         {/* KPI 2: Validasi Iuran */}
         <button
           onClick={() => switchTab("dues_validation")}
-          className={`p-3.5 sm:p-4 rounded-2xl text-left transition-all relative overflow-hidden flex flex-col justify-between border ${
+          className={`p-3.5 sm:p-4 rounded-2xl text-left transition-all relative overflow-hidden flex flex-col justify-between border-2 ${
             activeTab === "dues_validation"
-              ? "bg-emerald-950/20 border-emerald-500 ring-2 ring-emerald-500/20 shadow-md"
-              : "bg-white/90 hover:bg-white border-slate-200/80 hover:border-slate-300 shadow-xs hover:shadow-sm"
+              ? "bg-emerald-50 border-emerald-600 shadow-md ring-2 ring-emerald-500"
+              : "bg-white hover:bg-slate-50 border-slate-300 hover:border-slate-400 shadow-sm"
           }`}
         >
           <div className="flex items-center justify-between w-full mb-2">
-            <div className={`w-9 h-9 rounded-xl flex items-center justify-center ${
-              pendingDues.length > 0 ? "bg-amber-100 text-amber-700" : "bg-blue-100 text-blue-700"
+            <div className={`w-9 h-9 rounded-xl flex items-center justify-center font-bold ${
+              pendingDues.length > 0 ? "bg-amber-100 text-amber-800 border border-amber-300" : "bg-blue-100 text-blue-800 border border-blue-300"
             }`}>
               <CreditCard className="w-5 h-5" />
             </div>
-            <span className={`text-[10px] font-extrabold px-2 py-0.5 rounded-full ${
-              pendingDues.length > 0 ? "bg-amber-100 text-amber-800" : "bg-slate-100 text-slate-700"
+            <span className={`text-[10px] font-black px-2 py-0.5 rounded-full ${
+              pendingDues.length > 0 ? "bg-amber-400 text-slate-950 font-black" : "bg-slate-200 text-slate-800 font-bold"
             }`}>
               {pendingDues.length > 0 ? `${pendingDues.length} Bukti` : "Selesai"}
             </span>
           </div>
           <div>
-            <div className="text-[11px] font-semibold text-slate-500">Validasi Iuran</div>
+            <div className="text-[11px] font-bold text-slate-600">Validasi Iuran</div>
             <div className="text-xl sm:text-2xl font-black text-slate-900 mt-0.5">
-              {pendingDues.length} <span className="text-xs font-semibold text-slate-400 font-normal">Slip</span>
+              {pendingDues.length} <span className="text-xs font-semibold text-slate-500 font-normal">Slip</span>
             </div>
-            <div className="text-[10px] text-slate-500 mt-1 flex items-center gap-1">
+            <div className="text-[10px] text-slate-600 font-medium mt-1 flex items-center gap-1">
               <span>{pendingDues.length > 0 ? "Perlu konfirmasi transfer" : "Tidak ada slip tertunda"}</span>
-              <ChevronRight className="w-3 h-3 text-slate-400 ml-auto" />
+              <ChevronRight className="w-3.5 h-3.5 text-slate-500 ml-auto" />
             </div>
           </div>
         </button>
@@ -689,28 +689,28 @@ export default function OfficerDashboard() {
         {/* KPI 3: Saldo Kas */}
         <button
           onClick={() => switchTab("finances")}
-          className={`p-3.5 sm:p-4 rounded-2xl text-left transition-all relative overflow-hidden flex flex-col justify-between border ${
+          className={`p-3.5 sm:p-4 rounded-2xl text-left transition-all relative overflow-hidden flex flex-col justify-between border-2 ${
             activeTab === "finances"
-              ? "bg-emerald-950/20 border-emerald-500 ring-2 ring-emerald-500/20 shadow-md"
-              : "bg-white/90 hover:bg-white border-slate-200/80 hover:border-slate-300 shadow-xs hover:shadow-sm"
+              ? "bg-emerald-50 border-emerald-600 shadow-md ring-2 ring-emerald-500"
+              : "bg-white hover:bg-slate-50 border-slate-300 hover:border-slate-400 shadow-sm"
           }`}
         >
           <div className="flex items-center justify-between w-full mb-2">
-            <div className="w-9 h-9 rounded-xl bg-emerald-100 text-emerald-700 flex items-center justify-center">
+            <div className="w-9 h-9 rounded-xl bg-emerald-100 border border-emerald-300 text-emerald-800 flex items-center justify-center font-bold">
               <Wallet className="w-5 h-5" />
             </div>
-            <span className="text-[10px] font-extrabold px-2 py-0.5 rounded-full bg-emerald-100 text-emerald-800">
+            <span className="text-[10px] font-black px-2 py-0.5 rounded-full bg-emerald-100 text-emerald-900 border border-emerald-300">
               Kas Riil
             </span>
           </div>
           <div>
-            <div className="text-[11px] font-semibold text-slate-500">Saldo Kas {isRwOfficer ? "RW" : "RT"}</div>
-            <div className="text-base sm:text-lg font-black text-emerald-700 mt-0.5 truncate">
+            <div className="text-[11px] font-bold text-slate-600">Saldo Kas {isRwOfficer ? "RW" : "RT"}</div>
+            <div className="text-base sm:text-lg font-black text-emerald-800 mt-0.5 truncate">
               {financeData?.summary ? `Rp ${Number(financeData.summary.netBalance).toLocaleString("id-ID")}` : "Rp ..."}
             </div>
-            <div className="text-[10px] text-slate-500 mt-1 flex items-center gap-1">
+            <div className="text-[10px] text-slate-600 font-medium mt-1 flex items-center gap-1">
               <span>Buku kas & pembukuan</span>
-              <ChevronRight className="w-3 h-3 text-slate-400 ml-auto" />
+              <ChevronRight className="w-3.5 h-3.5 text-slate-500 ml-auto" />
             </div>
           </div>
         </button>
@@ -718,54 +718,54 @@ export default function OfficerDashboard() {
         {/* KPI 4: Aspirasi & Siaran */}
         <button
           onClick={() => switchTab("complaints")}
-          className={`p-3.5 sm:p-4 rounded-2xl text-left transition-all relative overflow-hidden flex flex-col justify-between border ${
+          className={`p-3.5 sm:p-4 rounded-2xl text-left transition-all relative overflow-hidden flex flex-col justify-between border-2 ${
             activeTab === "complaints"
-              ? "bg-emerald-950/20 border-emerald-500 ring-2 ring-emerald-500/20 shadow-md"
-              : "bg-white/90 hover:bg-white border-slate-200/80 hover:border-slate-300 shadow-xs hover:shadow-sm"
+              ? "bg-emerald-50 border-emerald-600 shadow-md ring-2 ring-emerald-500"
+              : "bg-white hover:bg-slate-50 border-slate-300 hover:border-slate-400 shadow-sm"
           }`}
         >
           <div className="flex items-center justify-between w-full mb-2">
-            <div className="w-9 h-9 rounded-xl bg-purple-100 text-purple-700 flex items-center justify-center">
+            <div className="w-9 h-9 rounded-xl bg-purple-100 border border-purple-300 text-purple-800 flex items-center justify-center font-bold">
               <MessageSquare className="w-5 h-5" />
             </div>
-            <span className="text-[10px] font-extrabold px-2 py-0.5 rounded-full bg-purple-100 text-purple-800">
+            <span className="text-[10px] font-black px-2 py-0.5 rounded-full bg-purple-100 text-purple-900 border border-purple-300">
               Aspirasi
             </span>
           </div>
           <div>
-            <div className="text-[11px] font-semibold text-slate-500">Pengaduan & Siaran</div>
+            <div className="text-[11px] font-bold text-slate-600">Pengaduan & Siaran</div>
             <div className="text-xl sm:text-2xl font-black text-slate-900 mt-0.5">
-              Siaga <span className="text-xs font-semibold text-slate-400 font-normal">Aktif</span>
+              Siaga <span className="text-xs font-semibold text-slate-500 font-normal">Aktif</span>
             </div>
-            <div className="text-[10px] text-slate-500 mt-1 flex items-center gap-1">
+            <div className="text-[10px] text-slate-600 font-medium mt-1 flex items-center gap-1">
               <span>Respon warga & woro-woro</span>
-              <ChevronRight className="w-3 h-3 text-slate-400 ml-auto" />
+              <ChevronRight className="w-3.5 h-3.5 text-slate-500 ml-auto" />
             </div>
           </div>
         </button>
       </div>
 
-      {/* 3. Navigation Pillar Bar & Sub-Tabs */}
-      <div className="bg-white/95 backdrop-blur-md rounded-2xl border border-slate-200/90 shadow-xs p-3 sm:p-4 space-y-3">
+      {/* 3. Navigation Pillar Bar & Sub-Tabs (100% Solid Background) */}
+      <div className="bg-white rounded-2xl border-2 border-slate-300 shadow-md p-3 sm:p-4 space-y-3">
         {/* View mode switcher & category header */}
-        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2.5 pb-2 border-b border-slate-100">
+        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2.5 pb-2 border-b-2 border-slate-200">
           <div>
             <div className="text-xs font-black text-slate-900 tracking-wide uppercase flex items-center gap-1.5">
-              <Layers className="w-4 h-4 text-emerald-600" />
+              <Layers className="w-4 h-4 text-emerald-700" />
               <span>Menu Administrasi & Pelayanan</span>
             </div>
-            <div className="text-[11px] text-slate-500 mt-0.5">
+            <div className="text-[11px] text-slate-600 font-medium mt-0.5">
               Pilih pilar operasional untuk mengelola fungsi kepengurusan
             </div>
           </div>
 
-          <div className="flex items-center bg-slate-100 p-0.5 rounded-xl border border-slate-200 text-xs font-bold shrink-0 self-start sm:self-auto">
+          <div className="flex items-center bg-slate-200 p-1 rounded-xl border border-slate-300 text-xs font-bold shrink-0 self-start sm:self-auto">
             <button
               onClick={() => setNavViewMode("PILLARS")}
               className={`px-3 py-1.5 rounded-lg flex items-center gap-1.5 transition-all ${
                 navViewMode === "PILLARS"
-                  ? "bg-white text-emerald-700 font-extrabold shadow-xs"
-                  : "text-slate-600 hover:text-slate-900"
+                  ? "bg-emerald-700 text-white font-black shadow-sm"
+                  : "text-slate-700 hover:text-slate-900 font-bold"
               }`}
             >
               <Layers className="w-3.5 h-3.5" />
@@ -775,8 +775,8 @@ export default function OfficerDashboard() {
               onClick={() => setNavViewMode("ALL_GRID")}
               className={`px-3 py-1.5 rounded-lg flex items-center gap-1.5 transition-all ${
                 navViewMode === "ALL_GRID"
-                  ? "bg-white text-emerald-700 font-extrabold shadow-xs"
-                  : "text-slate-600 hover:text-slate-900"
+                  ? "bg-emerald-700 text-white font-black shadow-sm"
+                  : "text-slate-700 hover:text-slate-900 font-bold"
               }`}
             >
               <LayoutGrid className="w-3.5 h-3.5" />
@@ -787,7 +787,7 @@ export default function OfficerDashboard() {
 
         {navViewMode === "PILLARS" ? (
           <div className="space-y-3">
-            {/* Primary Category / Pillar Tabs */}
+            {/* Primary Category / Pillar Tabs (100% Solid) */}
             <div className="grid grid-cols-2 md:grid-cols-4 gap-2">
               {/* Pillar 1: Kependudukan */}
               <button
@@ -797,19 +797,19 @@ export default function OfficerDashboard() {
                     setActiveTab("pending");
                   }
                 }}
-                className={`p-2.5 rounded-xl text-left transition-all border flex items-center justify-between ${
+                className={`p-2.5 rounded-xl text-left transition-all border-2 flex items-center justify-between ${
                   selectedPillar === "KEPENDUDUKAN"
-                    ? "bg-emerald-600 text-white border-emerald-600 shadow-xs"
-                    : "bg-slate-50 hover:bg-slate-100 text-slate-700 border-slate-200"
+                    ? "bg-emerald-700 text-white border-emerald-800 shadow-sm"
+                    : "bg-slate-100 hover:bg-slate-200 text-slate-900 border-slate-300"
                 }`}
               >
                 <div className="flex items-center gap-2">
-                  <Users className={`w-4 h-4 ${selectedPillar === "KEPENDUDUKAN" ? "text-white" : "text-emerald-600"}`} />
-                  <span className="text-xs font-extrabold">Kependudukan</span>
+                  <Users className={`w-4 h-4 ${selectedPillar === "KEPENDUDUKAN" ? "text-white" : "text-emerald-700"}`} />
+                  <span className="text-xs font-black">Kependudukan</span>
                 </div>
                 {pendingResidents.length > 0 && (
                   <span className={`px-1.5 py-0.5 rounded-full text-[10px] font-black ${
-                    selectedPillar === "KEPENDUDUKAN" ? "bg-white text-emerald-800" : "bg-amber-100 text-amber-800"
+                    selectedPillar === "KEPENDUDUKAN" ? "bg-white text-emerald-900" : "bg-amber-400 text-slate-950 font-black"
                   }`}>
                     {pendingResidents.length}
                   </span>
@@ -824,19 +824,19 @@ export default function OfficerDashboard() {
                     setActiveTab("dues_validation");
                   }
                 }}
-                className={`p-2.5 rounded-xl text-left transition-all border flex items-center justify-between ${
+                className={`p-2.5 rounded-xl text-left transition-all border-2 flex items-center justify-between ${
                   selectedPillar === "KEUANGAN"
-                    ? "bg-emerald-600 text-white border-emerald-600 shadow-xs"
-                    : "bg-slate-50 hover:bg-slate-100 text-slate-700 border-slate-200"
+                    ? "bg-emerald-700 text-white border-emerald-800 shadow-sm"
+                    : "bg-slate-100 hover:bg-slate-200 text-slate-900 border-slate-300"
                 }`}
               >
                 <div className="flex items-center gap-2">
-                  <Wallet className={`w-4 h-4 ${selectedPillar === "KEUANGAN" ? "text-white" : "text-emerald-600"}`} />
-                  <span className="text-xs font-extrabold">Keuangan & Kas</span>
+                  <Wallet className={`w-4 h-4 ${selectedPillar === "KEUANGAN" ? "text-white" : "text-emerald-700"}`} />
+                  <span className="text-xs font-black">Keuangan & Kas</span>
                 </div>
                 {pendingDues.length > 0 && (
                   <span className={`px-1.5 py-0.5 rounded-full text-[10px] font-black ${
-                    selectedPillar === "KEUANGAN" ? "bg-white text-emerald-800" : "bg-amber-100 text-amber-800"
+                    selectedPillar === "KEUANGAN" ? "bg-white text-emerald-900" : "bg-amber-400 text-slate-950 font-black"
                   }`}>
                     {pendingDues.length}
                   </span>
@@ -851,19 +851,19 @@ export default function OfficerDashboard() {
                     setActiveTab("complaints");
                   }
                 }}
-                className={`p-2.5 rounded-xl text-left transition-all border flex items-center justify-between ${
+                className={`p-2.5 rounded-xl text-left transition-all border-2 flex items-center justify-between ${
                   selectedPillar === "LAYANAN"
-                    ? "bg-emerald-600 text-white border-emerald-600 shadow-xs"
-                    : "bg-slate-50 hover:bg-slate-100 text-slate-700 border-slate-200"
+                    ? "bg-emerald-700 text-white border-emerald-800 shadow-sm"
+                    : "bg-slate-100 hover:bg-slate-200 text-slate-900 border-slate-300"
                 }`}
               >
                 <div className="flex items-center gap-2">
-                  <MessageSquare className={`w-4 h-4 ${selectedPillar === "LAYANAN" ? "text-white" : "text-emerald-600"}`} />
-                  <span className="text-xs font-extrabold">Layanan & Siaran</span>
+                  <MessageSquare className={`w-4 h-4 ${selectedPillar === "LAYANAN" ? "text-white" : "text-emerald-700"}`} />
+                  <span className="text-xs font-black">Layanan & Siaran</span>
                 </div>
                 {isRwOfficer && pendingRts.length > 0 && (
                   <span className={`px-1.5 py-0.5 rounded-full text-[10px] font-black ${
-                    selectedPillar === "LAYANAN" ? "bg-white text-emerald-800" : "bg-amber-100 text-amber-800"
+                    selectedPillar === "LAYANAN" ? "bg-white text-emerald-900" : "bg-amber-400 text-slate-950 font-black"
                   }`}>
                     {pendingRts.length}
                   </span>
@@ -878,69 +878,69 @@ export default function OfficerDashboard() {
                     setActiveTab("reports");
                   }
                 }}
-                className={`p-2.5 rounded-xl text-left transition-all border flex items-center justify-between ${
+                className={`p-2.5 rounded-xl text-left transition-all border-2 flex items-center justify-between ${
                   selectedPillar === "LAPORAN"
-                    ? "bg-emerald-600 text-white border-emerald-600 shadow-xs"
-                    : "bg-slate-50 hover:bg-slate-100 text-slate-700 border-slate-200"
+                    ? "bg-emerald-700 text-white border-emerald-800 shadow-sm"
+                    : "bg-slate-100 hover:bg-slate-200 text-slate-900 border-slate-300"
                 }`}
               >
                 <div className="flex items-center gap-2">
-                  <FileText className={`w-4 h-4 ${selectedPillar === "LAPORAN" ? "text-white" : "text-emerald-600"}`} />
-                  <span className="text-xs font-extrabold">Laporan & Audit</span>
+                  <FileText className={`w-4 h-4 ${selectedPillar === "LAPORAN" ? "text-white" : "text-emerald-700"}`} />
+                  <span className="text-xs font-black">Laporan & Audit</span>
                 </div>
               </button>
             </div>
 
-            {/* Sub-Tabs for Active Pillar */}
-            <div className="flex flex-wrap gap-1.5 p-1.5 bg-slate-50 rounded-xl border border-slate-200/80">
+            {/* Sub-Tabs for Active Pillar (100% Solid) */}
+            <div className="flex flex-wrap gap-2 p-2 bg-slate-100 rounded-xl border-2 border-slate-300">
               {selectedPillar === "KEPENDUDUKAN" && (
                 <>
                   <button
                     onClick={() => switchTab("pending")}
-                    className={`py-2 px-3 rounded-lg text-xs font-bold flex items-center gap-2 transition-all ${
+                    className={`py-2 px-3 rounded-lg text-xs font-black flex items-center gap-2 transition-all border-2 ${
                       activeTab === "pending"
-                        ? "bg-slate-900 text-white shadow-xs"
-                        : "bg-white text-slate-700 hover:bg-slate-100 border border-slate-200/60"
+                        ? "bg-slate-900 text-white border-slate-900 shadow-sm"
+                        : "bg-white text-slate-900 hover:bg-slate-50 border-slate-300 shadow-xs"
                     }`}
                   >
                     <span>Verifikasi Akun Baru</span>
                     {pendingResidents.length > 0 && (
-                      <span className="px-1.5 py-0.2 rounded-full text-[10px] font-extrabold bg-amber-400 text-slate-950">
+                      <span className="px-1.5 py-0.5 rounded-full text-[10px] font-black bg-amber-400 text-slate-950">
                         {pendingResidents.length}
                       </span>
                     )}
                   </button>
                   <button
                     onClick={() => switchTab("residents")}
-                    className={`py-2 px-3 rounded-lg text-xs font-bold flex items-center gap-2 transition-all ${
+                    className={`py-2 px-3 rounded-lg text-xs font-black flex items-center gap-2 transition-all border-2 ${
                       activeTab === "residents"
-                        ? "bg-slate-900 text-white shadow-xs"
-                        : "bg-white text-slate-700 hover:bg-slate-100 border border-slate-200/60"
+                        ? "bg-slate-900 text-white border-slate-900 shadow-sm"
+                        : "bg-white text-slate-900 hover:bg-slate-50 border-slate-300 shadow-xs"
                     }`}
                   >
-                    <Database className="w-3.5 h-3.5 text-emerald-600" />
+                    <Database className="w-3.5 h-3.5 text-emerald-700" />
                     <span>Master Sensus Penduduk</span>
                   </button>
                   <button
                     onClick={() => switchTab("reconciliation")}
-                    className={`py-2 px-3 rounded-lg text-xs font-bold flex items-center gap-2 transition-all ${
+                    className={`py-2 px-3 rounded-lg text-xs font-black flex items-center gap-2 transition-all border-2 ${
                       activeTab === "reconciliation"
-                        ? "bg-slate-900 text-white shadow-xs"
-                        : "bg-white text-slate-700 hover:bg-slate-100 border border-slate-200/60"
+                        ? "bg-slate-900 text-white border-slate-900 shadow-sm"
+                        : "bg-white text-slate-900 hover:bg-slate-50 border-slate-300 shadow-xs"
                     }`}
                   >
-                    <GitCompare className="w-3.5 h-3.5 text-blue-600" />
+                    <GitCompare className="w-3.5 h-3.5 text-blue-700" />
                     <span>Rekonsiliasi No KK</span>
                   </button>
                   <button
                     onClick={() => switchTab("statistics")}
-                    className={`py-2 px-3 rounded-lg text-xs font-bold flex items-center gap-2 transition-all ${
+                    className={`py-2 px-3 rounded-lg text-xs font-black flex items-center gap-2 transition-all border-2 ${
                       activeTab === "statistics"
-                        ? "bg-slate-900 text-white shadow-xs"
-                        : "bg-white text-slate-700 hover:bg-slate-100 border border-slate-200/60"
+                        ? "bg-slate-900 text-white border-slate-900 shadow-sm"
+                        : "bg-white text-slate-900 hover:bg-slate-50 border-slate-300 shadow-xs"
                     }`}
                   >
-                    <BarChart3 className="w-3.5 h-3.5 text-purple-600" />
+                    <BarChart3 className="w-3.5 h-3.5 text-purple-700" />
                     <span>Statistik & Mutasi Demografi</span>
                   </button>
                 </>
@@ -950,52 +950,52 @@ export default function OfficerDashboard() {
                 <>
                   <button
                     onClick={() => switchTab("dues_validation")}
-                    className={`py-2 px-3 rounded-lg text-xs font-bold flex items-center gap-2 transition-all ${
+                    className={`py-2 px-3 rounded-lg text-xs font-black flex items-center gap-2 transition-all border-2 ${
                       activeTab === "dues_validation"
-                        ? "bg-slate-900 text-white shadow-xs"
-                        : "bg-white text-slate-700 hover:bg-slate-100 border border-slate-200/60"
+                        ? "bg-slate-900 text-white border-slate-900 shadow-sm"
+                        : "bg-white text-slate-900 hover:bg-slate-50 border-slate-300 shadow-xs"
                     }`}
                   >
                     <span>Validasi Pembayaran Iuran</span>
                     {pendingDues.length > 0 && (
-                      <span className="px-1.5 py-0.2 rounded-full text-[10px] font-extrabold bg-amber-400 text-slate-950">
+                      <span className="px-1.5 py-0.5 rounded-full text-[10px] font-black bg-amber-400 text-slate-950">
                         {pendingDues.length}
                       </span>
                     )}
                   </button>
                   <button
                     onClick={() => switchTab("finances")}
-                    className={`py-2 px-3 rounded-lg text-xs font-bold flex items-center gap-2 transition-all ${
+                    className={`py-2 px-3 rounded-lg text-xs font-black flex items-center gap-2 transition-all border-2 ${
                       activeTab === "finances"
-                        ? "bg-slate-900 text-white shadow-xs"
-                        : "bg-white text-slate-700 hover:bg-slate-100 border border-slate-200/60"
+                        ? "bg-slate-900 text-white border-slate-900 shadow-sm"
+                        : "bg-white text-slate-900 hover:bg-slate-50 border-slate-300 shadow-xs"
                     }`}
                   >
-                    <Wallet className="w-3.5 h-3.5 text-emerald-600" />
+                    <Wallet className="w-3.5 h-3.5 text-emerald-700" />
                     <span>Buku Kas Lingkungan {isRwOfficer ? "RW" : "RT"}</span>
                   </button>
                   {isRwOfficer && (
                     <button
                       onClick={() => switchTab("rw_consolidated")}
-                      className={`py-2 px-3 rounded-lg text-xs font-bold flex items-center gap-2 transition-all ${
+                      className={`py-2 px-3 rounded-lg text-xs font-black flex items-center gap-2 transition-all border-2 ${
                         activeTab === "rw_consolidated"
-                          ? "bg-slate-900 text-white shadow-xs"
-                          : "bg-white text-slate-700 hover:bg-slate-100 border border-slate-200/60"
+                          ? "bg-slate-900 text-white border-slate-900 shadow-sm"
+                          : "bg-white text-slate-900 hover:bg-slate-50 border-slate-300 shadow-xs"
                       }`}
                     >
-                      <Building2 className="w-3.5 h-3.5 text-indigo-600" />
+                      <Building2 className="w-3.5 h-3.5 text-indigo-700" />
                       <span>Laporan Konsolidasi Seluruh RT</span>
                     </button>
                   )}
                   <button
                     onClick={() => switchTab("fund_requests")}
-                    className={`py-2 px-3 rounded-lg text-xs font-bold flex items-center gap-2 transition-all ${
+                    className={`py-2 px-3 rounded-lg text-xs font-black flex items-center gap-2 transition-all border-2 ${
                       activeTab === "fund_requests"
-                        ? "bg-slate-900 text-white shadow-xs"
-                        : "bg-white text-slate-700 hover:bg-slate-100 border border-slate-200/60"
+                        ? "bg-slate-900 text-white border-slate-900 shadow-sm"
+                        : "bg-white text-slate-900 hover:bg-slate-50 border-slate-300 shadow-xs"
                     }`}
                   >
-                    <DollarSign className="w-3.5 h-3.5 text-amber-600" />
+                    <DollarSign className="w-3.5 h-3.5 text-amber-700" />
                     <span>Pengajuan Dana Kas & LPJ</span>
                   </button>
                 </>
@@ -1005,39 +1005,39 @@ export default function OfficerDashboard() {
                 <>
                   <button
                     onClick={() => switchTab("complaints")}
-                    className={`py-2 px-3 rounded-lg text-xs font-bold flex items-center gap-2 transition-all ${
+                    className={`py-2 px-3 rounded-lg text-xs font-black flex items-center gap-2 transition-all border-2 ${
                       activeTab === "complaints"
-                        ? "bg-slate-900 text-white shadow-xs"
-                        : "bg-white text-slate-700 hover:bg-slate-100 border border-slate-200/60"
+                        ? "bg-slate-900 text-white border-slate-900 shadow-sm"
+                        : "bg-white text-slate-900 hover:bg-slate-50 border-slate-300 shadow-xs"
                     }`}
                   >
-                    <MessageSquare className="w-3.5 h-3.5 text-purple-600" />
+                    <MessageSquare className="w-3.5 h-3.5 text-purple-700" />
                     <span>Pengaduan & Aspirasi Warga</span>
                   </button>
                   <button
                     onClick={() => switchTab("broadcast")}
-                    className={`py-2 px-3 rounded-lg text-xs font-bold flex items-center gap-2 transition-all ${
+                    className={`py-2 px-3 rounded-lg text-xs font-black flex items-center gap-2 transition-all border-2 ${
                       activeTab === "broadcast"
-                        ? "bg-slate-900 text-white shadow-xs"
-                        : "bg-white text-slate-700 hover:bg-slate-100 border border-slate-200/60"
+                        ? "bg-slate-900 text-white border-slate-900 shadow-sm"
+                        : "bg-white text-slate-900 hover:bg-slate-50 border-slate-300 shadow-xs"
                     }`}
                   >
-                    <Send className="w-3.5 h-3.5 text-emerald-600" />
+                    <Send className="w-3.5 h-3.5 text-emerald-700" />
                     <span>Siaran Pengumuman Resmi</span>
                   </button>
                   {isRwOfficer && (
                     <button
                       onClick={() => switchTab("rt_approvals")}
-                      className={`py-2 px-3 rounded-lg text-xs font-bold flex items-center gap-2 transition-all ${
+                      className={`py-2 px-3 rounded-lg text-xs font-black flex items-center gap-2 transition-all border-2 ${
                         activeTab === "rt_approvals"
-                          ? "bg-slate-900 text-white shadow-xs"
-                          : "bg-white text-slate-700 hover:bg-slate-100 border border-slate-200/60"
+                          ? "bg-slate-900 text-white border-slate-900 shadow-sm"
+                          : "bg-white text-slate-900 hover:bg-slate-50 border-slate-300 shadow-xs"
                       }`}
                     >
-                      <ShieldCheck className="w-3.5 h-3.5 text-blue-600" />
+                      <ShieldCheck className="w-3.5 h-3.5 text-blue-700" />
                       <span>Approval Pengurus RT</span>
                       {pendingRts.length > 0 && (
-                        <span className="px-1.5 py-0.2 rounded-full text-[10px] font-extrabold bg-amber-400 text-slate-950">
+                        <span className="px-1.5 py-0.5 rounded-full text-[10px] font-black bg-amber-400 text-slate-950">
                           {pendingRts.length}
                         </span>
                       )}
@@ -1050,24 +1050,24 @@ export default function OfficerDashboard() {
                 <>
                   <button
                     onClick={() => switchTab("reports")}
-                    className={`py-2 px-3 rounded-lg text-xs font-bold flex items-center gap-2 transition-all ${
+                    className={`py-2 px-3 rounded-lg text-xs font-black flex items-center gap-2 transition-all border-2 ${
                       activeTab === "reports"
-                        ? "bg-slate-900 text-white shadow-xs"
-                        : "bg-white text-slate-700 hover:bg-slate-100 border border-slate-200/60"
+                        ? "bg-slate-900 text-white border-slate-900 shadow-sm"
+                        : "bg-white text-slate-900 hover:bg-slate-50 border-slate-300 shadow-xs"
                     }`}
                   >
-                    <FileText className="w-3.5 h-3.5 text-emerald-600" />
+                    <FileText className="w-3.5 h-3.5 text-emerald-700" />
                     <span>Unduh Laporan Resmi & Ekspor</span>
                   </button>
                   <button
                     onClick={() => switchTab("audit")}
-                    className={`py-2 px-3 rounded-lg text-xs font-bold flex items-center gap-2 transition-all ${
+                    className={`py-2 px-3 rounded-lg text-xs font-black flex items-center gap-2 transition-all border-2 ${
                       activeTab === "audit"
-                        ? "bg-slate-900 text-white shadow-xs"
-                        : "bg-white text-slate-700 hover:bg-slate-100 border border-slate-200/60"
+                        ? "bg-slate-900 text-white border-slate-900 shadow-sm"
+                        : "bg-white text-slate-900 hover:bg-slate-50 border-slate-300 shadow-xs"
                     }`}
                   >
-                    <Lock className="w-3.5 h-3.5 text-rose-600" />
+                    <Lock className="w-3.5 h-3.5 text-rose-700" />
                     <span>Log Audit Kepatuhan (UU PDP 27/2022)</span>
                   </button>
                 </>
@@ -1075,15 +1075,15 @@ export default function OfficerDashboard() {
             </div>
           </div>
         ) : (
-          /* Grid View for all tabs (grouped by pillar) */
+          /* Grid View for all tabs (grouped by pillar - 100% Solid) */
           <div className="space-y-3 pt-1">
-            <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6 gap-2 text-xs font-bold text-slate-700">
+            <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6 gap-2 text-xs font-bold">
               <button
                 onClick={() => switchTab("pending")}
-                className={`py-2.5 px-2 rounded-xl text-center border transition-all ${
+                className={`py-2.5 px-2 rounded-xl text-center border-2 transition-all ${
                   activeTab === "pending"
-                    ? "bg-emerald-600 text-white border-emerald-600 shadow-xs font-black"
-                    : "bg-white hover:bg-slate-50 border-slate-200 text-slate-700"
+                    ? "bg-emerald-700 text-white border-emerald-800 shadow-sm font-black"
+                    : "bg-white hover:bg-slate-100 border-slate-300 text-slate-900 shadow-xs font-extrabold"
                 }`}
               >
                 Verif Akun ({pendingResidents.length})
@@ -1092,10 +1092,10 @@ export default function OfficerDashboard() {
               {isRwOfficer && (
                 <button
                   onClick={() => switchTab("rt_approvals")}
-                  className={`py-2.5 px-2 rounded-xl text-center border transition-all ${
+                  className={`py-2.5 px-2 rounded-xl text-center border-2 transition-all ${
                     activeTab === "rt_approvals"
-                      ? "bg-emerald-600 text-white border-emerald-600 shadow-xs font-black"
-                      : "bg-white hover:bg-slate-50 border-slate-200 text-slate-700"
+                      ? "bg-emerald-700 text-white border-emerald-800 shadow-sm font-black"
+                      : "bg-white hover:bg-slate-100 border-slate-300 text-slate-900 shadow-xs font-extrabold"
                   }`}
                 >
                   Approval RT ({pendingRts.length})
@@ -1104,10 +1104,10 @@ export default function OfficerDashboard() {
 
               <button
                 onClick={() => switchTab("residents")}
-                className={`py-2.5 px-2 rounded-xl text-center border transition-all ${
+                className={`py-2.5 px-2 rounded-xl text-center border-2 transition-all ${
                   activeTab === "residents"
-                    ? "bg-emerald-600 text-white border-emerald-600 shadow-xs font-black"
-                    : "bg-white hover:bg-slate-50 border-slate-200 text-slate-700"
+                    ? "bg-emerald-700 text-white border-emerald-800 shadow-sm font-black"
+                    : "bg-white hover:bg-slate-100 border-slate-300 text-slate-900 shadow-xs font-extrabold"
                 }`}
               >
                 Sensus Penduduk
@@ -1115,10 +1115,10 @@ export default function OfficerDashboard() {
 
               <button
                 onClick={() => switchTab("reconciliation")}
-                className={`py-2.5 px-2 rounded-xl text-center border transition-all ${
+                className={`py-2.5 px-2 rounded-xl text-center border-2 transition-all ${
                   activeTab === "reconciliation"
-                    ? "bg-emerald-600 text-white border-emerald-600 shadow-xs font-black"
-                    : "bg-white hover:bg-slate-50 border-slate-200 text-slate-700"
+                    ? "bg-emerald-700 text-white border-emerald-800 shadow-sm font-black"
+                    : "bg-white hover:bg-slate-100 border-slate-300 text-slate-900 shadow-xs font-extrabold"
                 }`}
               >
                 Rekonsiliasi KK
@@ -1126,10 +1126,10 @@ export default function OfficerDashboard() {
 
               <button
                 onClick={() => switchTab("statistics")}
-                className={`py-2.5 px-2 rounded-xl text-center border transition-all ${
+                className={`py-2.5 px-2 rounded-xl text-center border-2 transition-all ${
                   activeTab === "statistics"
-                    ? "bg-emerald-600 text-white border-emerald-600 shadow-xs font-black"
-                    : "bg-white hover:bg-slate-50 border-slate-200 text-slate-700"
+                    ? "bg-emerald-700 text-white border-emerald-800 shadow-sm font-black"
+                    : "bg-white hover:bg-slate-100 border-slate-300 text-slate-900 shadow-xs font-extrabold"
                 }`}
               >
                 Statistik & Mutasi
@@ -1137,10 +1137,10 @@ export default function OfficerDashboard() {
 
               <button
                 onClick={() => switchTab("complaints")}
-                className={`py-2.5 px-2 rounded-xl text-center border transition-all ${
+                className={`py-2.5 px-2 rounded-xl text-center border-2 transition-all ${
                   activeTab === "complaints"
-                    ? "bg-emerald-600 text-white border-emerald-600 shadow-xs font-black"
-                    : "bg-white hover:bg-slate-50 border-slate-200 text-slate-700"
+                    ? "bg-emerald-700 text-white border-emerald-800 shadow-sm font-black"
+                    : "bg-white hover:bg-slate-100 border-slate-300 text-slate-900 shadow-xs font-extrabold"
                 }`}
               >
                 Pengaduan Warga
@@ -1148,10 +1148,10 @@ export default function OfficerDashboard() {
 
               <button
                 onClick={() => switchTab("dues_validation")}
-                className={`py-2.5 px-2 rounded-xl text-center border transition-all ${
+                className={`py-2.5 px-2 rounded-xl text-center border-2 transition-all ${
                   activeTab === "dues_validation"
-                    ? "bg-emerald-600 text-white border-emerald-600 shadow-xs font-black"
-                    : "bg-white hover:bg-slate-50 border-slate-200 text-slate-700"
+                    ? "bg-emerald-700 text-white border-emerald-800 shadow-sm font-black"
+                    : "bg-white hover:bg-slate-100 border-slate-300 text-slate-900 shadow-xs font-extrabold"
                 }`}
               >
                 Validasi Iuran ({pendingDues.length})
@@ -1159,10 +1159,10 @@ export default function OfficerDashboard() {
 
               <button
                 onClick={() => switchTab("finances")}
-                className={`py-2.5 px-2 rounded-xl text-center border transition-all ${
+                className={`py-2.5 px-2 rounded-xl text-center border-2 transition-all ${
                   activeTab === "finances"
-                    ? "bg-emerald-600 text-white border-emerald-600 shadow-xs font-black"
-                    : "bg-white hover:bg-slate-50 border-slate-200 text-slate-700"
+                    ? "bg-emerald-700 text-white border-emerald-800 shadow-sm font-black"
+                    : "bg-white hover:bg-slate-100 border-slate-300 text-slate-900 shadow-xs font-extrabold"
                 }`}
               >
                 Buku Kas {isRwOfficer ? "RW" : "RT"}
@@ -1171,10 +1171,10 @@ export default function OfficerDashboard() {
               {isRwOfficer && (
                 <button
                   onClick={() => switchTab("rw_consolidated")}
-                  className={`py-2.5 px-2 rounded-xl text-center border transition-all ${
+                  className={`py-2.5 px-2 rounded-xl text-center border-2 transition-all ${
                     activeTab === "rw_consolidated"
-                      ? "bg-emerald-600 text-white border-emerald-600 shadow-xs font-black"
-                      : "bg-white hover:bg-slate-50 border-slate-200 text-slate-700"
+                      ? "bg-emerald-700 text-white border-emerald-800 shadow-sm font-black"
+                      : "bg-white hover:bg-slate-100 border-slate-300 text-slate-900 shadow-xs font-extrabold"
                   }`}
                 >
                   Laporan Semua RT
@@ -1183,10 +1183,10 @@ export default function OfficerDashboard() {
 
               <button
                 onClick={() => switchTab("fund_requests")}
-                className={`py-2.5 px-2 rounded-xl text-center border transition-all ${
+                className={`py-2.5 px-2 rounded-xl text-center border-2 transition-all ${
                   activeTab === "fund_requests"
-                    ? "bg-emerald-600 text-white border-emerald-600 shadow-xs font-black"
-                    : "bg-white hover:bg-slate-50 border-slate-200 text-slate-700"
+                    ? "bg-emerald-700 text-white border-emerald-800 shadow-sm font-black"
+                    : "bg-white hover:bg-slate-100 border-slate-300 text-slate-900 shadow-xs font-extrabold"
                 }`}
               >
                 Pengajuan Dana
@@ -1194,10 +1194,10 @@ export default function OfficerDashboard() {
 
               <button
                 onClick={() => switchTab("broadcast")}
-                className={`py-2.5 px-2 rounded-xl text-center border transition-all ${
+                className={`py-2.5 px-2 rounded-xl text-center border-2 transition-all ${
                   activeTab === "broadcast"
-                    ? "bg-emerald-600 text-white border-emerald-600 shadow-xs font-black"
-                    : "bg-white hover:bg-slate-50 border-slate-200 text-slate-700"
+                    ? "bg-emerald-700 text-white border-emerald-800 shadow-sm font-black"
+                    : "bg-white hover:bg-slate-100 border-slate-300 text-slate-900 shadow-xs font-extrabold"
                 }`}
               >
                 Siaran Warga
@@ -1205,10 +1205,10 @@ export default function OfficerDashboard() {
 
               <button
                 onClick={() => switchTab("audit")}
-                className={`py-2.5 px-2 rounded-xl text-center border transition-all ${
+                className={`py-2.5 px-2 rounded-xl text-center border-2 transition-all ${
                   activeTab === "audit"
-                    ? "bg-emerald-600 text-white border-emerald-600 shadow-xs font-black"
-                    : "bg-white hover:bg-slate-50 border-slate-200 text-slate-700"
+                    ? "bg-emerald-700 text-white border-emerald-800 shadow-sm font-black"
+                    : "bg-white hover:bg-slate-100 border-slate-300 text-slate-900 shadow-xs font-extrabold"
                 }`}
               >
                 Audit UU PDP
@@ -1216,10 +1216,10 @@ export default function OfficerDashboard() {
 
               <button
                 onClick={() => switchTab("reports")}
-                className={`py-2.5 px-2 rounded-xl text-center border transition-all ${
+                className={`py-2.5 px-2 rounded-xl text-center border-2 transition-all ${
                   activeTab === "reports"
-                    ? "bg-emerald-600 text-white border-emerald-600 shadow-xs font-black"
-                    : "bg-white hover:bg-slate-50 border-slate-200 text-slate-700"
+                    ? "bg-emerald-700 text-white border-emerald-800 shadow-sm font-black"
+                    : "bg-white hover:bg-slate-100 border-slate-300 text-slate-900 shadow-xs font-extrabold"
                 }`}
               >
                 Unduh Laporan
@@ -1234,7 +1234,7 @@ export default function OfficerDashboard() {
         {/* TAB 1: VERIFIKASI WARGA BARU */}
         {activeTab === "pending" && (
           <div className="space-y-3">
-            <div className="flex items-center justify-between bg-white/95 backdrop-blur-md p-3.5 rounded-2xl border border-white/80 shadow-xs">
+            <div className="flex items-center justify-between bg-white p-3.5 rounded-2xl border-2 border-slate-200 shadow-sm">
               <div>
                 <h3 className="text-xs font-extrabold text-slate-900 uppercase tracking-wider">
                   Antrean Verifikasi Warga Baru
@@ -1343,7 +1343,7 @@ export default function OfficerDashboard() {
         {/* TAB 2: APPROVAL PENDAFTARAN KETUA RT (KHUSUS PENGURUS RW) */}
         {activeTab === "rt_approvals" && isRwOfficer && (
           <div className="space-y-4">
-            <div className="flex items-center justify-between bg-white/95 backdrop-blur-md p-3.5 rounded-2xl border border-white/80 shadow-xs">
+            <div className="flex items-center justify-between bg-white p-3.5 rounded-2xl border-2 border-slate-200 shadow-sm">
               <div>
                 <h3 className="text-xs font-extrabold text-slate-900 uppercase tracking-wider flex items-center gap-1.5">
                   <Building2 className="w-4 h-4 text-emerald-600" />
@@ -1437,7 +1437,7 @@ export default function OfficerDashboard() {
         {/* TAB 3: VALIDASI PEMBAYARAN IURAN OLEH BENDAHARA */}
         {activeTab === "dues_validation" && (
           <div className="space-y-4">
-            <div className="flex items-center justify-between bg-white/95 backdrop-blur-md p-3.5 rounded-2xl border border-white/80 shadow-xs">
+            <div className="flex items-center justify-between bg-white p-3.5 rounded-2xl border-2 border-slate-200 shadow-sm">
               <div>
                 <h3 className="text-xs font-extrabold text-slate-900 uppercase tracking-wider flex items-center gap-1.5">
                   <CreditCard className="w-4 h-4 text-emerald-600" />
@@ -1587,7 +1587,7 @@ export default function OfficerDashboard() {
         {/* TAB 4: BUKU KAS & LAPORAN KEUANGAN INTERNAL */}
         {activeTab === "finances" && (
           <div className="space-y-4">
-            <div className="flex items-center justify-between bg-white/95 backdrop-blur-md p-3.5 rounded-2xl border border-white/80 shadow-xs">
+            <div className="flex items-center justify-between bg-white p-3.5 rounded-2xl border-2 border-slate-200 shadow-sm">
               <div>
                 <h3 className="text-xs font-extrabold text-slate-900 uppercase tracking-wider flex items-center gap-1.5">
                   <Wallet className="w-4 h-4 text-emerald-600" />
@@ -1854,7 +1854,7 @@ export default function OfficerDashboard() {
         {/* TAB 5: LAPORAN KONSOLIDASI SELURUH RT (KHUSUS PENGURUS RW) */}
         {activeTab === "rw_consolidated" && isRwOfficer && (
           <div className="space-y-4">
-            <div className="flex items-center justify-between bg-white/95 backdrop-blur-md p-3.5 rounded-2xl border border-white/80 shadow-xs">
+            <div className="flex items-center justify-between bg-white p-3.5 rounded-2xl border-2 border-slate-200 shadow-sm">
               <div>
                 <h3 className="text-xs font-extrabold text-slate-900 uppercase tracking-wider flex items-center gap-1.5">
                   <Building2 className="w-4 h-4 text-emerald-600" />
@@ -1940,7 +1940,7 @@ export default function OfficerDashboard() {
         {/* TAB 6: PENGAJUAN DANA BERJENJANG (APPROVAL RT & RW) */}
         {activeTab === "fund_requests" && (
           <div className="space-y-4">
-            <div className="flex items-center justify-between bg-white/95 backdrop-blur-md p-3.5 rounded-2xl border border-white/80 shadow-xs">
+            <div className="flex items-center justify-between bg-white p-3.5 rounded-2xl border-2 border-slate-200 shadow-sm">
               <div>
                 <h3 className="text-xs font-extrabold text-slate-900 uppercase tracking-wider flex items-center gap-1.5">
                   <DollarSign className="w-4 h-4 text-emerald-600" />
@@ -2106,7 +2106,7 @@ export default function OfficerDashboard() {
         {/* TAB 7: SIARAN PENGUMUMAN WARGA */}
         {activeTab === "broadcast" && (
           <div className="space-y-3">
-            <div className="bg-white/95 backdrop-blur-md p-3.5 rounded-2xl border border-white/80 shadow-xs">
+            <div className="bg-white p-3.5 rounded-2xl border-2 border-slate-200 shadow-sm">
               <h3 className="text-xs font-extrabold text-slate-900 uppercase tracking-wider">
                 Siarkan Pengumuman & Pemberitahuan Warga
               </h3>
@@ -2122,7 +2122,7 @@ export default function OfficerDashboard() {
               </div>
             )}
 
-            <form onSubmit={handleSendBroadcast} className="p-4 rounded-2xl bg-white/95 backdrop-blur-md border border-white/80 shadow-xs space-y-3">
+            <form onSubmit={handleSendBroadcast} className="p-4 rounded-2xl bg-white border-2 border-slate-200 shadow-sm space-y-3">
               <div>
                 <label className="text-xs font-bold text-slate-700 block mb-1">Jangkauan Penerima Pengumuman</label>
                 <select
@@ -2188,7 +2188,7 @@ export default function OfficerDashboard() {
         {/* TAB 8: AUDIT LOG UU PDP */}
         {activeTab === "audit" && (
           <div className="space-y-3">
-            <div className="flex items-center justify-between bg-white/95 backdrop-blur-md p-3.5 rounded-2xl border border-white/80 shadow-xs">
+            <div className="flex items-center justify-between bg-white p-3.5 rounded-2xl border-2 border-slate-200 shadow-sm">
               <div>
                 <h3 className="text-xs font-extrabold text-slate-900 uppercase tracking-wider flex items-center gap-1.5">
                   <Lock className="w-3.5 h-3.5 text-emerald-600" />

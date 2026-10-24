@@ -193,15 +193,14 @@ export default function KkReconciliationTab() {
       )}
 
       {/* Top Header Card */}
-      <div className="p-6 bg-gradient-to-br from-indigo-900/90 via-slate-900/90 to-blue-900/90 text-white rounded-3xl shadow-xl border border-indigo-500/20 backdrop-blur-md relative overflow-hidden">
-        <div className="absolute top-0 right-0 w-80 h-80 bg-indigo-500/10 rounded-full blur-3xl pointer-events-none" />
+      <div className="p-6 bg-slate-900 text-white rounded-3xl shadow-xl border-2 border-indigo-900 relative overflow-hidden">
         <div className="relative z-10 flex flex-col md:flex-row md:items-center justify-between gap-4">
           <div>
             <div className="flex items-center gap-2 mb-2">
-              <span className="px-3 py-1 bg-indigo-500/30 border border-indigo-400/40 text-indigo-200 text-xs font-semibold rounded-full uppercase tracking-wider">
+              <span className="px-3 py-1 bg-indigo-900 border border-indigo-500 text-indigo-200 text-xs font-bold rounded-full uppercase tracking-wider">
                 Sinkronisasi Kependudukan & Akun
               </span>
-              <span className="flex items-center gap-1 text-xs text-emerald-400 bg-emerald-500/20 px-2.5 py-0.5 rounded-full border border-emerald-500/30">
+              <span className="flex items-center gap-1 text-xs text-emerald-400 bg-emerald-950 px-2.5 py-0.5 rounded-full border border-emerald-500 font-bold">
                 <ShieldCheck className="w-3.5 h-3.5" /> Terproteksi UU PDP
               </span>
             </div>
@@ -214,7 +213,7 @@ export default function KkReconciliationTab() {
           <button
             onClick={fetchReconciliation}
             disabled={isLoading}
-            className="flex items-center gap-2 px-4 py-2.5 bg-white/10 hover:bg-white/20 active:scale-95 transition rounded-2xl text-sm font-medium border border-white/10 self-start md:self-auto"
+            className="flex items-center gap-2 px-4 py-2.5 bg-slate-800 hover:bg-slate-700 active:scale-95 transition rounded-2xl text-sm font-bold border-2 border-slate-600 self-start md:self-auto"
           >
             <RefreshCw className={`w-4 h-4 ${isLoading ? "animate-spin" : ""}`} />
             Perbarui Rekonsiliasi
@@ -225,7 +224,7 @@ export default function KkReconciliationTab() {
       {/* Summary KPI Cards */}
       <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
         {/* Total Master KK */}
-        <div className="p-5 bg-white/80 dark:bg-slate-900/80 backdrop-blur-md rounded-2xl border border-slate-200/80 dark:border-slate-800 shadow-sm">
+        <div className="p-5 bg-white dark:bg-slate-900 rounded-2xl border-2 border-slate-200 dark:border-slate-800 shadow-sm">
           <div className="flex items-center justify-between">
             <span className="text-xs font-bold text-slate-700 dark:text-slate-200">Total KK di Sensus</span>
             <div className="w-8 h-8 rounded-xl bg-blue-100 dark:bg-blue-900/40 text-blue-600 dark:text-blue-400 flex items-center justify-center">
@@ -239,7 +238,7 @@ export default function KkReconciliationTab() {
         </div>
 
         {/* KK Terhubung */}
-        <div className="p-5 bg-white/80 dark:bg-slate-900/80 backdrop-blur-md rounded-2xl border border-emerald-200/80 dark:border-emerald-800/40 shadow-sm">
+        <div className="p-5 bg-white dark:bg-slate-900 rounded-2xl border-2 border-emerald-300 dark:border-emerald-800 shadow-sm">
           <div className="flex items-center justify-between">
             <span className="text-xs font-medium text-emerald-600 dark:text-emerald-400">KK Punya Akun (Min. 1)</span>
             <div className="w-8 h-8 rounded-xl bg-emerald-100 dark:bg-emerald-900/40 text-emerald-600 dark:text-emerald-400 flex items-center justify-center">
@@ -263,7 +262,7 @@ export default function KkReconciliationTab() {
         </div>
 
         {/* KK Belum Punya Akun */}
-        <div className="p-5 bg-white/80 dark:bg-slate-900/80 backdrop-blur-md rounded-2xl border border-amber-200/80 dark:border-amber-800/40 shadow-sm">
+        <div className="p-5 bg-white dark:bg-slate-900 rounded-2xl border-2 border-amber-300 dark:border-amber-800 shadow-sm">
           <div className="flex items-center justify-between">
             <span className="text-xs font-medium text-amber-600 dark:text-amber-400">Belum Punya Akun</span>
             <div className="w-8 h-8 rounded-xl bg-amber-100 dark:bg-amber-900/40 text-amber-600 dark:text-amber-400 flex items-center justify-center">
@@ -277,7 +276,7 @@ export default function KkReconciliationTab() {
         </div>
 
         {/* Akun Belum di Sensus */}
-        <div className="p-5 bg-white/80 dark:bg-slate-900/80 backdrop-blur-md rounded-2xl border border-purple-200/80 dark:border-purple-800/40 shadow-sm">
+        <div className="p-5 bg-white dark:bg-slate-900 rounded-2xl border-2 border-purple-300 dark:border-purple-800 shadow-sm">
           <div className="flex items-center justify-between">
             <span className="text-xs font-medium text-purple-600 dark:text-purple-400">Akun Belum di Sensus</span>
             <div className="w-8 h-8 rounded-xl bg-purple-100 dark:bg-purple-900/40 text-purple-600 dark:text-purple-400 flex items-center justify-center">
@@ -292,7 +291,7 @@ export default function KkReconciliationTab() {
       </div>
 
       {/* Tabs Filter Bar & Search */}
-      <div className="p-4 bg-white/80 dark:bg-slate-900/80 backdrop-blur-md rounded-2xl border border-slate-200/80 dark:border-slate-800 shadow-sm space-y-4">
+      <div className="p-4 bg-white dark:bg-slate-900 rounded-2xl border-2 border-slate-200 dark:border-slate-800 shadow-sm space-y-4">
         <div className="flex flex-col md:flex-row gap-3 items-stretch md:items-center justify-between">
           {/* Navigation Category Buttons */}
           <div className="flex flex-wrap items-center gap-2">
@@ -376,7 +375,7 @@ export default function KkReconciliationTab() {
 
       {/* Loading Indicator */}
       {isLoading && (
-        <div className="p-12 text-center bg-white/60 dark:bg-slate-900/60 rounded-3xl border border-slate-200/80 dark:border-slate-800">
+        <div className="p-12 text-center bg-white dark:bg-slate-900 rounded-3xl border border-slate-200/80 dark:border-slate-800">
           <RefreshCw className="w-8 h-8 text-indigo-500 animate-spin mx-auto mb-3" />
           <p className="text-sm font-bold text-slate-800 dark:text-slate-100">Menghubungkan data kependudukan dan basis data akun...</p>
         </div>
@@ -396,7 +395,7 @@ export default function KkReconciliationTab() {
           </div>
 
           {matchedKks.length === 0 ? (
-            <div className="p-12 text-center bg-white/60 dark:bg-slate-900/60 rounded-3xl border border-dashed border-slate-300 dark:border-slate-800">
+            <div className="p-12 text-center bg-white dark:bg-slate-900 rounded-3xl border border-dashed border-slate-300 dark:border-slate-800">
               <p className="text-sm font-bold text-slate-700 dark:text-slate-300">Tidak ada data KK yang sesuai pencarian.</p>
             </div>
           ) : (
@@ -408,7 +407,7 @@ export default function KkReconciliationTab() {
                 return (
                   <div
                     key={item.kkNumber}
-                    className="p-5 bg-white/80 dark:bg-slate-900/80 backdrop-blur-md rounded-2xl border border-slate-200/80 dark:border-slate-800 shadow-sm hover:border-emerald-300 dark:hover:border-emerald-700/50 transition flex flex-col justify-between"
+                    className="p-5 bg-white dark:bg-slate-900 rounded-2xl border-2 border-slate-200 dark:border-slate-800 shadow-sm hover:border-emerald-300 dark:hover:border-emerald-700/50 transition flex flex-col justify-between"
                   >
                     <div>
                       <div className="flex items-start justify-between gap-3">
@@ -528,7 +527,7 @@ export default function KkReconciliationTab() {
           </div>
 
           {unregisteredAppKks.length === 0 ? (
-            <div className="p-12 text-center bg-white/60 dark:bg-slate-900/60 rounded-3xl border border-dashed border-slate-300 dark:border-slate-800">
+            <div className="p-12 text-center bg-white dark:bg-slate-900 rounded-3xl border border-dashed border-slate-300 dark:border-slate-800">
               <CheckCircle2 className="w-8 h-8 text-emerald-500 mx-auto mb-2" />
               <p className="text-sm font-bold text-slate-800 dark:text-slate-100">
                 Luar biasa! Seluruh KK di Sensus RT sudah memiliki akun aplikasi.
@@ -543,7 +542,7 @@ export default function KkReconciliationTab() {
                 return (
                   <div
                     key={item.kkNumber}
-                    className="p-5 bg-white/80 dark:bg-slate-900/80 backdrop-blur-md rounded-2xl border border-slate-200/80 dark:border-slate-800 shadow-sm hover:border-amber-300 dark:hover:border-amber-700/50 transition flex flex-col justify-between"
+                    className="p-5 bg-white dark:bg-slate-900 rounded-2xl border-2 border-slate-200 dark:border-slate-800 shadow-sm hover:border-amber-300 dark:hover:border-amber-700/50 transition flex flex-col justify-between"
                   >
                     <div>
                       <div className="flex items-start justify-between gap-3">
@@ -638,7 +637,7 @@ export default function KkReconciliationTab() {
           </div>
 
           {unregisteredMasterKks.length === 0 ? (
-            <div className="p-12 text-center bg-white/60 dark:bg-slate-900/60 rounded-3xl border border-dashed border-slate-300 dark:border-slate-800">
+            <div className="p-12 text-center bg-white dark:bg-slate-900 rounded-3xl border border-dashed border-slate-300 dark:border-slate-800">
               <CheckCircle2 className="w-8 h-8 text-emerald-500 mx-auto mb-2" />
               <p className="text-sm font-bold text-slate-800 dark:text-slate-100">
                 Seluruh akun warga yang terdaftar sudah sinkron dengan Buku Induk Sensus RT.
@@ -652,7 +651,7 @@ export default function KkReconciliationTab() {
                 return (
                   <div
                     key={item.userId}
-                    className="p-5 bg-white/80 dark:bg-slate-900/80 backdrop-blur-md rounded-2xl border border-slate-200/80 dark:border-slate-800 shadow-sm hover:border-purple-300 dark:hover:border-purple-700/50 transition flex flex-col justify-between"
+                    className="p-5 bg-white dark:bg-slate-900 rounded-2xl border-2 border-slate-200 dark:border-slate-800 shadow-sm hover:border-purple-300 dark:hover:border-purple-700/50 transition flex flex-col justify-between"
                   >
                     <div>
                       <div className="flex items-start justify-between gap-3">

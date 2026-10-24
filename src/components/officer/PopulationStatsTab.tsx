@@ -94,12 +94,11 @@ export default function PopulationStatsTab() {
   return (
     <div className="space-y-6 animate-in fade-in duration-300">
       {/* Header Banner */}
-      <div className="p-6 bg-gradient-to-br from-slate-900 via-indigo-950 to-slate-900 text-white rounded-3xl shadow-xl border border-indigo-500/20 backdrop-blur-md relative overflow-hidden">
-        <div className="absolute top-0 right-0 w-80 h-80 bg-blue-500/10 rounded-full blur-3xl pointer-events-none" />
+      <div className="p-6 bg-slate-900 text-white rounded-3xl shadow-xl border-2 border-indigo-900 relative overflow-hidden">
         <div className="relative z-10 flex flex-col md:flex-row md:items-center justify-between gap-4">
           <div>
             <div className="flex items-center gap-2 mb-2">
-              <span className="px-3 py-1 bg-indigo-500/30 border border-indigo-400/40 text-indigo-200 text-xs font-semibold rounded-full uppercase tracking-wider">
+              <span className="px-3 py-1 bg-indigo-900 border border-indigo-500 text-indigo-200 text-xs font-bold rounded-full uppercase tracking-wider">
                 Analitik Demografi & Mutasi
               </span>
               <span className="text-xs text-slate-200 font-semibold">Data Realtime Sensus RT/RW</span>
@@ -113,7 +112,7 @@ export default function PopulationStatsTab() {
           <button
             onClick={fetchStats}
             disabled={isLoading}
-            className="flex items-center gap-2 px-4 py-2.5 bg-white/10 hover:bg-white/20 active:scale-95 transition rounded-2xl text-sm font-medium border border-white/10 self-start md:self-auto"
+            className="flex items-center gap-2 px-4 py-2.5 bg-slate-800 hover:bg-slate-700 active:scale-95 transition rounded-2xl text-sm font-bold border-2 border-slate-600 self-start md:self-auto"
           >
             <RefreshCw className={`w-4 h-4 ${isLoading ? "animate-spin" : ""}`} />
             Perbarui Statistik
@@ -124,7 +123,7 @@ export default function PopulationStatsTab() {
       {/* Main KPI Cards */}
       <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
         {/* Total Jiwa */}
-        <div className="p-5 bg-white/80 dark:bg-slate-900/80 backdrop-blur-md rounded-2xl border border-slate-200/80 dark:border-slate-800 shadow-sm">
+        <div className="p-5 bg-white dark:bg-slate-900 rounded-2xl border-2 border-slate-200 dark:border-slate-800 shadow-sm">
           <div className="flex items-center justify-between">
             <span className="text-xs font-bold text-slate-700 dark:text-slate-200">Total Penduduk Aktif</span>
             <div className="w-8 h-8 rounded-xl bg-indigo-100 dark:bg-indigo-900/40 text-indigo-600 dark:text-indigo-400 flex items-center justify-center">
@@ -140,7 +139,7 @@ export default function PopulationStatsTab() {
         </div>
 
         {/* Gender Breakdown */}
-        <div className="p-5 bg-white/80 dark:bg-slate-900/80 backdrop-blur-md rounded-2xl border border-slate-200/80 dark:border-slate-800 shadow-sm">
+        <div className="p-5 bg-white dark:bg-slate-900 rounded-2xl border-2 border-slate-200 dark:border-slate-800 shadow-sm">
           <div className="flex items-center justify-between">
             <span className="text-xs font-bold text-slate-700 dark:text-slate-200">Proporsi Gender</span>
             <div className="w-8 h-8 rounded-xl bg-blue-100 dark:bg-blue-900/40 text-blue-600 dark:text-blue-400 flex items-center justify-center">
@@ -164,7 +163,7 @@ export default function PopulationStatsTab() {
         </div>
 
         {/* Status Domisili */}
-        <div className="p-5 bg-white/80 dark:bg-slate-900/80 backdrop-blur-md rounded-2xl border border-slate-200/80 dark:border-slate-800 shadow-sm">
+        <div className="p-5 bg-white dark:bg-slate-900 rounded-2xl border-2 border-slate-200 dark:border-slate-800 shadow-sm">
           <div className="flex items-center justify-between">
             <span className="text-xs font-bold text-slate-700 dark:text-slate-200">Status Tempat Tinggal</span>
             <div className="w-8 h-8 rounded-xl bg-emerald-100 dark:bg-emerald-900/40 text-emerald-600 dark:text-emerald-400 flex items-center justify-center">
@@ -191,7 +190,7 @@ export default function PopulationStatsTab() {
         </div>
 
         {/* Total Mutasi */}
-        <div className="p-5 bg-white/80 dark:bg-slate-900/80 backdrop-blur-md rounded-2xl border border-slate-200/80 dark:border-slate-800 shadow-sm">
+        <div className="p-5 bg-white dark:bg-slate-900 rounded-2xl border-2 border-slate-200 dark:border-slate-800 shadow-sm">
           <div className="flex items-center justify-between">
             <span className="text-xs font-bold text-slate-700 dark:text-slate-200">Total Riwayat Mutasi</span>
             <div className="w-8 h-8 rounded-xl bg-amber-100 dark:bg-amber-900/40 text-amber-600 dark:text-amber-400 flex items-center justify-center">
@@ -209,7 +208,7 @@ export default function PopulationStatsTab() {
       {/* Middle Section: Age Pyramid & Mutation Breakdown */}
       <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
         {/* Age Groups Breakdown */}
-        <div className="p-6 bg-white/80 dark:bg-slate-900/80 backdrop-blur-md rounded-3xl border border-slate-200/80 dark:border-slate-800 shadow-sm">
+        <div className="p-6 bg-white dark:bg-slate-900 rounded-3xl border-2 border-slate-200 dark:border-slate-800 shadow-sm">
           <div className="flex items-center justify-between mb-4">
             <div>
               <h3 className="text-base font-bold text-slate-800 dark:text-white">Kelompok Usia Penduduk</h3>
@@ -306,7 +305,7 @@ export default function PopulationStatsTab() {
         </div>
 
         {/* Mutation Breakdown Cards */}
-        <div className="p-6 bg-white/80 dark:bg-slate-900/80 backdrop-blur-md rounded-3xl border border-slate-200/80 dark:border-slate-800 shadow-sm flex flex-col justify-between">
+        <div className="p-6 bg-white dark:bg-slate-900 rounded-3xl border-2 border-slate-200 dark:border-slate-800 shadow-sm flex flex-col justify-between">
           <div>
             <div className="flex items-center justify-between mb-4">
               <div>
@@ -370,7 +369,7 @@ export default function PopulationStatsTab() {
       </div>
 
       {/* Bottom Section: Recent Mutations Activity Table */}
-      <div className="p-6 bg-white/80 dark:bg-slate-900/80 backdrop-blur-md rounded-3xl border border-slate-200/80 dark:border-slate-800 shadow-sm">
+      <div className="p-6 bg-white dark:bg-slate-900 rounded-3xl border-2 border-slate-200 dark:border-slate-800 shadow-sm">
         <div className="flex items-center justify-between mb-4">
           <div>
             <h3 className="text-base font-bold text-slate-800 dark:text-white">

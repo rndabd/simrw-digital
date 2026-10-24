@@ -194,12 +194,11 @@ export default function OfficerComplaintsTab() {
       )}
 
       {/* Header Banner */}
-      <div className="p-6 bg-gradient-to-br from-slate-900 via-rose-950/60 to-slate-900 text-white rounded-3xl shadow-xl border border-rose-500/20 backdrop-blur-md relative overflow-hidden">
-        <div className="absolute top-0 right-0 w-80 h-80 bg-rose-500/10 rounded-full blur-3xl pointer-events-none" />
+      <div className="p-6 bg-slate-900 text-white rounded-3xl shadow-xl border-2 border-rose-900 relative overflow-hidden">
         <div className="relative z-10 flex flex-col md:flex-row md:items-center justify-between gap-4">
           <div>
             <div className="flex items-center gap-2 mb-2">
-              <span className="px-3 py-1 bg-rose-500/30 border border-rose-400/40 text-rose-200 text-xs font-semibold rounded-full uppercase tracking-wider">
+              <span className="px-3 py-1 bg-rose-900 border border-rose-500 text-rose-200 text-xs font-bold rounded-full uppercase tracking-wider">
                 Pusat Aduan Warga
               </span>
               <span className="text-xs text-slate-200 font-semibold">Respon Cepat Tanggap Pengurus</span>
@@ -213,7 +212,7 @@ export default function OfficerComplaintsTab() {
           <button
             onClick={fetchComplaints}
             disabled={isLoading}
-            className="flex items-center gap-2 px-4 py-2.5 bg-white/10 hover:bg-white/20 active:scale-95 transition rounded-2xl text-sm font-medium border border-white/10 self-start md:self-auto"
+            className="flex items-center gap-2 px-4 py-2.5 bg-slate-800 hover:bg-slate-700 active:scale-95 transition rounded-2xl text-sm font-bold border-2 border-slate-600 self-start md:self-auto"
           >
             <RefreshCw className={`w-4 h-4 ${isLoading ? "animate-spin" : ""}`} />
             Perbarui Laporan
@@ -223,29 +222,29 @@ export default function OfficerComplaintsTab() {
 
       {/* KPI Counters */}
       <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-        <div className="p-4 bg-white/80 dark:bg-slate-900/80 backdrop-blur-md rounded-2xl border border-slate-200/80 dark:border-slate-800 shadow-sm">
+        <div className="p-4 bg-white dark:bg-slate-900 rounded-2xl border-2 border-slate-200 dark:border-slate-800 shadow-sm">
           <span className="text-xs font-bold text-slate-700 dark:text-slate-200">Total Pengaduan</span>
-          <p className="text-2xl font-bold text-slate-800 dark:text-white mt-1">{complaints.length}</p>
+          <p className="text-2xl font-black text-slate-900 dark:text-white mt-1">{complaints.length}</p>
         </div>
 
-        <div className="p-4 bg-white/80 dark:bg-slate-900/80 backdrop-blur-md rounded-2xl border border-amber-200/80 dark:border-amber-800/40 shadow-sm">
-          <span className="text-xs font-medium text-amber-600">Menunggu Respon</span>
-          <p className="text-2xl font-bold text-amber-700 dark:text-amber-300 mt-1">{countPending}</p>
+        <div className="p-4 bg-white dark:bg-slate-900 rounded-2xl border-2 border-amber-300 dark:border-amber-800 shadow-sm">
+          <span className="text-xs font-bold text-amber-700">Menunggu Respon</span>
+          <p className="text-2xl font-black text-amber-700 dark:text-amber-300 mt-1">{countPending}</p>
         </div>
 
-        <div className="p-4 bg-white/80 dark:bg-slate-900/80 backdrop-blur-md rounded-2xl border border-blue-200/80 dark:border-blue-800/40 shadow-sm">
-          <span className="text-xs font-medium text-blue-600">Sedang Ditangani</span>
-          <p className="text-2xl font-bold text-blue-700 dark:text-blue-300 mt-1">{countInProcess}</p>
+        <div className="p-4 bg-white dark:bg-slate-900 rounded-2xl border-2 border-blue-300 dark:border-blue-800 shadow-sm">
+          <span className="text-xs font-bold text-blue-700">Sedang Ditangani</span>
+          <p className="text-2xl font-black text-blue-700 dark:text-blue-300 mt-1">{countInProcess}</p>
         </div>
 
-        <div className="p-4 bg-white/80 dark:bg-slate-900/80 backdrop-blur-md rounded-2xl border border-emerald-200/80 dark:border-emerald-800/40 shadow-sm">
-          <span className="text-xs font-medium text-emerald-600">Tuntas Selesai</span>
-          <p className="text-2xl font-bold text-emerald-700 dark:text-emerald-300 mt-1">{countResolved}</p>
+        <div className="p-4 bg-white dark:bg-slate-900 rounded-2xl border-2 border-emerald-300 dark:border-emerald-800 shadow-sm">
+          <span className="text-xs font-bold text-emerald-700">Tuntas Selesai</span>
+          <p className="text-2xl font-black text-emerald-700 dark:text-emerald-300 mt-1">{countResolved}</p>
         </div>
       </div>
 
       {/* Filter and Search Bar */}
-      <div className="p-4 bg-white/80 dark:bg-slate-900/80 backdrop-blur-md rounded-2xl border border-slate-200/80 dark:border-slate-800 shadow-sm flex flex-col md:flex-row gap-3 items-stretch md:items-center justify-between">
+      <div className="p-4 bg-white dark:bg-slate-900 rounded-2xl border-2 border-slate-200 dark:border-slate-800 shadow-sm flex flex-col md:flex-row gap-3 items-stretch md:items-center justify-between">
         <div className="flex flex-wrap items-center gap-2">
           {/* Status Filter */}
           <select
@@ -290,12 +289,12 @@ export default function OfficerComplaintsTab() {
 
       {/* Complaints List */}
       {isLoading ? (
-        <div className="p-12 text-center bg-white/60 dark:bg-slate-900/60 rounded-3xl border border-slate-200/80 dark:border-slate-800">
+        <div className="p-12 text-center bg-white dark:bg-slate-900 rounded-3xl border-2 border-slate-200 dark:border-slate-800 shadow-sm">
           <RefreshCw className="w-8 h-8 text-rose-500 animate-spin mx-auto mb-3" />
           <p className="text-sm font-bold text-slate-800 dark:text-slate-100">Memuat laporan warga...</p>
         </div>
       ) : filteredComplaints.length === 0 ? (
-        <div className="p-12 text-center bg-white/60 dark:bg-slate-900/60 rounded-3xl border border-dashed border-slate-300 dark:border-slate-800">
+        <div className="p-12 text-center bg-white dark:bg-slate-900 rounded-3xl border-2 border-dashed border-slate-300 dark:border-slate-800 shadow-sm">
           <MessageSquare className="w-8 h-8 text-slate-600 mx-auto mb-2" />
           <p className="text-sm font-bold text-slate-800 dark:text-slate-100">
             Tidak ada pengaduan warga yang sesuai filter.
@@ -306,7 +305,7 @@ export default function OfficerComplaintsTab() {
           {filteredComplaints.map((comp) => (
             <div
               key={comp.id}
-              className="p-5 bg-white/80 dark:bg-slate-900/80 backdrop-blur-md rounded-2xl border border-slate-200/80 dark:border-slate-800 shadow-sm hover:border-rose-300 dark:hover:border-rose-700/50 transition flex flex-col md:flex-row md:items-start justify-between gap-4"
+              className="p-5 bg-white dark:bg-slate-900 rounded-2xl border-2 border-slate-200 dark:border-slate-800 shadow-sm hover:border-rose-400 dark:hover:border-rose-700 transition flex flex-col md:flex-row md:items-start justify-between gap-4"
             >
               <div className="space-y-2 flex-1">
                 <div className="flex flex-wrap items-center gap-2">
