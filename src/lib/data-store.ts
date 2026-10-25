@@ -245,7 +245,12 @@ export interface DataStoreSchema {
     id: string;
     target: string;
     code: string;
-    type: "PHONE_VERIFICATION" | "EMAIL_VERIFICATION" | "PASSWORD_RESET";
+    type:
+      | "PHONE_VERIFICATION"
+      | "EMAIL_VERIFICATION"
+      | "PASSWORD_RESET"
+      | "PASSWORD_RESET_OTP"
+      | "CONTACT_VERIFIED";
     expires_at: string;
     created_at: string;
   }>;

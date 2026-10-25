@@ -92,9 +92,13 @@ export default function AuthView() {
   const [password, setPassword] = useState("");
 
   // FORGOT PASSWORD STATE
-  const [forgotStep, setForgotStep] = useState<1 | 2 | 3>(1);
+  const [forgotStep, setForgotStep] = useState<1 | 2 | 3 | 4>(1);
   const [forgotNik, setForgotNik] = useState("");
-  const [forgotPhone, setForgotPhone] = useState("");
+  const [forgotContact, setForgotContact] = useState("");
+  const [forgotOtpCode, setForgotOtpCode] = useState("");
+  const [forgotDevOtp, setForgotDevOtp] = useState<string | null>(null);
+  const [forgotChannel, setForgotChannel] = useState<"WHATSAPP" | "EMAIL">("WHATSAPP");
+  const [forgotTargetMasked, setForgotTargetMasked] = useState("");
   const [forgotToken, setForgotToken] = useState("");
   const [forgotVerifiedUser, setForgotVerifiedUser] = useState<{ fullName: string; maskedNik: string } | null>(null);
   const [forgotNewPassword, setForgotNewPassword] = useState("");
@@ -236,8 +240,13 @@ export default function AuthView() {
   const handleVerifyForgotPassword = async (e: React.FormEvent) => {
     e.preventDefault();
     setForgotError(null);
-    if (!forgotNik || !forgotPhone) {
-      setForgotError("Harap isi NIK dan Nomor Telepon/WhatsApp terdaftar.");
+    setForgotDevOtp(null);
+
+    const cleanNik = forgotNik.replace(/\D/g, "");
+    const cleanContact = forgotContact.trim();
+
+    if (cleanNik.length !== 16 || !cleanContact) {
+      setForgotError("Harap isi 16 Digit NIK dan Nomor WhatsApp atau Email terdaftar.");
       return;
     }
     setForgotLoading(true);
@@ -245,27 +254,62 @@ export default function AuthView() {
       const res = await fetch("/api/v1/auth/forgot-password/verify", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ nik: forgotNik, phoneNumber: forgotPhone }),
+        body: JSON.stringify({ nik: cleanNik, identifier: cleanContact }),
       });
       const data = await res.json();
-      if (data.success && data.data?.resetToken) {
-        setForgotToken(data.data.resetToken);
+      if (data.success && data.data) {
         setForgotVerifiedUser({
           fullName: data.data.fullName,
           maskedNik: data.data.maskedNik,
         });
+        setForgotChannel(data.data.channel || "WHATSAPP");
+        setForgotTargetMasked(data.data.targetMasked || cleanContact);
+        if (data.data.devOtpCode) {
+          setForgotDevOtp(data.data.devOtpCode);
+        }
         setForgotStep(2);
       } else {
-        setForgotError(data.message || "Data NIK dan Nomor HP tidak cocok.");
+        setForgotError(data.message || "Data NIK dan Kontak tidak cocok.");
         const waLink =
           data.adminHelp?.whatsappLink ||
-          data.adminContact?.waLink ||
-          "https://wa.me/6281200000001?text=Halo%20Admin%2FPengurus%20SIM-RW%2C%20saya%20warga%20ingin%20meminta%20bantuan%20pemulihan%20akun%20karena%20lupa%20kata%20sandi.";
+          "https://wa.me/6281200000001?text=Halo%20Admin%2FPengurus%20SIM-RW%2C%20saya%20ingin%20meminta%20bantuan%20pemulihan%20akun%20karena%20lupa%20kata%20sandi.";
         setForgotAdminContact({
           name: "Admin Pengurus SIM-RW",
           phoneNumber: "081200000001",
           waLink,
         });
+      }
+    } catch (err: any) {
+      setForgotError(err.message || "Gagal menghubungi server");
+    } finally {
+      setForgotLoading(false);
+    }
+  };
+
+  const handleVerifyOtpSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    setForgotError(null);
+    if (!forgotOtpCode || forgotOtpCode.trim().length < 6) {
+      setForgotError("Harap masukkan 6 digit kode OTP yang telah dikirim.");
+      return;
+    }
+    setForgotLoading(true);
+    try {
+      const res = await fetch("/api/v1/auth/forgot-password/verify-otp", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          nik: forgotNik.replace(/\D/g, ""),
+          identifier: forgotContact.trim(),
+          otpCode: forgotOtpCode.trim(),
+        }),
+      });
+      const data = await res.json();
+      if (data.success && data.data?.resetToken) {
+        setForgotToken(data.data.resetToken);
+        setForgotStep(3);
+      } else {
+        setForgotError(data.message || "Kode OTP salah atau telah kedaluwarsa.");
       }
     } catch (err: any) {
       setForgotError(err.message || "Gagal menghubungi server");
@@ -294,8 +338,8 @@ export default function AuthView() {
       });
       const data = await res.json();
       if (data.success) {
-        setForgotStep(3);
-        setPhone(forgotPhone);
+        setForgotStep(4);
+        setPhone(forgotContact);
         setPassword(forgotNewPassword);
       } else {
         setForgotError(data.message || "Gagal memperbarui kata sandi.");
@@ -585,7 +629,7 @@ export default function AuthView() {
                     setForgotStep(1);
                     setForgotError(null);
                     setForgotNik("");
-                    setForgotPhone(phone || "");
+                    setForgotContact(phone || "");
                     setForgotAdminContact(null);
                   }}
                   className="text-[11px] font-bold text-emerald-700 hover:text-emerald-800 hover:underline"
@@ -1322,23 +1366,30 @@ export default function AuthView() {
 
             {/* Progress Steps */}
             <div className="flex items-center justify-between px-3 py-2 bg-slate-50 rounded-2xl border border-slate-200">
-              <div className={`flex items-center gap-1.5 text-[11px] font-bold ${forgotStep >= 1 ? "text-emerald-700" : "text-slate-400"}`}>
+              <div className={`flex items-center gap-1 text-[11px] font-bold ${forgotStep >= 1 ? "text-emerald-700" : "text-slate-400"}`}>
                 <span className={`w-5 h-5 rounded-full flex items-center justify-center text-[10px] ${forgotStep >= 1 ? "bg-emerald-600 text-white font-black" : "bg-slate-200 text-slate-600"}`}>
                   1
                 </span>
-                Verifikasi NIK
+                Identitas
               </div>
-              <div className="h-0.5 w-6 bg-slate-200" />
-              <div className={`flex items-center gap-1.5 text-[11px] font-bold ${forgotStep >= 2 ? "text-emerald-700" : "text-slate-400"}`}>
+              <div className="h-0.5 w-3 bg-slate-200" />
+              <div className={`flex items-center gap-1 text-[11px] font-bold ${forgotStep >= 2 ? "text-emerald-700" : "text-slate-400"}`}>
                 <span className={`w-5 h-5 rounded-full flex items-center justify-center text-[10px] ${forgotStep >= 2 ? "bg-emerald-600 text-white font-black" : "bg-slate-200 text-slate-600"}`}>
                   2
                 </span>
-                Sandi Baru
+                Kode OTP
               </div>
-              <div className="h-0.5 w-6 bg-slate-200" />
-              <div className={`flex items-center gap-1.5 text-[11px] font-bold ${forgotStep >= 3 ? "text-emerald-700" : "text-slate-400"}`}>
+              <div className="h-0.5 w-3 bg-slate-200" />
+              <div className={`flex items-center gap-1 text-[11px] font-bold ${forgotStep >= 3 ? "text-emerald-700" : "text-slate-400"}`}>
                 <span className={`w-5 h-5 rounded-full flex items-center justify-center text-[10px] ${forgotStep >= 3 ? "bg-emerald-600 text-white font-black" : "bg-slate-200 text-slate-600"}`}>
                   3
+                </span>
+                Sandi Baru
+              </div>
+              <div className="h-0.5 w-3 bg-slate-200" />
+              <div className={`flex items-center gap-1 text-[11px] font-bold ${forgotStep >= 4 ? "text-emerald-700" : "text-slate-400"}`}>
+                <span className={`w-5 h-5 rounded-full flex items-center justify-center text-[10px] ${forgotStep >= 4 ? "bg-emerald-600 text-white font-black" : "bg-slate-200 text-slate-600"}`}>
+                  4
                 </span>
                 Selesai
               </div>
@@ -1352,11 +1403,11 @@ export default function AuthView() {
               </div>
             )}
 
-            {/* STEP 1: VERIFIKASI NIK & NO HP */}
+            {/* STEP 1: VERIFIKASI NIK & KONTAK (WA / EMAIL) */}
             {forgotStep === 1 && (
               <form onSubmit={handleVerifyForgotPassword} className="space-y-3.5">
                 <p className="text-xs text-slate-600 leading-relaxed bg-emerald-50/70 p-2.5 rounded-xl border border-emerald-200/80">
-                  Masukkan <strong>16 Digit NIK KTP</strong> dan <strong>Nomor WhatsApp</strong> yang terdaftar di akun Anda untuk memvalidasi kepemilikan.
+                  Masukkan <strong>16 Digit NIK KTP</strong> dan <strong>Nomor WhatsApp atau Email terdaftar</strong> Anda. Sistem akan mengirimkan kode OTP untuk verifikasi kepemilikan akun.
                 </p>
 
                 <div>
@@ -1376,14 +1427,14 @@ export default function AuthView() {
 
                 <div>
                   <label className="text-xs font-semibold text-slate-700 block mb-1">
-                    Nomor WhatsApp / HP Terdaftar
+                    Nomor WhatsApp atau Alamat Email Terdaftar
                   </label>
                   <input
-                    type="tel"
+                    type="text"
                     required
-                    value={forgotPhone}
-                    onChange={(e) => setForgotPhone(e.target.value)}
-                    placeholder="Contoh: 0812xxxxxxxx"
+                    value={forgotContact}
+                    onChange={(e) => setForgotContact(e.target.value)}
+                    placeholder="Contoh: 0812xxxxxxxx atau admin@simrw.web.id"
                     className="w-full text-xs p-3 rounded-xl border border-slate-300 font-medium focus:ring-2 focus:ring-emerald-500"
                   />
                 </div>
@@ -1396,11 +1447,11 @@ export default function AuthView() {
                   {forgotLoading ? (
                     <>
                       <RefreshCw className="w-4 h-4 animate-spin" />
-                      Memeriksa Data Kependudukan...
+                      Memeriksa & Mengirim OTP...
                     </>
                   ) : (
                     <>
-                      Cek & Verifikasi Identitas
+                      Kirim Kode OTP Pemulihan
                       <ArrowRight className="w-4 h-4" />
                     </>
                   )}
@@ -1410,13 +1461,13 @@ export default function AuthView() {
                 <div className="mt-3 p-3.5 rounded-2xl bg-amber-50 border border-amber-200 text-xs space-y-2">
                   <div className="flex items-center gap-2 text-amber-900 font-bold">
                     <HelpCircle className="w-4 h-4 text-amber-600 shrink-0" />
-                    Lupa NIK atau Nomor HP Sudah Berganti?
+                    Lupa NIK atau Kontak Sudah Tidak Aktif?
                   </div>
                   <p className="text-amber-800 text-[11px] leading-relaxed">
-                    Jika Anda tidak memiliki akses ke NIK atau nomor telepon telah berganti, silakan hubungi Pengurus / Admin RT & RW setempat melalui WhatsApp untuk bantuan verifikasi akun secara langsung:
+                    Jika Anda tidak memiliki akses ke NIK atau nomor telepon/email telah berganti, silakan hubungi Pengurus / Admin RT & RW setempat melalui WhatsApp untuk bantuan verifikasi akun secara langsung:
                   </p>
                   <a
-                    href={forgotAdminContact?.waLink || "https://wa.me/6281200000001?text=Halo%20Admin%2FPengurus%20SIM-RW%2C%20saya%20warga%20ingin%20meminta%20bantuan%20pemulihan%20akun%20karena%20lupa%20kata%20sandi."}
+                    href={forgotAdminContact?.waLink || "https://wa.me/6281200000001?text=Halo%20Admin%2FPengurus%20SIM-RW%2C%20saya%20ingin%20meminta%20bantuan%20pemulihan%20akun%20karena%20lupa%20kata%20sandi."}
                     target="_blank"
                     rel="noopener noreferrer"
                     className="w-full py-2.5 px-3 rounded-xl bg-emerald-700 hover:bg-emerald-800 text-white font-bold text-xs flex items-center justify-center gap-2 shadow-xs transition-colors"
@@ -1428,16 +1479,80 @@ export default function AuthView() {
               </form>
             )}
 
-            {/* STEP 2: MASUKKAN KATA SANDI BARU */}
+            {/* STEP 2: VERIFIKASI KODE OTP */}
             {forgotStep === 2 && (
+              <form onSubmit={handleVerifyOtpSubmit} className="space-y-3.5">
+                <div className="p-3 rounded-xl bg-blue-50 border border-blue-200 text-xs text-blue-900 leading-relaxed">
+                  <div className="font-bold flex items-center gap-1.5 mb-1">
+                    <ShieldCheck className="w-4 h-4 text-blue-600 shrink-0" />
+                    Kode OTP Telah Dikirim!
+                  </div>
+                  Kode verifikasi 6-digit telah dikirimkan ke <strong>{forgotTargetMasked}</strong> via <strong>{forgotChannel === "EMAIL" ? "Email" : "WhatsApp"}</strong>.
+                </div>
+
+                {forgotDevOtp && (
+                  <div className="p-2 rounded-xl bg-amber-50 border border-amber-200 text-amber-900 text-[11px]">
+                    <strong>Mode Simulasi:</strong> Kode OTP Anda adalah{" "}
+                    <code className="font-mono font-bold bg-white px-1.5 py-0.5 rounded border border-amber-300">
+                      {forgotDevOtp}
+                    </code>
+                  </div>
+                )}
+
+                <div>
+                  <label className="text-xs font-semibold text-slate-700 block mb-1">
+                    Masukkan 6 Digit Kode OTP
+                  </label>
+                  <input
+                    type="text"
+                    maxLength={6}
+                    required
+                    value={forgotOtpCode}
+                    onChange={(e) => setForgotOtpCode(e.target.value.replace(/\D/g, "").slice(0, 6))}
+                    placeholder="Contoh: 123456"
+                    className="w-full text-center text-base p-3 rounded-xl border border-slate-300 font-mono font-extrabold tracking-widest focus:ring-2 focus:ring-emerald-500"
+                  />
+                </div>
+
+                <div className="flex gap-2">
+                  <button
+                    type="button"
+                    onClick={() => setForgotStep(1)}
+                    className="w-1/3 py-3 px-3 rounded-xl bg-slate-100 hover:bg-slate-200 text-slate-700 font-bold text-xs"
+                  >
+                    Kembali
+                  </button>
+                  <button
+                    type="submit"
+                    disabled={forgotLoading || forgotOtpCode.length < 6}
+                    className="w-2/3 py-3 px-4 rounded-xl bg-emerald-600 hover:bg-emerald-700 text-white font-bold text-xs flex items-center justify-center gap-2 shadow-sm transition-all disabled:opacity-50"
+                  >
+                    {forgotLoading ? (
+                      <>
+                        <RefreshCw className="w-4 h-4 animate-spin" />
+                        Memverifikasi...
+                      </>
+                    ) : (
+                      <>
+                        Verifikasi Kode
+                        <CheckCircle2 className="w-4 h-4" />
+                      </>
+                    )}
+                  </button>
+                </div>
+              </form>
+            )}
+
+            {/* STEP 3: MASUKKAN KATA SANDI BARU */}
+            {forgotStep === 3 && (
               <form onSubmit={handleResetPasswordSubmit} className="space-y-3.5">
                 <div className="p-3 rounded-xl bg-emerald-50 border border-emerald-200 text-xs text-emerald-900">
                   <div className="font-bold flex items-center gap-1.5">
                     <CheckCircle2 className="w-4 h-4 text-emerald-600 shrink-0" />
-                    Identitas Terverifikasi!
+                    Identitas Berhasil Diverifikasi!
                   </div>
                   <div className="mt-1 text-slate-700">
-                    Warga: <strong>{forgotVerifiedUser?.fullName}</strong> ({forgotVerifiedUser?.maskedNik})
+                    Pengguna: <strong>{forgotVerifiedUser?.fullName}</strong> ({forgotVerifiedUser?.maskedNik})
                   </div>
                 </div>
 
@@ -1489,8 +1604,8 @@ export default function AuthView() {
               </form>
             )}
 
-            {/* STEP 3: SUKSES */}
-            {forgotStep === 3 && (
+            {/* STEP 4: SUKSES */}
+            {forgotStep === 4 && (
               <div className="text-center py-4 space-y-4">
                 <div className="w-14 h-14 rounded-full bg-emerald-100 text-emerald-600 mx-auto flex items-center justify-center shadow-xs">
                   <CheckCircle2 className="w-8 h-8" />
@@ -1500,13 +1615,14 @@ export default function AuthView() {
                     Kata Sandi Berhasil Diperbarui!
                   </h4>
                   <p className="text-xs text-slate-500 mt-1 max-w-xs mx-auto">
-                    Kata sandi baru Anda telah aktif. Silakan masuk kembali menggunakan kata sandi yang baru dibuat.
+                    Kata sandi baru Anda telah aktif. Silakan masuk kembali menggunakan akun Anda.
                   </p>
                 </div>
                 <button
                   type="button"
                   onClick={() => {
                     setAuthTab("login");
+                    setForgotStep(1);
                   }}
                   className="w-full py-3 px-4 rounded-xl bg-emerald-600 hover:bg-emerald-700 text-white font-bold text-xs flex items-center justify-center gap-2 shadow-sm"
                 >

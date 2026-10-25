@@ -44,7 +44,16 @@ export async function POST(req: NextRequest) {
       );
     }
 
-    const { fullName, nik, phoneNumber, email, password } = admin;
+    const {
+      fullName,
+      nik,
+      phoneNumber,
+      email,
+      password,
+      isPhoneVerified,
+      isEmailVerified,
+      verificationToken,
+    } = admin;
     const { village, district, city, rwNumber, termPeriod, rtCount = 1 } = organization;
 
     if (!fullName || !nik || !phoneNumber || !password) {
@@ -57,6 +66,18 @@ export async function POST(req: NextRequest) {
     if (!village || !district || !city || !rwNumber) {
       return NextResponse.json(
         { success: false, message: "Nama kelurahan, kecamatan, kota, dan nomor RW wajib diisi." },
+        { status: 400 }
+      );
+    }
+
+    // Validasi verifikasi kontak pemulihan akun (WhatsApp atau Email)
+    if (!isPhoneVerified && !isEmailVerified) {
+      return NextResponse.json(
+        {
+          success: false,
+          message:
+            "Nomor WhatsApp atau Email Super Admin wajib diverifikasi via kode OTP terlebih dahulu agar akun dapat dipulihkan jika lupa kata sandi.",
+        },
         { status: 400 }
       );
     }
@@ -138,8 +159,8 @@ export async function POST(req: NextRequest) {
       full_name: fullName.trim(),
       phone_number: phoneNumber.trim(),
       email: email ? email.trim() : undefined,
-      is_phone_verified: true,
-      is_email_verified: true,
+      is_phone_verified: !!isPhoneVerified,
+      is_email_verified: !!isEmailVerified,
       password_hash: passwordHash,
       ktp_doc_url: "/uploads/ktp-admin.jpg",
       status: "VERIFIED_ACTIVE" as const,
@@ -178,6 +199,8 @@ export async function POST(req: NextRequest) {
         maskedNik: maskNik(nik.trim()),
         phoneNumber: phoneNumber.trim(),
         email: email || null,
+        isPhoneVerified: !!isPhoneVerified,
+        isEmailVerified: !!isEmailVerified,
         rw: cleanRwNumber,
         village: village.trim(),
         rtCount: count,

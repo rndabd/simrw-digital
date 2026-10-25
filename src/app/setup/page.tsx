@@ -18,6 +18,9 @@ import {
   Home,
   MapPin,
   Calendar,
+  Smartphone,
+  Send,
+  Info,
 } from "lucide-react";
 
 export default function SetupPage() {
@@ -38,6 +41,21 @@ export default function SetupPage() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
+
+  // OTP Verification state for Admin Setup
+  const [verifyChannel, setVerifyChannel] = useState<"WHATSAPP" | "EMAIL">("WHATSAPP");
+  const [otpSent, setOtpSent] = useState(false);
+  const [otpCode, setOtpCode] = useState("");
+  const [sendingOtp, setSendingOtp] = useState(false);
+  const [verifyingOtp, setVerifyingOtp] = useState(false);
+  const [otpMessage, setOtpMessage] = useState<{
+    type: "success" | "error" | "info";
+    text: string;
+  } | null>(null);
+  const [devOtpCode, setDevOtpCode] = useState<string | null>(null);
+  const [isPhoneVerified, setIsPhoneVerified] = useState(false);
+  const [isEmailVerified, setIsEmailVerified] = useState(false);
+  const [verificationToken, setVerificationToken] = useState<string | null>(null);
 
   // Step 2: Organization Data
   const [village, setVillage] = useState("");
@@ -67,6 +85,124 @@ export default function SetupPage() {
     checkStatus();
   }, []);
 
+  // Handler kirim kode OTP untuk verifikasi Super Admin
+  const handleSendOtp = async () => {
+    setOtpMessage(null);
+    setDevOtpCode(null);
+
+    const target = verifyChannel === "EMAIL" ? email.trim() : phoneNumber.trim();
+
+    if (!target) {
+      setOtpMessage({
+        type: "error",
+        text:
+          verifyChannel === "EMAIL"
+            ? "Harap isi alamat email resmi terlebih dahulu."
+            : "Harap isi nomor WhatsApp terlebih dahulu.",
+      });
+      return;
+    }
+
+    if (verifyChannel === "EMAIL" && !target.includes("@")) {
+      setOtpMessage({ type: "error", text: "Format alamat email tidak valid." });
+      return;
+    }
+
+    setSendingOtp(true);
+    try {
+      const res = await fetch("/api/v1/auth/otp/send", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          target,
+          channel: verifyChannel,
+          purpose: "Inisialisasi Super Admin",
+        }),
+      });
+
+      const data = await res.json();
+      if (data.success) {
+        setOtpSent(true);
+        if (data.devOtpCode) {
+          setDevOtpCode(data.devOtpCode);
+        }
+        setOtpMessage({
+          type: "info",
+          text:
+            data.message ||
+            `Kode OTP berhasil dikirim ke ${target} via ${
+              verifyChannel === "EMAIL" ? "Email" : "WhatsApp"
+            }.`,
+        });
+      } else {
+        setOtpMessage({
+          type: "error",
+          text: data.message || "Gagal mengirimkan kode OTP.",
+        });
+      }
+    } catch (err: any) {
+      setOtpMessage({
+        type: "error",
+        text: err.message || "Gagal menghubungi server untuk mengirim OTP.",
+      });
+    } finally {
+      setSendingOtp(false);
+    }
+  };
+
+  // Handler verifikasi kode OTP
+  const handleVerifyOtp = async () => {
+    setOtpMessage(null);
+    if (!otpCode.trim() || otpCode.trim().length < 6) {
+      setOtpMessage({ type: "error", text: "Masukkan 6 digit kode OTP verifikasi." });
+      return;
+    }
+
+    const target = verifyChannel === "EMAIL" ? email.trim() : phoneNumber.trim();
+    setVerifyingOtp(true);
+    try {
+      const res = await fetch("/api/v1/auth/otp/verify", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          target,
+          code: otpCode.trim(),
+          channel: verifyChannel,
+        }),
+      });
+
+      const data = await res.json();
+      if (data.success) {
+        if (verifyChannel === "EMAIL") {
+          setIsEmailVerified(true);
+        } else {
+          setIsPhoneVerified(true);
+        }
+        if (data.data?.verificationToken) {
+          setVerificationToken(data.data.verificationToken);
+        }
+        setOtpMessage({
+          type: "success",
+          text: `✓ ${
+            verifyChannel === "EMAIL" ? "Alamat email" : "Nomor WhatsApp"
+          } berhasil diverifikasi! Akun siap dipulihkan jika lupa kata sandi.`,
+        });
+      } else {
+        setOtpMessage({
+          type: "error",
+          text: data.message || "Kode OTP salah atau telah kedaluwarsa.",
+        });
+      }
+    } catch (err: any) {
+      setOtpMessage({
+        type: "error",
+        text: err.message || "Gagal memverifikasi OTP.",
+      });
+    } finally {
+      setVerifyingOtp(false);
+    }
+  };
+
   const handleNextStep1 = (e: React.FormEvent) => {
     e.preventDefault();
     setErrorMsg(null);
@@ -76,12 +212,24 @@ export default function SetupPage() {
       setErrorMsg("NIK Super Admin wajib terdiri dari 16 digit angka sesuai KTP.");
       return;
     }
+    if (!phoneNumber.trim()) {
+      setErrorMsg("Nomor WhatsApp wajib diisi.");
+      return;
+    }
     if (password.length < 6) {
       setErrorMsg("Kata sandi minimal 6 karakter.");
       return;
     }
     if (password !== confirmPassword) {
       setErrorMsg("Konfirmasi kata sandi tidak cocok.");
+      return;
+    }
+
+    // Wajibkan verifikasi setidaknya salah satu kontak pemulihan (WhatsApp atau Email)
+    if (!isPhoneVerified && !isEmailVerified) {
+      setErrorMsg(
+        "Harap verifikasi Nomor WhatsApp atau Alamat Email Anda terlebih dahulu menggunakan kode OTP agar akun Super Admin memiliki kontak pemulihan aktif jika terjadi lupa kata sandi."
+      );
       return;
     }
 
@@ -115,6 +263,9 @@ export default function SetupPage() {
             phoneNumber: phoneNumber.trim(),
             email: email.trim() || undefined,
             password,
+            isPhoneVerified,
+            isEmailVerified,
+            verificationToken,
           },
           organization: {
             village: village.trim(),
@@ -153,7 +304,10 @@ export default function SetupPage() {
 
   if (alreadyInitialized) {
     return (
-      <div className="min-h-screen flex items-center justify-center p-4 bg-slate-950 text-slate-900 bg-cover bg-center" style={{ backgroundImage: "url('/bg-desktop.jpeg')" }}>
+      <div
+        className="min-h-screen flex items-center justify-center p-4 bg-slate-950 text-slate-900 bg-cover bg-center"
+        style={{ backgroundImage: "url('/bg-desktop.jpeg')" }}
+      >
         <div className="max-w-md w-full bg-white/95 backdrop-blur-md rounded-3xl p-6 sm:p-8 shadow-2xl border border-white/60 text-center space-y-4">
           <div className="w-16 h-16 rounded-full bg-emerald-100 text-emerald-700 mx-auto flex items-center justify-center shadow-sm">
             <ShieldCheck className="w-9 h-9" />
@@ -197,50 +351,73 @@ export default function SetupPage() {
               Setup Awal Akun Super Administrator & Wilayah Perdana
             </p>
           </div>
-
-          <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-emerald-50 border border-emerald-200 text-[11px] font-bold text-emerald-800">
-            <Lock className="w-3.5 h-3.5 text-emerald-600" />
-            Terproteksi Kriptografi UU PDP No. 27/2022
-          </div>
         </div>
 
-        {/* Progress Step Bar */}
-        <div className="flex items-center justify-between px-2 py-2.5 bg-slate-100 rounded-2xl border border-slate-200 text-xs font-bold">
-          <div className={`flex items-center gap-1.5 ${step >= 1 ? "text-emerald-700 font-extrabold" : "text-slate-400"}`}>
-            <span className={`w-5 h-5 rounded-full flex items-center justify-center text-[10px] ${step >= 1 ? "bg-emerald-600 text-white" : "bg-slate-200 text-slate-600"}`}>
+        {/* Stepper Wizard Indicator */}
+        <div className="flex items-center justify-between px-2 pt-1 border-b border-slate-200 pb-3">
+          <div
+            className={`flex items-center gap-1.5 text-xs font-bold ${
+              step >= 1 ? "text-emerald-700" : "text-slate-400"
+            }`}
+          >
+            <span
+              className={`w-6 h-6 rounded-full flex items-center justify-center text-xs ${
+                step >= 1 ? "bg-emerald-600 text-white" : "bg-slate-200 text-slate-500"
+              }`}
+            >
               1
             </span>
-            Super Admin
+            <span>Super Admin</span>
           </div>
-          <div className="h-0.5 w-6 bg-slate-300" />
-          <div className={`flex items-center gap-1.5 ${step >= 2 ? "text-emerald-700 font-extrabold" : "text-slate-400"}`}>
-            <span className={`w-5 h-5 rounded-full flex items-center justify-center text-[10px] ${step >= 2 ? "bg-emerald-600 text-white" : "bg-slate-200 text-slate-600"}`}>
+
+          <div className="w-8 h-0.5 bg-slate-200" />
+
+          <div
+            className={`flex items-center gap-1.5 text-xs font-bold ${
+              step >= 2 ? "text-emerald-700" : "text-slate-400"
+            }`}
+          >
+            <span
+              className={`w-6 h-6 rounded-full flex items-center justify-center text-xs ${
+                step >= 2 ? "bg-emerald-600 text-white" : "bg-slate-200 text-slate-500"
+              }`}
+            >
               2
             </span>
-            Data Wilayah
+            <span>Wilayah RW</span>
           </div>
-          <div className="h-0.5 w-6 bg-slate-300" />
-          <div className={`flex items-center gap-1.5 ${step >= 3 ? "text-emerald-700 font-extrabold" : "text-slate-400"}`}>
-            <span className={`w-5 h-5 rounded-full flex items-center justify-center text-[10px] ${step >= 3 ? "bg-emerald-600 text-white" : "bg-slate-200 text-slate-600"}`}>
+
+          <div className="w-8 h-0.5 bg-slate-200" />
+
+          <div
+            className={`flex items-center gap-1.5 text-xs font-bold ${
+              step >= 3 ? "text-emerald-700" : "text-slate-400"
+            }`}
+          >
+            <span
+              className={`w-6 h-6 rounded-full flex items-center justify-center text-xs ${
+                step >= 3 ? "bg-emerald-600 text-white" : "bg-slate-200 text-slate-500"
+              }`}
+            >
               3
             </span>
-            Selesai
+            <span>Aktivasi</span>
           </div>
         </div>
 
-        {/* Error Alert */}
+        {/* Global Error Banner */}
         {errorMsg && (
-          <div className="p-3 rounded-xl bg-rose-50 border border-rose-200 text-rose-800 text-xs font-semibold flex items-start gap-2">
-            <AlertCircle className="w-4 h-4 text-rose-600 shrink-0 mt-0.5" />
-            <div>{errorMsg}</div>
+          <div className="p-3 rounded-2xl bg-rose-50 border border-rose-200 text-rose-700 text-xs flex items-start gap-2 shadow-xs animate-shake">
+            <AlertCircle className="w-4 h-4 shrink-0 mt-0.5" />
+            <span className="leading-relaxed">{errorMsg}</span>
           </div>
         )}
 
-        {/* STEP 1: FORM SUPER ADMIN */}
+        {/* STEP 1: FORM ADMIN DENGAN VERIFIKASI WA/EMAIL */}
         {step === 1 && (
           <form onSubmit={handleNextStep1} className="space-y-3.5">
             <div className="p-3 rounded-2xl bg-emerald-50/80 border border-emerald-200 text-xs text-emerald-900 leading-relaxed">
-              <strong>Langkah 1:</strong> Buat akun <strong>Super Administrator</strong> pertama yang memiliki kewenangan tertinggi untuk mengelola seluruh RW, memverifikasi kepengurusan, dan mengatur sistem.
+              <strong>Langkah 1:</strong> Buat akun <strong>Super Administrator</strong> pertama dan verifikasi kontak (WhatsApp atau Email) agar akun dapat dipulihkan jika sewaktu-waktu lupa kata sandi.
             </div>
 
             <div>
@@ -280,7 +457,11 @@ export default function SetupPage() {
                   type="tel"
                   required
                   value={phoneNumber}
-                  onChange={(e) => setPhoneNumber(e.target.value)}
+                  onChange={(e) => {
+                    setPhoneNumber(e.target.value);
+                    setIsPhoneVerified(false);
+                    setOtpSent(false);
+                  }}
                   placeholder="08xxxxxxxxxx"
                   className="w-full text-xs p-3 rounded-xl border border-slate-300 font-medium focus:ring-2 focus:ring-emerald-500"
                 />
@@ -289,17 +470,186 @@ export default function SetupPage() {
 
             <div>
               <label className="text-xs font-semibold text-slate-700 block mb-1">
-                Alamat Email Resmi (Opsional)
+                Alamat Email Resmi (Opsional namun direkomendasikan)
               </label>
               <div className="relative">
                 <Mail className="w-4 h-4 text-slate-400 absolute left-3 top-3" />
                 <input
                   type="email"
                   value={email}
-                  onChange={(e) => setEmail(e.target.value)}
+                  onChange={(e) => {
+                    setEmail(e.target.value);
+                    setIsEmailVerified(false);
+                    setOtpSent(false);
+                  }}
                   placeholder="admin@simrw.web.id"
                   className="w-full text-xs p-2.5 pl-9 rounded-xl border border-slate-300 focus:ring-2 focus:ring-emerald-500"
                 />
+              </div>
+            </div>
+
+            {/* BOX VERIFIKASI KONTAK PEMULIHAN */}
+            <div
+              className={`p-3.5 rounded-2xl border transition-all ${
+                isPhoneVerified || isEmailVerified
+                  ? "bg-emerald-50/90 border-emerald-300"
+                  : "bg-slate-50 border-slate-200"
+              }`}
+            >
+              <div className="flex items-center justify-between mb-2">
+                <div className="flex items-center gap-1.5">
+                  <ShieldCheck
+                    className={`w-4 h-4 ${
+                      isPhoneVerified || isEmailVerified
+                        ? "text-emerald-700"
+                        : "text-slate-600"
+                    }`}
+                  />
+                  <span className="text-xs font-bold text-slate-900">
+                    Verifikasi Kontak Pemulihan Sandi
+                  </span>
+                </div>
+                {(isPhoneVerified || isEmailVerified) && (
+                  <span className="text-[10px] font-black px-2 py-0.5 rounded-full bg-emerald-200 text-emerald-800 flex items-center gap-1">
+                    <CheckCircle2 className="w-3 h-3" />
+                    Terverifikasi
+                  </span>
+                )}
+              </div>
+
+              <p className="text-[11px] text-slate-600 leading-relaxed mb-3">
+                Pilih salah satu kontak aktif Anda di bawah untuk diverifikasi dengan kode OTP. Jika Anda lupa kata sandi nanti, sistem akan menggunakan kontak ini untuk verifikasi identitas:
+              </p>
+
+              {/* Pilihan Kanal Verifikasi */}
+              <div className="grid grid-cols-2 gap-2 mb-3">
+                <button
+                  type="button"
+                  onClick={() => {
+                    setVerifyChannel("WHATSAPP");
+                    setOtpSent(false);
+                    setOtpMessage(null);
+                  }}
+                  className={`p-2 rounded-xl text-xs font-bold flex items-center justify-center gap-1.5 border transition-all ${
+                    verifyChannel === "WHATSAPP"
+                      ? "bg-emerald-700 text-white border-emerald-700 shadow-xs"
+                      : "bg-white text-slate-700 border-slate-200 hover:bg-slate-100"
+                  }`}
+                >
+                  <Phone className="w-3.5 h-3.5" />
+                  WhatsApp {isPhoneVerified && "✓"}
+                </button>
+
+                <button
+                  type="button"
+                  onClick={() => {
+                    setVerifyChannel("EMAIL");
+                    setOtpSent(false);
+                    setOtpMessage(null);
+                  }}
+                  className={`p-2 rounded-xl text-xs font-bold flex items-center justify-center gap-1.5 border transition-all ${
+                    verifyChannel === "EMAIL"
+                      ? "bg-emerald-700 text-white border-emerald-700 shadow-xs"
+                      : "bg-white text-slate-700 border-slate-200 hover:bg-slate-100"
+                  }`}
+                >
+                  <Mail className="w-3.5 h-3.5" />
+                  Email {isEmailVerified && "✓"}
+                </button>
+              </div>
+
+              {/* Status & Kontrol Pengiriman OTP */}
+              <div className="space-y-2">
+                {!otpSent ? (
+                  <button
+                    type="button"
+                    disabled={sendingOtp || (verifyChannel === "WHATSAPP" ? isPhoneVerified : isEmailVerified)}
+                    onClick={handleSendOtp}
+                    className="w-full py-2.5 px-3 rounded-xl bg-slate-900 hover:bg-slate-800 text-emerald-400 font-bold text-xs flex items-center justify-center gap-2 transition-all disabled:opacity-50"
+                  >
+                    {sendingOtp ? (
+                      <>
+                        <RefreshCw className="w-3.5 h-3.5 animate-spin" />
+                        Mengirim Kode OTP...
+                      </>
+                    ) : (
+                      <>
+                        <Send className="w-3.5 h-3.5" />
+                        Kirim Kode OTP ({verifyChannel === "EMAIL" ? email || "Email" : phoneNumber || "WhatsApp"})
+                      </>
+                    )}
+                  </button>
+                ) : (
+                  <div className="space-y-2.5 pt-1">
+                    <div className="flex gap-2">
+                      <input
+                        type="text"
+                        maxLength={6}
+                        value={otpCode}
+                        onChange={(e) => setOtpCode(e.target.value.replace(/\D/g, "").slice(0, 6))}
+                        placeholder="6 Digit OTP"
+                        className="w-1/2 text-center text-sm font-mono font-black tracking-widest p-2 rounded-xl border border-slate-300 focus:ring-2 focus:ring-emerald-500 bg-white"
+                      />
+                      <button
+                        type="button"
+                        disabled={verifyingOtp || otpCode.length < 6}
+                        onClick={handleVerifyOtp}
+                        className="w-1/2 py-2 px-3 rounded-xl bg-emerald-600 hover:bg-emerald-700 text-white font-bold text-xs flex items-center justify-center gap-1.5 transition-all disabled:opacity-50"
+                      >
+                        {verifyingOtp ? (
+                          <>
+                            <RefreshCw className="w-3.5 h-3.5 animate-spin" />
+                            Memeriksa...
+                          </>
+                        ) : (
+                          <>
+                            <CheckCircle2 className="w-3.5 h-3.5" />
+                            Verifikasi OTP
+                          </>
+                        )}
+                      </button>
+                    </div>
+
+                    <div className="flex items-center justify-between text-[11px] text-slate-500 px-1">
+                      <span>Tidak menerima kode?</span>
+                      <button
+                        type="button"
+                        disabled={sendingOtp}
+                        onClick={handleSendOtp}
+                        className="text-emerald-700 hover:underline font-bold"
+                      >
+                        Kirim Ulang OTP
+                      </button>
+                    </div>
+                  </div>
+                )}
+
+                {/* Pesan Feedback OTP */}
+                {otpMessage && (
+                  <div
+                    className={`p-2.5 rounded-xl text-[11px] leading-relaxed flex items-start gap-1.5 ${
+                      otpMessage.type === "success"
+                        ? "bg-emerald-100/90 text-emerald-900 border border-emerald-300 font-semibold"
+                        : otpMessage.type === "error"
+                        ? "bg-rose-100 text-rose-800 border border-rose-200"
+                        : "bg-blue-50 text-blue-800 border border-blue-200"
+                    }`}
+                  >
+                    <Info className="w-3.5 h-3.5 shrink-0 mt-0.5" />
+                    <span>{otpMessage.text}</span>
+                  </div>
+                )}
+
+                {/* Info Helper Dev/Simulasi jika belum ada gateway aktif */}
+                {devOtpCode && (
+                  <div className="p-2 rounded-xl bg-amber-50 border border-amber-200 text-amber-900 text-[11px]">
+                    <strong>Mode Simulasi:</strong> Kode OTP Anda adalah{" "}
+                    <code className="font-mono font-bold bg-white px-1.5 py-0.5 rounded border border-amber-300">
+                      {devOtpCode}
+                    </code>{" "}
+                    (Gateway pesan belum disetup di server).
+                  </div>
+                )}
               </div>
             </div>
 
@@ -359,7 +709,7 @@ export default function SetupPage() {
                   required
                   value={village}
                   onChange={(e) => setVillage(e.target.value)}
-                  placeholder="Contoh: Sukamaju / Ciheulang"
+                  placeholder="Contoh: Desa Ciheulang"
                   className="w-full text-xs p-3 rounded-xl border border-slate-300 font-medium focus:ring-2 focus:ring-emerald-500"
                 />
               </div>
@@ -372,7 +722,7 @@ export default function SetupPage() {
                   required
                   value={district}
                   onChange={(e) => setDistrict(e.target.value)}
-                  placeholder="Contoh: Coblong / Ciparay"
+                  placeholder="Contoh: Ciparay"
                   className="w-full text-xs p-3 rounded-xl border border-slate-300 font-medium focus:ring-2 focus:ring-emerald-500"
                 />
               </div>
@@ -459,9 +809,12 @@ export default function SetupPage() {
         {/* STEP 3: KONFIRMASI AKHIR */}
         {step === 3 && !successDone && (
           <div className="space-y-4">
-            <div className="p-3 rounded-2xl bg-slate-50 border border-slate-200 space-y-2 text-xs">
-              <div className="font-extrabold text-slate-900 border-b pb-1">
-                Ringkasan Setup Server Produksi:
+            <div className="p-3.5 rounded-2xl bg-slate-50 border border-slate-200 space-y-2 text-xs">
+              <div className="font-extrabold text-slate-900 border-b pb-1.5 flex items-center justify-between">
+                <span>Ringkasan Setup Server Produksi:</span>
+                <span className="text-[10px] font-bold text-emerald-700 bg-emerald-100 px-2 py-0.5 rounded-full flex items-center gap-1">
+                  <CheckCircle2 className="w-3 h-3" /> Siap Aktivasi
+                </span>
               </div>
               <div className="grid grid-cols-2 gap-2 pt-1 text-[11px]">
                 <div>
@@ -469,8 +822,26 @@ export default function SetupPage() {
                   <strong className="text-slate-800">{fullName}</strong>
                 </div>
                 <div>
-                  <span className="text-slate-500 block">WhatsApp:</span>
-                  <strong className="text-slate-800">{phoneNumber}</strong>
+                  <span className="text-slate-500 block">Nomor WhatsApp:</span>
+                  <span className="text-slate-800 font-bold">
+                    {phoneNumber}{" "}
+                    {isPhoneVerified && (
+                      <span className="text-emerald-700 font-bold text-[10px]">(✓ Terverifikasi)</span>
+                    )}
+                  </span>
+                </div>
+                <div>
+                  <span className="text-slate-500 block">Email Pemulihan:</span>
+                  <span className="text-slate-800 font-bold">
+                    {email || "-"}{" "}
+                    {isEmailVerified && (
+                      <span className="text-emerald-700 font-bold text-[10px]">(✓ Terverifikasi)</span>
+                    )}
+                  </span>
+                </div>
+                <div>
+                  <span className="text-slate-500 block">Status Pemulihan Sandi:</span>
+                  <strong className="text-emerald-700 font-extrabold">Aktif via OTP</strong>
                 </div>
                 <div>
                   <span className="text-slate-500 block">Wilayah RW:</span>
@@ -482,11 +853,15 @@ export default function SetupPage() {
                 </div>
                 <div>
                   <span className="text-slate-500 block">Kecamatan & Kota:</span>
-                  <strong className="text-slate-800">{district}, {city}</strong>
+                  <strong className="text-slate-800">
+                    {district}, {city}
+                  </strong>
                 </div>
                 <div>
                   <span className="text-slate-500 block">Unit RT Perdana:</span>
-                  <strong className="text-slate-800">{rtCount} Satuan RT (RT 01 s/d {String(rtCount).padStart(2, "0")})</strong>
+                  <strong className="text-slate-800">
+                    {rtCount} Satuan RT (RT 01 s/d {String(rtCount).padStart(2, "0")})
+                  </strong>
                 </div>
               </div>
             </div>
@@ -519,7 +894,7 @@ export default function SetupPage() {
                 ) : (
                   <>
                     <CheckCircle2 className="w-4 h-4" />
-                    Aktifkan SIM-RW Produksi
+                    Konfirmasi & Aktivasi Sistem
                   </>
                 )}
               </button>
@@ -527,25 +902,40 @@ export default function SetupPage() {
           </div>
         )}
 
-        {/* STEP 4: SUKSES */}
+        {/* SUKSES INISIALISASI */}
         {successDone && (
-          <div className="text-center py-4 space-y-4">
+          <div className="text-center py-4 space-y-4 animate-in fade-in zoom-in">
             <div className="w-16 h-16 rounded-full bg-emerald-100 text-emerald-600 mx-auto flex items-center justify-center shadow-sm">
-              <CheckCircle2 className="w-10 h-10" />
+              <CheckCircle2 className="w-9 h-9" />
             </div>
             <div>
-              <h3 className="text-lg font-black text-slate-900">
-                Inisialisasi Berhasil!
-              </h3>
-              <p className="text-xs text-slate-600 mt-1.5 max-w-sm mx-auto leading-relaxed">
-                Akun Super Administrator dan wilayah perdana telah aktif. Anda sekarang dapat masuk ke aplikasi SIM-RW Digital.
+              <h2 className="text-lg font-extrabold text-slate-900">
+                Inisialisasi Sistem Berhasil!
+              </h2>
+              <p className="text-xs text-slate-600 mt-1.5 leading-relaxed max-w-sm mx-auto">
+                Akun Super Administrator dan wilayah <strong>RW {rwNumber.padStart(2, "0")} {village}</strong> telah berhasil didaftarkan. Kontak pemulihan Anda telah terverifikasi untuk fitur Lupa Kata Sandi.
               </p>
             </div>
+
+            <div className="p-3 bg-emerald-50 rounded-2xl border border-emerald-200 text-xs text-emerald-800 text-left space-y-1">
+              <div>
+                Akun Admin: <strong>{phoneNumber}</strong>
+              </div>
+              {email && (
+                <div>
+                  Email Terverifikasi: <strong>{email}</strong>
+                </div>
+              )}
+              <div className="text-[11px] text-emerald-700">
+                Silakan masuk menggunakan nomor WhatsApp dan kata sandi yang telah Anda buat.
+              </div>
+            </div>
+
             <button
               onClick={() => (window.location.href = "/")}
-              className="w-full py-3.5 px-4 rounded-xl bg-emerald-600 hover:bg-emerald-700 text-white font-bold text-xs flex items-center justify-center gap-2 shadow-sm transition-all"
+              className="w-full py-3.5 px-4 rounded-xl bg-emerald-700 hover:bg-emerald-800 text-white font-bold text-xs flex items-center justify-center gap-2 shadow-md transition-all"
             >
-              Masuk ke Aplikasi Sekarang
+              Masuk ke Aplikasi SIM-RW
               <ArrowRight className="w-4 h-4" />
             </button>
           </div>
@@ -554,4 +944,3 @@ export default function SetupPage() {
     </div>
   );
 }
-

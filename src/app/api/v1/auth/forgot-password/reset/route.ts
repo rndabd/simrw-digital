@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import { getStore, saveStore } from "@/lib/data-store";
 import { hashPassword } from "@/lib/auth";
+import { normalizePhoneNumber } from "@/lib/waha";
 import { recordAuditLog } from "@/lib/audit";
 
 export async function POST(req: NextRequest) {
@@ -33,13 +34,21 @@ export async function POST(req: NextRequest) {
       return NextResponse.json(
         {
           success: false,
-          message: "Sesi pemulihan telah kedaluwarsa atau tidak valid. Silakan ulangi verifikasi NIK dan HP.",
+          message: "Sesi pemulihan telah kedaluwarsa atau tidak valid. Silakan ulangi verifikasi NIK dan OTP.",
         },
         { status: 401 }
       );
     }
 
-    const user = store.users.find((u) => u.phone_number === tokenRecord.target);
+    // Cari user berdasarkan ID atau Nomor Telepon atau Email yang tersimpan di target
+    const user = store.users.find(
+      (u) =>
+        u.id === tokenRecord.target ||
+        u.phone_number === tokenRecord.target ||
+        normalizePhoneNumber(u.phone_number) === normalizePhoneNumber(tokenRecord.target) ||
+        (u.email && u.email.toLowerCase() === tokenRecord.target.toLowerCase())
+    );
+
     if (!user) {
       return NextResponse.json(
         { success: false, message: "Pengguna tidak ditemukan." },
@@ -52,7 +61,7 @@ export async function POST(req: NextRequest) {
     user.password_hash = newHash;
     user.updated_at = new Date().toISOString();
 
-    // Invalidate used reset token
+    // Hapus reset token yang telah digunakan
     store.verification_otps = store.verification_otps.filter((t) => t.id !== tokenRecord.id);
     saveStore(store);
 
@@ -60,7 +69,7 @@ export async function POST(req: NextRequest) {
       userId: user.id,
       action: "RESET_PASSWORD_SUCCESS",
       resource: `USER:${user.id}`,
-      payload: { phone: user.phone_number },
+      payload: { phone: user.phone_number, email: user.email || null },
     });
 
     return NextResponse.json({
@@ -74,4 +83,3 @@ export async function POST(req: NextRequest) {
     );
   }
 }
-

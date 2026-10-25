@@ -90,6 +90,38 @@ export function maskKK(kk: string): string {
 }
 
 /**
+ * Mask Nomor WhatsApp / Telepon untuk privasi (misal 081234567890 -> 0812****7890)
+ */
+export function maskPhoneNumber(phone: string): string {
+  if (!phone) return "";
+  const cleaned = phone.trim();
+  if (cleaned.length < 8) return "******";
+  const prefix = cleaned.substring(0, 4);
+  const suffix = cleaned.substring(cleaned.length - 4);
+  return `${prefix}****${suffix}`;
+}
+
+/**
+ * Mask Alamat Email untuk privasi (misal admin@simrw.web.id -> ad***@simrw.web.id)
+ */
+export function maskEmail(email: string): string {
+  if (!email || !email.includes("@")) return "";
+  const [user, domain] = email.trim().split("@");
+  if (user.length <= 2) return `${user}***@${domain}`;
+  const prefix = user.substring(0, 2);
+  return `${prefix}***@${domain}`;
+}
+
+/**
+ * Mask Kontak (Otomatis mendeteksi nomor telepon atau email)
+ */
+export function maskContact(contact: string): string {
+  if (!contact) return "";
+  if (contact.includes("@")) return maskEmail(contact);
+  return maskPhoneNumber(contact);
+}
+
+/**
  * Validasi Format NIK 16 digit & parsing informasi tanggal lahir
  */
 export function validateNikFormat(nik: string): {
