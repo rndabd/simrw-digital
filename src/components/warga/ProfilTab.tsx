@@ -487,51 +487,6 @@ export default function ProfilTab() {
             )}
           </div>
 
-          {/* Demo Credentials Switcher */}
-          <div className="p-5 rounded-2xl bg-white border border-slate-200/90 shadow-2xs space-y-2.5">
-            <div className="text-xs font-extrabold text-slate-900 uppercase tracking-wider flex items-center gap-1.5">
-              <UserCheck className="w-4 h-4 text-emerald-600" />
-              Beralih Cepat Akun Demo (1-Click Switcher)
-            </div>
-            <p className="text-[11px] text-slate-700 font-medium">
-              Uji seluruh alur sistem dengan berganti peran pengguna secara instan:
-            </p>
-
-            <div className="grid grid-cols-2 gap-2">
-              <button
-                onClick={() => quickLogin("RT")}
-                className="p-3 rounded-xl border border-slate-200 hover:border-emerald-500 hover:bg-emerald-50 text-left transition-all"
-              >
-                <div className="text-xs font-bold text-slate-900">Pak RT Hendra</div>
-                <div className="text-[10px] text-emerald-700 font-semibold">Ketua RT 02 (Verifikator)</div>
-              </button>
-
-              <button
-                onClick={() => quickLogin("RW")}
-                className="p-3 rounded-xl border border-slate-200 hover:border-emerald-500 hover:bg-emerald-50 text-left transition-all"
-              >
-                <div className="text-xs font-bold text-slate-900">Pak RW Budi</div>
-                <div className="text-[10px] text-emerald-700 font-semibold">Ketua RW 05 (Approver)</div>
-              </button>
-
-              <button
-                onClick={() => quickLogin("RESIDENT")}
-                className="p-3 rounded-xl border border-slate-200 hover:border-emerald-500 hover:bg-emerald-50 text-left transition-all"
-              >
-                <div className="text-xs font-bold text-slate-900">Ibu Siti Aminah</div>
-                <div className="text-[10px] text-emerald-700 font-semibold">Warga Aktif Terverifikasi</div>
-              </button>
-
-              <button
-                onClick={() => quickLogin("PENDING")}
-                className="p-3 rounded-xl border border-slate-200 hover:border-amber-500 hover:bg-amber-50 text-left transition-all"
-              >
-                <div className="text-xs font-bold text-slate-900">Ahmad Hidayat</div>
-                <div className="text-[10px] text-amber-700 font-semibold">Warga Baru (Pending)</div>
-              </button>
-            </div>
-          </div>
-
           {/* Logout Button */}
           <button
             onClick={logout}

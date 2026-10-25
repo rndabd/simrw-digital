@@ -228,49 +228,6 @@ export default function AppShell({
               })}
             </nav>
 
-            {/* 1-Click Fast Demo Switcher in Desktop Sidebar */}
-            <div className="p-3.5 rounded-2xl bg-white/95 backdrop-blur-md border border-white/80 shadow-lg space-y-2">
-              <div className="text-[10px] font-extrabold text-slate-600 uppercase tracking-wider">
-                Ganti Akun Demo (1-Click)
-              </div>
-              <div className="space-y-1.5 text-[11px]">
-                <button
-                  onClick={() => quickLogin("ADMIN")}
-                  className="w-full p-2 rounded-lg bg-indigo-50 hover:bg-indigo-100 text-indigo-950 font-bold border border-indigo-200 text-left flex items-center justify-between"
-                >
-                  <span>Ibu Lurah Ratna</span>
-                  <span className="text-[9px] bg-indigo-200 text-indigo-900 px-1.5 py-0.2 rounded font-extrabold">Super Admin</span>
-                </button>
-
-                <div className="grid grid-cols-2 gap-1.5">
-                  <button
-                    onClick={() => quickLogin("RW")}
-                    className="p-1.5 rounded-lg bg-teal-50 hover:bg-teal-100 text-teal-900 font-bold border border-teal-200 text-left"
-                  >
-                    Pak RW Budi
-                  </button>
-                  <button
-                    onClick={() => quickLogin("RT")}
-                    className="p-1.5 rounded-lg bg-emerald-50 hover:bg-emerald-100 text-emerald-900 font-bold border border-emerald-200 text-left"
-                  >
-                    Pak RT Hendra
-                  </button>
-                  <button
-                    onClick={() => quickLogin("RESIDENT")}
-                    className="p-1.5 rounded-lg bg-slate-100 hover:bg-slate-200 text-slate-800 font-bold border border-slate-200 text-left"
-                  >
-                    Bu Siti (Warga)
-                  </button>
-                  <button
-                    onClick={() => quickLogin("PENDING")}
-                    className="p-1.5 rounded-lg bg-amber-50 hover:bg-amber-100 text-amber-900 font-bold border border-amber-200 text-left"
-                  >
-                    Ahmad (Pending)
-                  </button>
-                </div>
-              </div>
-            </div>
-
             {/* Logout button */}
             <button
               onClick={logout}

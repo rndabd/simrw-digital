@@ -69,10 +69,24 @@ export default function AuthView() {
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
   const [successMessage, setSuccessMessage] = useState<string | null>(null);
+  const [isSystemInitialized, setIsSystemInitialized] = useState<boolean | null>(null);
+
+  useEffect(() => {
+    async function checkInit() {
+      try {
+        const res = await fetch("/api/v1/setup/status");
+        const json = await res.json();
+        if (json.success) {
+          setIsSystemInitialized(json.initialized);
+        }
+      } catch (e) {}
+    }
+    checkInit();
+  }, []);
 
   // 1. LOGIN STATE
-  const [phone, setPhone] = useState("081200000003"); // Default Siti Aminah
-  const [password, setPassword] = useState("password123");
+  const [phone, setPhone] = useState("");
+  const [password, setPassword] = useState("");
 
   // FORGOT PASSWORD STATE
   const [forgotStep, setForgotStep] = useState<1 | 2 | 3>(1);
@@ -441,6 +455,27 @@ export default function AuthView() {
 
       {/* Main Container Card */}
       <div className="bg-white/95 backdrop-blur-md rounded-3xl border border-white/60 shadow-2xl p-5 sm:p-6 space-y-4 max-w-lg mx-auto w-full">
+        {isSystemInitialized === false && (
+          <div className="p-4 rounded-2xl bg-amber-500/15 border border-amber-500/30 text-amber-950 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3 shadow-sm animate-in fade-in">
+            <div className="flex items-center gap-2.5">
+              <AlertCircle className="w-5 h-5 text-amber-700 shrink-0" />
+              <div>
+                <div className="text-xs font-black text-amber-900">Sistem Belum Diinisialisasi</div>
+                <div className="text-[11px] text-amber-800">
+                  Setup awal akun Super Administrator dan Wilayah belum dilakukan.
+                </div>
+              </div>
+            </div>
+            <a
+              href="/setup"
+              className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-amber-600 hover:bg-amber-700 text-white text-xs font-bold shrink-0 shadow-sm transition-all"
+            >
+              Mulai Setup
+              <ArrowRight className="w-3.5 h-3.5" />
+            </a>
+          </div>
+        )}
+
         {errorMessage && (
           <div className="p-3 rounded-xl bg-rose-50 border border-rose-200 text-xs text-rose-800 font-semibold flex items-center gap-2">
             <AlertCircle className="w-4 h-4 text-rose-600 shrink-0" />
@@ -1488,59 +1523,6 @@ export default function AuthView() {
                 </button>
               </div>
             )}
-          </div>
-        )}
-
-        {/* =========================================================================
-            PINTASAN UJI COBA AKUN DEMO (1-CLICK)
-            ========================================================================= */}
-        {authTab !== "forgot" && (
-          <div className="pt-3 border-t border-slate-200">
-            <div className="text-[11px] font-extrabold uppercase tracking-wider text-slate-700 text-center mb-2">
-              Pintasan Uji Coba Cepat (1-Click Demo):
-            </div>
-            <div className="grid grid-cols-2 md:grid-cols-3 gap-1.5">
-              <button
-                type="button"
-                onClick={() => quickLogin("ADMIN")}
-                className="p-2 rounded-xl bg-indigo-50 hover:bg-indigo-100 text-left border border-indigo-200 transition-colors col-span-2 md:col-span-3"
-              >
-                <div className="text-xs font-bold text-indigo-950 flex items-center gap-1.5">
-                  <ShieldCheck className="w-3.5 h-3.5 text-indigo-700" />
-                  Ibu Lurah Ratna Dewi (Super Admin)
-                </div>
-                <div className="text-[10px] text-indigo-700 font-medium">
-                  Kelola Seluruh RW, Approval Pengurus RW Baru, dan Rollover 5 Tahun
-                </div>
-              </button>
-
-              <button
-                type="button"
-                onClick={() => quickLogin("RW")}
-                className="p-2 rounded-xl bg-teal-50 hover:bg-teal-100 text-left border border-teal-200 transition-colors"
-              >
-                <div className="text-xs font-bold text-teal-900">Pak RW Budi</div>
-                <div className="text-[10px] text-teal-700">Ketua RW 05 (Approval RT & Kas)</div>
-              </button>
-
-              <button
-                type="button"
-                onClick={() => quickLogin("RT")}
-                className="p-2 rounded-xl bg-emerald-50 hover:bg-emerald-100 text-left border border-emerald-200 transition-colors"
-              >
-                <div className="text-xs font-bold text-emerald-900">Pak RT Hendra</div>
-                <div className="text-[10px] text-emerald-700">Ketua RT 02 (Validasi Iuran)</div>
-              </button>
-
-              <button
-                type="button"
-                onClick={() => quickLogin("RESIDENT")}
-                className="p-2 rounded-xl bg-slate-100 hover:bg-slate-200 text-left border border-slate-200 transition-colors"
-              >
-                <div className="text-xs font-bold text-slate-800">Ibu Siti Aminah</div>
-                <div className="text-[10px] text-slate-700 font-bold">Warga Aktif (Bayar Iuran)</div>
-              </button>
-            </div>
           </div>
         )}
       </div>

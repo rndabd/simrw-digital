@@ -1,6 +1,7 @@
 "use client";
 
 import React, { useState, useEffect } from "react";
+import { useRouter } from "next/navigation";
 import { useAuth } from "@/context/AuthContext";
 import { useViewMode } from "@/context/ViewModeContext";
 import AuthView from "@/components/auth/AuthView";
@@ -20,11 +21,30 @@ import SuperAdminDashboard from "@/components/admin/SuperAdminDashboard";
 import { Siren, X, MessageSquare, Bell, Building2, Phone } from "lucide-react";
 
 export default function HomePage() {
+  const router = useRouter();
   const { user, isLoading, isOfficerMode } = useAuth();
   const { isDesktop } = useViewMode();
   const [activeTab, setActiveTab] = useState<NavTab | "admin" | "pengaduan">("beranda");
   const [wargaSubTab, setWargaSubTab] = useState<"BAGAN" | "KONTAK" | "DARURAT">("BAGAN");
   const [forceReady, setForceReady] = useState(false);
+
+  // Check if system is initialized when no user is logged in
+  useEffect(() => {
+    async function checkSetup() {
+      try {
+        const res = await fetch("/api/v1/setup/status");
+        const json = await res.json();
+        if (json.success && !json.initialized) {
+          router.push("/setup");
+        }
+      } catch (e) {
+        // network or server error handled gracefully
+      }
+    }
+    if (!user) {
+      checkSetup();
+    }
+  }, [user, router]);
 
   // If user is Super Admin, default to "admin" tab
   useEffect(() => {
