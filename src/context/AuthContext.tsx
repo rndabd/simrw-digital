@@ -45,7 +45,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
 
   const fetchProfile = async () => {
     const controller = new AbortController();
-    const timeoutId = setTimeout(() => controller.abort(), 2500);
+    const timeoutId = setTimeout(() => controller.abort(), 3500);
 
     try {
       const res = await fetch("/api/v1/auth/me", { signal: controller.signal });
@@ -55,20 +55,31 @@ export function AuthProvider({ children }: { children: ReactNode }) {
         if (json.success && json.data) {
           const isSuperAdmin = json.data.roles?.includes("SUPER_ADMIN");
           const isOfficer = json.data.isOfficer || isSuperAdmin;
-          setUser({
+          const userObj = {
             ...json.data,
             isSuperAdmin,
             isOfficer,
-          });
+          };
+          setUser(userObj);
+          try {
+            localStorage.setItem("simrw_offline_user", JSON.stringify(userObj));
+          } catch {}
           if (!isOfficer) {
             setIsOfficerMode(false);
           }
           return;
         }
+      } else if (res.status === 401 || res.status === 403) {
+        // Token is explicitly invalidated by backend
+        setUser(null);
+        try {
+          localStorage.removeItem("simrw_offline_user");
+        } catch {}
       }
-      setUser(null);
+      // If 5xx or network offline, retain cached user
     } catch (e) {
-      setUser(null);
+      // Offline / network failure: keep cached user intact
+      console.log("Offline mode: using cached session");
     } finally {
       clearTimeout(timeoutId);
       setIsLoading(false);
@@ -76,6 +87,14 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   };
 
   useEffect(() => {
+    // Restore cached session immediately on startup for zero-delay offline access
+    try {
+      const cached = localStorage.getItem("simrw_offline_user");
+      if (cached) {
+        const parsed = JSON.parse(cached);
+        setUser(parsed);
+      }
+    } catch {}
     fetchProfile();
   }, []);
 
@@ -120,6 +139,9 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   const logout = async () => {
     try {
       await fetch("/api/v1/auth/logout", { method: "POST" });
+    } catch {}
+    try {
+      localStorage.removeItem("simrw_offline_user");
     } catch {}
     setUser(null);
     setIsOfficerMode(false);

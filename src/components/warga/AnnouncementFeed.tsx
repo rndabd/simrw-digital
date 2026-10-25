@@ -25,12 +25,23 @@ export default function AnnouncementFeed({ onSelectAnnouncement }: AnnouncementF
   const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
+    try {
+      const cached = localStorage.getItem("simrw_offline_announcements");
+      if (cached) {
+        setAnnouncements(JSON.parse(cached));
+        setIsLoading(false);
+      }
+    } catch {}
+
     async function fetchAnnouncements() {
       try {
         const res = await fetch("/api/v1/announcements");
         const json = await res.json();
         if (json.success && json.data) {
           setAnnouncements(json.data);
+          try {
+            localStorage.setItem("simrw_offline_announcements", JSON.stringify(json.data));
+          } catch {}
         }
       } catch (err) {
         console.error("Failed to fetch announcements:", err);

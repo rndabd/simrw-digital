@@ -4,6 +4,8 @@ import React, { ReactNode } from "react";
 import { useViewMode } from "@/context/ViewModeContext";
 import { useAuth } from "@/context/AuthContext";
 import ViewModeToggle from "@/components/common/ViewModeToggle";
+import OfflineBanner from "@/components/common/OfflineBanner";
+import PullToRefresh from "@/components/common/PullToRefresh";
 import {
   ShieldCheck,
   Home,
@@ -78,8 +80,11 @@ export default function AppShell({
           style={{ backgroundImage: "url('/bg-mobile.jpg')" }}
         >
           <div className="hidden md:block w-32 h-4 bg-slate-800 rounded-b-xl mx-auto absolute top-0 left-1/2 -translate-x-1/2 z-50 pointer-events-none" />
+          <OfflineBanner />
           <div className="flex-1 min-h-0 flex flex-col bg-slate-950/45 backdrop-blur-[2px] h-full overflow-hidden relative">
-            {children}
+            <PullToRefresh>
+              {children}
+            </PullToRefresh>
           </div>
         </div>
       </div>
@@ -159,6 +164,8 @@ export default function AppShell({
           )}
         </div>
       </header>
+
+      <OfflineBanner />
 
       {/* Main Desktop Layout Grid */}
       <div className="flex-1 w-full max-w-[1720px] mx-auto px-4 sm:px-6 lg:px-8 py-6 grid grid-cols-12 gap-6 relative">

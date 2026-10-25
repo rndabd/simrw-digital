@@ -3,6 +3,7 @@ import "./globals.css";
 import QueryProvider from "@/providers/QueryProvider";
 import { AuthProvider } from "@/context/AuthContext";
 import { ViewModeProvider } from "@/context/ViewModeContext";
+import ServiceWorkerRegister from "@/components/common/ServiceWorkerRegister";
 
 export const metadata: Metadata = {
   title: "SIM-RW Digital | Inisiasi RW 15 Komplek Giri Ciheulang",
@@ -51,6 +52,7 @@ export default function RootLayout({
         />
       </head>
       <body className="antialiased min-h-screen bg-slate-100 font-sans selection:bg-emerald-500 selection:text-white">
+        <ServiceWorkerRegister />
         <ViewModeProvider>
           <QueryProvider>
             <AuthProvider>{children}</AuthProvider>
