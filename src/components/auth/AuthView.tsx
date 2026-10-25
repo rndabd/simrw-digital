@@ -24,6 +24,8 @@ import {
   Phone,
   RefreshCw,
   ArrowLeft,
+  Send,
+  Info,
 } from "lucide-react";
 
 const RW_POSITIONS = [
@@ -121,12 +123,26 @@ export default function AuthView() {
   const [resEmail, setResEmail] = useState("");
   const [resVerificationMethod, setResVerificationMethod] = useState<"WHATSAPP" | "EMAIL">("WHATSAPP");
   const [resPassword, setResPassword] = useState("");
+  const [resConfirmPassword, setResConfirmPassword] = useState("");
   const [resAddress, setResAddress] = useState("");
   const [resKtpFile, setResKtpFile] = useState<File | null>(null);
   const [resKtpPreview, setResKtpPreview] = useState<string | null>(null);
   const ktpCameraRef = useRef<HTMLInputElement>(null);
   const ktpGalleryRef = useRef<HTMLInputElement>(null);
   const [resNikValidation, setResNikValidation] = useState<string | null>(null);
+
+  // OTP Verification for Resident (Warga)
+  const [resOtpSent, setResOtpSent] = useState(false);
+  const [resOtpCode, setResOtpCode] = useState("");
+  const [resSendingOtp, setResSendingOtp] = useState(false);
+  const [resVerifyingOtp, setResVerifyingOtp] = useState(false);
+  const [resOtpMessage, setResOtpMessage] = useState<{
+    type: "success" | "error" | "info";
+    text: string;
+  } | null>(null);
+  const [resDevOtp, setResDevOtp] = useState<string | null>(null);
+  const [resIsVerified, setResIsVerified] = useState(false);
+  const [resVerificationToken, setResVerificationToken] = useState<string | null>(null);
 
   const handleKtpFileChange = (file: File | null) => {
     setResKtpFile(file);
@@ -157,10 +173,24 @@ export default function AuthView() {
   const [offName, setOffName] = useState("");
   const [offPhone, setOffPhone] = useState("");
   const [offPassword, setOffPassword] = useState("");
+  const [offConfirmPassword, setOffConfirmPassword] = useState("");
   const [offAddress, setOffAddress] = useState("");
   const [offTermPeriod, setOffTermPeriod] = useState("2026-2031");
   const [offSkFile, setOffSkFile] = useState<File | null>(null);
   const [offNikValidation, setOffNikValidation] = useState<string | null>(null);
+
+  // OTP Verification for Officer (Pengurus)
+  const [offOtpSent, setOffOtpSent] = useState(false);
+  const [offOtpCode, setOffOtpCode] = useState("");
+  const [offSendingOtp, setOffSendingOtp] = useState(false);
+  const [offVerifyingOtp, setOffVerifyingOtp] = useState(false);
+  const [offOtpMessage, setOffOtpMessage] = useState<{
+    type: "success" | "error" | "info";
+    text: string;
+  } | null>(null);
+  const [offDevOtp, setOffDevOtp] = useState<string | null>(null);
+  const [offIsVerified, setOffIsVerified] = useState(false);
+  const [offVerificationToken, setOffVerificationToken] = useState<string | null>(null);
 
   // Load public organizations on mount
   useEffect(() => {
@@ -364,6 +394,163 @@ export default function AuthView() {
     setIsSubmitting(false);
   };
 
+  // Handler Kirim OTP Warga
+  const handleSendResOtp = async () => {
+    setResOtpMessage(null);
+    setResDevOtp(null);
+    const target = resVerificationMethod === "EMAIL" ? resEmail.trim() : resPhone.trim();
+    if (!target) {
+      setResOtpMessage({
+        type: "error",
+        text: resVerificationMethod === "EMAIL" ? "Harap isi alamat email terlebih dahulu." : "Harap isi nomor WhatsApp terlebih dahulu.",
+      });
+      return;
+    }
+    setResSendingOtp(true);
+    try {
+      const res = await fetch("/api/v1/auth/otp/send", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          target,
+          channel: resVerificationMethod,
+          purpose: "Pendaftaran Warga",
+        }),
+      });
+      const data = await res.json();
+      if (data.success) {
+        setResOtpSent(true);
+        if (data.devOtpCode) setResDevOtp(data.devOtpCode);
+        setResOtpMessage({
+          type: "info",
+          text: data.message || `Kode OTP telah dikirim ke ${target}.`,
+        });
+      } else {
+        setResOtpMessage({ type: "error", text: data.message || "Gagal mengirimkan OTP." });
+      }
+    } catch (err: any) {
+      setResOtpMessage({ type: "error", text: err.message || "Terjadi kesalahan jaringan." });
+    } finally {
+      setResSendingOtp(false);
+    }
+  };
+
+  // Handler Verifikasi OTP Warga
+  const handleVerifyResOtp = async () => {
+    setResOtpMessage(null);
+    if (!resOtpCode.trim() || resOtpCode.trim().length < 6) {
+      setResOtpMessage({ type: "error", text: "Masukkan 6 digit kode OTP." });
+      return;
+    }
+    const target = resVerificationMethod === "EMAIL" ? resEmail.trim() : resPhone.trim();
+    setResVerifyingOtp(true);
+    try {
+      const res = await fetch("/api/v1/auth/otp/verify", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          target,
+          code: resOtpCode.trim(),
+          channel: resVerificationMethod,
+        }),
+      });
+      const data = await res.json();
+      if (data.success) {
+        setResIsVerified(true);
+        if (data.data?.verificationToken) {
+          setResVerificationToken(data.data.verificationToken);
+        }
+        setResOtpMessage({
+          type: "success",
+          text: "✓ Kontak berhasil diverifikasi dengan kode OTP!",
+        });
+      } else {
+        setResOtpMessage({ type: "error", text: data.message || "Kode OTP salah atau kedaluwarsa." });
+      }
+    } catch (err: any) {
+      setResOtpMessage({ type: "error", text: err.message || "Gagal memverifikasi OTP." });
+    } finally {
+      setResVerifyingOtp(false);
+    }
+  };
+
+  // Handler Kirim OTP Pengurus
+  const handleSendOffOtp = async () => {
+    setOffOtpMessage(null);
+    setOffDevOtp(null);
+    const target = offPhone.trim();
+    if (!target) {
+      setOffOtpMessage({ type: "error", text: "Harap isi nomor WhatsApp terlebih dahulu." });
+      return;
+    }
+    setOffSendingOtp(true);
+    try {
+      const res = await fetch("/api/v1/auth/otp/send", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          target,
+          channel: "WHATSAPP",
+          purpose: "Pendaftaran Pengurus",
+        }),
+      });
+      const data = await res.json();
+      if (data.success) {
+        setOffOtpSent(true);
+        if (data.devOtpCode) setOffDevOtp(data.devOtpCode);
+        setOffOtpMessage({
+          type: "info",
+          text: data.message || `Kode OTP telah dikirim ke ${target}.`,
+        });
+      } else {
+        setOffOtpMessage({ type: "error", text: data.message || "Gagal mengirimkan OTP." });
+      }
+    } catch (err: any) {
+      setOffOtpMessage({ type: "error", text: err.message || "Terjadi kesalahan jaringan." });
+    } finally {
+      setOffSendingOtp(false);
+    }
+  };
+
+  // Handler Verifikasi OTP Pengurus
+  const handleVerifyOffOtp = async () => {
+    setOffOtpMessage(null);
+    if (!offOtpCode.trim() || offOtpCode.trim().length < 6) {
+      setOffOtpMessage({ type: "error", text: "Masukkan 6 digit kode OTP." });
+      return;
+    }
+    const target = offPhone.trim();
+    setOffVerifyingOtp(true);
+    try {
+      const res = await fetch("/api/v1/auth/otp/verify", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          target,
+          code: offOtpCode.trim(),
+          channel: "WHATSAPP",
+        }),
+      });
+      const data = await res.json();
+      if (data.success) {
+        setOffIsVerified(true);
+        if (data.data?.verificationToken) {
+          setOffVerificationToken(data.data.verificationToken);
+        }
+        setOffOtpMessage({
+          type: "success",
+          text: "✓ Nomor WhatsApp pejabat berhasil diverifikasi!",
+        });
+      } else {
+        setOffOtpMessage({ type: "error", text: data.message || "Kode OTP salah atau kedaluwarsa." });
+      }
+    } catch (err: any) {
+      setOffOtpMessage({ type: "error", text: err.message || "Gagal memverifikasi OTP." });
+    } finally {
+      setOffVerifyingOtp(false);
+    }
+  };
+
   // 2. SUBMIT REGISTER RESIDENT (WARGA)
   const handleRegisterResidentSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -374,6 +561,21 @@ export default function AuthView() {
 
     if (resVerificationMethod === "EMAIL" && !resEmail) {
       setErrorMessage("Alamat email wajib diisi jika memilih verifikasi melalui Email.");
+      return;
+    }
+
+    if (resPassword.length < 6) {
+      setErrorMessage("Kata sandi minimal 6 karakter.");
+      return;
+    }
+
+    if (resPassword !== resConfirmPassword) {
+      setErrorMessage("Kata sandi dan konfirmasi kata sandi tidak sama. Harap pastikan kedua kata sandi cocok.");
+      return;
+    }
+
+    if (!resIsVerified) {
+      setErrorMessage("Harap verifikasi nomor WhatsApp atau Email Anda dengan kode OTP terlebih dahulu sebelum mendaftar.");
       return;
     }
 
@@ -392,6 +594,9 @@ export default function AuthView() {
       formData.append("rwId", resRwId);
       formData.append("rtId", resRtId);
       formData.append("addressBlock", resAddress);
+      formData.append("verificationToken", resVerificationToken || "");
+      formData.append("isPhoneVerified", String(resVerificationMethod === "WHATSAPP"));
+      formData.append("isEmailVerified", String(resVerificationMethod === "EMAIL"));
       if (resKtpFile) {
         formData.append("ktpFile", resKtpFile);
       }
@@ -428,6 +633,21 @@ export default function AuthView() {
       return;
     }
 
+    if (offPassword.length < 6) {
+      setErrorMessage("Kata sandi minimal 6 karakter.");
+      return;
+    }
+
+    if (offPassword !== offConfirmPassword) {
+      setErrorMessage("Kata sandi dan konfirmasi kata sandi tidak sama. Harap pastikan kedua kata sandi cocok.");
+      return;
+    }
+
+    if (!offIsVerified) {
+      setErrorMessage("Harap verifikasi nomor WhatsApp Anda dengan kode OTP terlebih dahulu sebelum mendaftar kepengurusan.");
+      return;
+    }
+
     setIsSubmitting(true);
     setErrorMessage(null);
 
@@ -452,6 +672,8 @@ export default function AuthView() {
       formData.append("password", offPassword);
       formData.append("addressBlock", offAddress);
       formData.append("termPeriod", offTermPeriod);
+      formData.append("verificationToken", offVerificationToken || "");
+      formData.append("isPhoneVerified", "true");
       if (offSkFile) {
         formData.append("skFile", offSkFile);
       }
@@ -825,12 +1047,17 @@ export default function AuthView() {
                 {/* Opsi Metode Verifikasi Utama */}
                 <div className="p-3 bg-emerald-50/70 rounded-xl border border-emerald-200">
                   <label className="text-[11px] font-bold text-emerald-950 block mb-1.5 uppercase tracking-wider">
-                    Metode Verifikasi Akun Saat Pendaftaran
+                    Pilihan Kanal Verifikasi OTP
                   </label>
                   <div className="grid grid-cols-2 gap-2">
                     <button
                       type="button"
-                      onClick={() => setResVerificationMethod("WHATSAPP")}
+                      onClick={() => {
+                        setResVerificationMethod("WHATSAPP");
+                        setResOtpSent(false);
+                        setResIsVerified(false);
+                        setResOtpMessage(null);
+                      }}
                       className={`p-2.5 rounded-xl border text-left flex items-start gap-2 transition-all ${
                         resVerificationMethod === "WHATSAPP"
                           ? "border-emerald-600 bg-white shadow-xs ring-1 ring-emerald-500"
@@ -840,12 +1067,17 @@ export default function AuthView() {
                       <MessageSquare className={`w-4 h-4 mt-0.5 shrink-0 ${resVerificationMethod === "WHATSAPP" ? "text-emerald-600" : "text-slate-400"}`} />
                       <div>
                         <div className="text-xs font-bold text-slate-800">WhatsApp</div>
-                        <div className="text-[10px] text-slate-500">Nomor HP langsung terverifikasi</div>
+                        <div className="text-[10px] text-slate-500">Kirim kode ke WhatsApp</div>
                       </div>
                     </button>
                     <button
                       type="button"
-                      onClick={() => setResVerificationMethod("EMAIL")}
+                      onClick={() => {
+                        setResVerificationMethod("EMAIL");
+                        setResOtpSent(false);
+                        setResIsVerified(false);
+                        setResOtpMessage(null);
+                      }}
                       className={`p-2.5 rounded-xl border text-left flex items-start gap-2 transition-all ${
                         resVerificationMethod === "EMAIL"
                           ? "border-emerald-600 bg-white shadow-xs ring-1 ring-emerald-500"
@@ -855,15 +1087,130 @@ export default function AuthView() {
                       <Mail className={`w-4 h-4 mt-0.5 shrink-0 ${resVerificationMethod === "EMAIL" ? "text-emerald-600" : "text-slate-400"}`} />
                       <div>
                         <div className="text-xs font-bold text-slate-800">Email</div>
-                        <div className="text-[10px] text-slate-500">Email langsung terverifikasi</div>
+                        <div className="text-[10px] text-slate-500">Kirim kode ke Email</div>
                       </div>
                     </button>
                   </div>
-                  <p className="text-[10px] text-emerald-800 mt-2 font-medium">
-                    {resVerificationMethod === "EMAIL"
-                      ? "✓ Akun akan tercatat dengan status Email Terverifikasi (Nomor HP dapat diverifikasi kemudian di profil)."
-                      : "✓ Akun akan tercatat dengan status Nomor WhatsApp Terverifikasi (Email dapat diverifikasi kemudian di profil)."}
+                </div>
+
+                {/* Box Verifikasi OTP Warga */}
+                <div
+                  className={`p-3 rounded-2xl border transition-all ${
+                    resIsVerified
+                      ? "bg-emerald-50/90 border-emerald-300"
+                      : "bg-slate-50 border-slate-200"
+                  }`}
+                >
+                  <div className="flex items-center justify-between mb-1.5">
+                    <div className="flex items-center gap-1.5">
+                      <ShieldCheck
+                        className={`w-4 h-4 ${
+                          resIsVerified ? "text-emerald-700" : "text-slate-600"
+                        }`}
+                      />
+                      <span className="text-xs font-bold text-slate-800">
+                        Verifikasi Kode OTP ({resVerificationMethod === "EMAIL" ? "Email" : "WhatsApp"})
+                      </span>
+                    </div>
+                    {resIsVerified && (
+                      <span className="text-[10px] font-black px-2 py-0.5 rounded-full bg-emerald-200 text-emerald-800 flex items-center gap-1">
+                        <CheckCircle2 className="w-3 h-3" />
+                        Terverifikasi
+                      </span>
+                    )}
+                  </div>
+
+                  <p className="text-[11px] text-slate-600 mb-2.5 leading-relaxed">
+                    Verifikasi kontak diperlukan agar akun Anda aktif dan dapat memulihkan kata sandi jika lupa:
                   </p>
+
+                  {!resOtpSent ? (
+                    <button
+                      type="button"
+                      disabled={resSendingOtp || resIsVerified}
+                      onClick={handleSendResOtp}
+                      className="w-full py-2.5 px-3 rounded-xl bg-slate-900 hover:bg-slate-800 text-emerald-400 font-bold text-xs flex items-center justify-center gap-2 transition-all disabled:opacity-50"
+                    >
+                      {resSendingOtp ? (
+                        <>
+                          <RefreshCw className="w-3.5 h-3.5 animate-spin" />
+                          Mengirim Kode OTP...
+                        </>
+                      ) : (
+                        <>
+                          <Send className="w-3.5 h-3.5" />
+                          Kirim Kode OTP ({resVerificationMethod === "EMAIL" ? resEmail || "Email" : resPhone || "WhatsApp"})
+                        </>
+                      )}
+                    </button>
+                  ) : (
+                    <div className="space-y-2">
+                      <div className="flex gap-2">
+                        <input
+                          type="text"
+                          maxLength={6}
+                          value={resOtpCode}
+                          onChange={(e) => setResOtpCode(e.target.value.replace(/\D/g, "").slice(0, 6))}
+                          placeholder="6 Digit OTP"
+                          className="w-1/2 text-center text-sm font-mono font-black tracking-widest p-2 rounded-xl border border-slate-300 focus:ring-2 focus:ring-emerald-500 bg-white"
+                        />
+                        <button
+                          type="button"
+                          disabled={resVerifyingOtp || resOtpCode.length < 6}
+                          onClick={handleVerifyResOtp}
+                          className="w-1/2 py-2 px-3 rounded-xl bg-emerald-600 hover:bg-emerald-700 text-white font-bold text-xs flex items-center justify-center gap-1.5 transition-all disabled:opacity-50"
+                        >
+                          {resVerifyingOtp ? (
+                            <>
+                              <RefreshCw className="w-3.5 h-3.5 animate-spin" />
+                              Memeriksa...
+                            </>
+                          ) : (
+                            <>
+                              <CheckCircle2 className="w-3.5 h-3.5" />
+                              Verifikasi OTP
+                            </>
+                          )}
+                        </button>
+                      </div>
+
+                      <div className="flex items-center justify-between text-[11px] text-slate-500 px-1">
+                        <span>Belum menerima kode?</span>
+                        <button
+                          type="button"
+                          disabled={resSendingOtp}
+                          onClick={handleSendResOtp}
+                          className="text-emerald-700 hover:underline font-bold"
+                        >
+                          Kirim Ulang OTP
+                        </button>
+                      </div>
+                    </div>
+                  )}
+
+                  {resOtpMessage && (
+                    <div
+                      className={`mt-2 p-2 rounded-xl text-[11px] leading-relaxed flex items-start gap-1.5 ${
+                        resOtpMessage.type === "success"
+                          ? "bg-emerald-100/90 text-emerald-900 border border-emerald-300 font-semibold"
+                          : resOtpMessage.type === "error"
+                          ? "bg-rose-100 text-rose-800 border border-rose-200"
+                          : "bg-blue-50 text-blue-800 border border-blue-200"
+                      }`}
+                    >
+                      <Info className="w-3.5 h-3.5 shrink-0 mt-0.5" />
+                      <span>{resOtpMessage.text}</span>
+                    </div>
+                  )}
+
+                  {resDevOtp && (
+                    <div className="mt-2 p-2 rounded-xl bg-amber-50 border border-amber-200 text-amber-900 text-[11px]">
+                      <strong>Mode Simulasi:</strong> Kode OTP Anda:{" "}
+                      <code className="font-mono font-bold bg-white px-1.5 py-0.5 rounded border border-amber-300">
+                        {resDevOtp}
+                      </code>
+                    </div>
+                  )}
                 </div>
 
                 {/* Nama Lengkap */}
@@ -896,20 +1243,55 @@ export default function AuthView() {
                   />
                 </div>
 
-                {/* Kata Sandi */}
-                <div>
-                  <label className="text-xs font-semibold text-slate-700 block mb-1">
-                    Kata Sandi Baru
-                  </label>
-                  <input
-                    type="password"
-                    required
-                    value={resPassword}
-                    onChange={(e) => setResPassword(e.target.value)}
-                    placeholder="Minimal 6 karakter"
-                    className="w-full text-xs p-2.5 rounded-xl border border-slate-300"
-                  />
+                {/* Kata Sandi & Konfirmasi Kata Sandi */}
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
+                  <div>
+                    <label className="text-xs font-semibold text-slate-700 block mb-1">
+                      Kata Sandi Baru
+                    </label>
+                    <input
+                      type="password"
+                      required
+                      value={resPassword}
+                      onChange={(e) => setResPassword(e.target.value)}
+                      placeholder="Minimal 6 karakter"
+                      className="w-full text-xs p-2.5 rounded-xl border border-slate-300 focus:ring-2 focus:ring-emerald-500"
+                    />
+                  </div>
+                  <div>
+                    <label className="text-xs font-semibold text-slate-700 block mb-1">
+                      Ulangi Kata Sandi
+                    </label>
+                    <input
+                      type="password"
+                      required
+                      value={resConfirmPassword}
+                      onChange={(e) => setResConfirmPassword(e.target.value)}
+                      placeholder="Ketik ulang kata sandi"
+                      className={`w-full text-xs p-2.5 rounded-xl border transition-all ${
+                        resConfirmPassword && resPassword !== resConfirmPassword
+                          ? "border-rose-400 bg-rose-50/40 focus:ring-2 focus:ring-rose-500"
+                          : resConfirmPassword && resPassword === resConfirmPassword
+                          ? "border-emerald-500 bg-emerald-50/20 focus:ring-2 focus:ring-emerald-500"
+                          : "border-slate-300 focus:ring-2 focus:ring-emerald-500"
+                      }`}
+                    />
+                  </div>
                 </div>
+
+                {/* Notifikasi Realtime Kecocokan Password Warga */}
+                {resConfirmPassword && resPassword !== resConfirmPassword && (
+                  <div className="p-2.5 rounded-xl bg-rose-50 border border-rose-200 text-rose-700 text-[11px] font-bold flex items-center gap-1.5 animate-shake">
+                    <AlertCircle className="w-4 h-4 text-rose-500 shrink-0" />
+                    <span>Kata sandi tidak sama! Harap pastikan kedua kata sandi cocok.</span>
+                  </div>
+                )}
+                {resConfirmPassword && resPassword === resConfirmPassword && (
+                  <div className="p-2 px-3 rounded-xl bg-emerald-50 border border-emerald-200 text-emerald-800 text-[11px] font-bold flex items-center gap-1.5">
+                    <CheckCircle2 className="w-4 h-4 text-emerald-600 shrink-0" />
+                    <span>Kata sandi cocok!</span>
+                  </div>
+                )}
 
                 {/* Foto KTP */}
                 <div>
@@ -1241,21 +1623,147 @@ export default function AuthView() {
                     </div>
                   </div>
 
-                  {/* WhatsApp & Password */}
-                  <div className="grid grid-cols-2 gap-2">
-                    <div>
-                      <label className="text-xs font-semibold text-slate-700 block mb-1">
-                        Nomor WhatsApp
-                      </label>
-                      <input
-                        type="tel"
-                        required
-                        placeholder="08xxxxxxxx"
-                        value={offPhone}
-                        onChange={(e) => setOffPhone(e.target.value)}
-                        className="w-full text-xs p-2.5 rounded-xl border border-slate-300"
-                      />
+                  {/* WhatsApp */}
+                  <div>
+                    <label className="text-xs font-semibold text-slate-700 block mb-1">
+                      Nomor WhatsApp
+                    </label>
+                    <input
+                      type="tel"
+                      required
+                      placeholder="08xxxxxxxx"
+                      value={offPhone}
+                      onChange={(e) => {
+                        setOffPhone(e.target.value);
+                        setOffIsVerified(false);
+                        setOffOtpSent(false);
+                      }}
+                      className="w-full text-xs p-2.5 rounded-xl border border-slate-300"
+                    />
+                  </div>
+
+                  {/* Box Verifikasi OTP WhatsApp Pengurus */}
+                  <div
+                    className={`p-3 rounded-2xl border transition-all ${
+                      offIsVerified
+                        ? "bg-emerald-50/90 border-emerald-300"
+                        : "bg-slate-50 border-slate-200"
+                    }`}
+                  >
+                    <div className="flex items-center justify-between mb-1.5">
+                      <div className="flex items-center gap-1.5">
+                        <ShieldCheck
+                          className={`w-4 h-4 ${
+                            offIsVerified ? "text-emerald-700" : "text-slate-600"
+                          }`}
+                        />
+                        <span className="text-xs font-bold text-slate-800">
+                          Verifikasi WhatsApp Pejabat (Kode OTP)
+                        </span>
+                      </div>
+                      {offIsVerified && (
+                        <span className="text-[10px] font-black px-2 py-0.5 rounded-full bg-emerald-200 text-emerald-800 flex items-center gap-1">
+                          <CheckCircle2 className="w-3 h-3" />
+                          Terverifikasi
+                        </span>
+                      )}
                     </div>
+
+                    <p className="text-[11px] text-slate-600 mb-2.5 leading-relaxed">
+                      Nomor WhatsApp wajib diverifikasi untuk koordinasi warga dan pemulihan kata sandi akun pejabat:
+                    </p>
+
+                    {!offOtpSent ? (
+                      <button
+                        type="button"
+                        disabled={offSendingOtp || offIsVerified}
+                        onClick={handleSendOffOtp}
+                        className="w-full py-2.5 px-3 rounded-xl bg-slate-900 hover:bg-slate-800 text-emerald-400 font-bold text-xs flex items-center justify-center gap-2 transition-all disabled:opacity-50"
+                      >
+                        {offSendingOtp ? (
+                          <>
+                            <RefreshCw className="w-3.5 h-3.5 animate-spin" />
+                            Mengirim Kode OTP...
+                          </>
+                        ) : (
+                          <>
+                            <Send className="w-3.5 h-3.5" />
+                            Kirim Kode OTP ({offPhone || "Nomor WhatsApp"})
+                          </>
+                        )}
+                      </button>
+                    ) : (
+                      <div className="space-y-2">
+                        <div className="flex gap-2">
+                          <input
+                            type="text"
+                            maxLength={6}
+                            value={offOtpCode}
+                            onChange={(e) => setOffOtpCode(e.target.value.replace(/\D/g, "").slice(0, 6))}
+                            placeholder="6 Digit OTP"
+                            className="w-1/2 text-center text-sm font-mono font-black tracking-widest p-2 rounded-xl border border-slate-300 focus:ring-2 focus:ring-emerald-500 bg-white"
+                          />
+                          <button
+                            type="button"
+                            disabled={offVerifyingOtp || offOtpCode.length < 6}
+                            onClick={handleVerifyOffOtp}
+                            className="w-1/2 py-2 px-3 rounded-xl bg-emerald-600 hover:bg-emerald-700 text-white font-bold text-xs flex items-center justify-center gap-1.5 transition-all disabled:opacity-50"
+                          >
+                            {offVerifyingOtp ? (
+                              <>
+                                <RefreshCw className="w-3.5 h-3.5 animate-spin" />
+                                Memeriksa...
+                              </>
+                            ) : (
+                              <>
+                                <CheckCircle2 className="w-3.5 h-3.5" />
+                                Verifikasi OTP
+                              </>
+                            )}
+                          </button>
+                        </div>
+
+                        <div className="flex items-center justify-between text-[11px] text-slate-500 px-1">
+                          <span>Belum menerima kode?</span>
+                          <button
+                            type="button"
+                            disabled={offSendingOtp}
+                            onClick={handleSendOffOtp}
+                            className="text-emerald-700 hover:underline font-bold"
+                          >
+                            Kirim Ulang OTP
+                          </button>
+                        </div>
+                      </div>
+                    )}
+
+                    {offOtpMessage && (
+                      <div
+                        className={`mt-2 p-2 rounded-xl text-[11px] leading-relaxed flex items-start gap-1.5 ${
+                          offOtpMessage.type === "success"
+                            ? "bg-emerald-100/90 text-emerald-900 border border-emerald-300 font-semibold"
+                            : offOtpMessage.type === "error"
+                            ? "bg-rose-100 text-rose-800 border border-rose-200"
+                            : "bg-blue-50 text-blue-800 border border-blue-200"
+                        }`}
+                      >
+                        <Info className="w-3.5 h-3.5 shrink-0 mt-0.5" />
+                        <span>{offOtpMessage.text}</span>
+                      </div>
+                    )}
+
+                    {offDevOtp && (
+                      <div className="mt-2 p-2 rounded-xl bg-amber-50 border border-amber-200 text-amber-900 text-[11px]">
+                        <strong>Mode Simulasi:</strong> Kode OTP Anda:{" "}
+                        <code className="font-mono font-bold bg-white px-1.5 py-0.5 rounded border border-amber-300">
+                          {offDevOtp}
+                        </code>
+                      </div>
+                    )}
+                  </div>
+
+                  {/* Kata Sandi & Konfirmasi Kata Sandi Pengurus */}
+                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
                     <div>
                       <label className="text-xs font-semibold text-slate-700 block mb-1">
                         Kata Sandi Akun
@@ -1266,10 +1774,43 @@ export default function AuthView() {
                         placeholder="Minimal 6 karakter"
                         value={offPassword}
                         onChange={(e) => setOffPassword(e.target.value)}
-                        className="w-full text-xs p-2.5 rounded-xl border border-slate-300"
+                        className="w-full text-xs p-2.5 rounded-xl border border-slate-300 focus:ring-2 focus:ring-emerald-500"
+                      />
+                    </div>
+                    <div>
+                      <label className="text-xs font-semibold text-slate-700 block mb-1">
+                        Ulangi Kata Sandi
+                      </label>
+                      <input
+                        type="password"
+                        required
+                        placeholder="Ketik ulang kata sandi"
+                        value={offConfirmPassword}
+                        onChange={(e) => setOffConfirmPassword(e.target.value)}
+                        className={`w-full text-xs p-2.5 rounded-xl border transition-all ${
+                          offConfirmPassword && offPassword !== offConfirmPassword
+                            ? "border-rose-400 bg-rose-50/40 focus:ring-2 focus:ring-rose-500"
+                            : offConfirmPassword && offPassword === offConfirmPassword
+                            ? "border-emerald-500 bg-emerald-50/20 focus:ring-2 focus:ring-emerald-500"
+                            : "border-slate-300 focus:ring-2 focus:ring-emerald-500"
+                        }`}
                       />
                     </div>
                   </div>
+
+                  {/* Notifikasi Realtime Kecocokan Password Pengurus */}
+                  {offConfirmPassword && offPassword !== offConfirmPassword && (
+                    <div className="p-2.5 rounded-xl bg-rose-50 border border-rose-200 text-rose-700 text-[11px] font-bold flex items-center gap-1.5 animate-shake">
+                      <AlertCircle className="w-4 h-4 text-rose-500 shrink-0" />
+                      <span>Kata sandi tidak sama! Harap pastikan kedua kata sandi cocok.</span>
+                    </div>
+                  )}
+                  {offConfirmPassword && offPassword === offConfirmPassword && (
+                    <div className="p-2 px-3 rounded-xl bg-emerald-50 border border-emerald-200 text-emerald-800 text-[11px] font-bold flex items-center gap-1.5">
+                      <CheckCircle2 className="w-4 h-4 text-emerald-600 shrink-0" />
+                      <span>Kata sandi cocok!</span>
+                    </div>
+                  )}
 
                   {/* Alamat & Masa Bakti */}
                   <div className="grid grid-cols-2 gap-2">

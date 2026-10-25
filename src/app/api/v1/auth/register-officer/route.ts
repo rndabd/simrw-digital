@@ -35,6 +35,8 @@ export async function POST(req: NextRequest) {
     let addressBlock = "";
     let termPeriod = "2026-2031";
     let skDocumentUrl = "/uploads/sk-mandat.pdf";
+    let verificationToken = "";
+    let isPhoneVerifiedParam = false;
 
     if (contentType.includes("multipart/form-data")) {
       const formData = await req.formData();
@@ -57,6 +59,8 @@ export async function POST(req: NextRequest) {
       password = (formData.get("password") as string) || "";
       addressBlock = (formData.get("addressBlock") as string) || "";
       termPeriod = (formData.get("termPeriod") as string) || "2026-2031";
+      verificationToken = (formData.get("verificationToken") as string) || "";
+      isPhoneVerifiedParam = formData.get("isPhoneVerified") === "true";
 
       const skFile = formData.get("skFile") as File | null;
       if (skFile && skFile.size > 0) {
@@ -85,6 +89,8 @@ export async function POST(req: NextRequest) {
       password = body.password || "";
       addressBlock = body.addressBlock || "";
       termPeriod = body.termPeriod || "2026-2031";
+      verificationToken = body.verificationToken || "";
+      isPhoneVerifiedParam = !!body.isPhoneVerified;
       if (body.skDocumentUrl) skDocumentUrl = body.skDocumentUrl;
     }
 
@@ -245,6 +251,12 @@ export async function POST(req: NextRequest) {
       householdId = hh.id;
     }
 
+    if (verificationToken && store.verification_otps) {
+      store.verification_otps = store.verification_otps.filter(
+        (t) => t.code !== verificationToken
+      );
+    }
+
     const newUser = {
       id: newUserId,
       rw_id: targetRwId,
@@ -254,6 +266,7 @@ export async function POST(req: NextRequest) {
       nik_encrypted: nikEncrypted,
       full_name: fullName.trim(),
       phone_number: phoneNumber.trim(),
+      is_phone_verified: true,
       address_block: addressBlock ? addressBlock.trim() : "",
       password_hash: passwordHash,
       ktp_doc_url: skDocumentUrl,

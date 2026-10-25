@@ -677,10 +677,30 @@ export default function SetupPage() {
                   value={confirmPassword}
                   onChange={(e) => setConfirmPassword(e.target.value)}
                   placeholder="Ketik ulang sandi"
-                  className="w-full text-xs p-3 rounded-xl border border-slate-300 font-medium focus:ring-2 focus:ring-emerald-500"
+                  className={`w-full text-xs p-3 rounded-xl border font-medium transition-all ${
+                    confirmPassword && password !== confirmPassword
+                      ? "border-rose-400 bg-rose-50/40 focus:ring-2 focus:ring-rose-500"
+                      : confirmPassword && password === confirmPassword
+                      ? "border-emerald-500 bg-emerald-50/20 focus:ring-2 focus:ring-emerald-500"
+                      : "border-slate-300 focus:ring-2 focus:ring-emerald-500"
+                  }`}
                 />
               </div>
             </div>
+
+            {/* Notifikasi Realtime Kecocokan Password Admin */}
+            {confirmPassword && password !== confirmPassword && (
+              <div className="p-2.5 rounded-xl bg-rose-50 border border-rose-200 text-rose-700 text-[11px] font-bold flex items-center gap-1.5 animate-shake">
+                <AlertCircle className="w-4 h-4 text-rose-500 shrink-0" />
+                <span>Kata sandi tidak sama! Harap pastikan kedua kata sandi cocok.</span>
+              </div>
+            )}
+            {confirmPassword && password === confirmPassword && (
+              <div className="p-2 px-3 rounded-xl bg-emerald-50 border border-emerald-200 text-emerald-800 text-[11px] font-bold flex items-center gap-1.5">
+                <CheckCircle2 className="w-4 h-4 text-emerald-600 shrink-0" />
+                <span>Kata sandi cocok!</span>
+              </div>
+            )}
 
             <button
               type="submit"

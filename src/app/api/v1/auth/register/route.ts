@@ -26,6 +26,9 @@ export async function POST(req: NextRequest) {
     let email = "";
     let verificationMethod: "WHATSAPP" | "EMAIL" = "WHATSAPP";
     let ktpDocUrl = "/uploads/sample-ktp.jpg";
+    let verificationToken = "";
+    let isPhoneVerifiedParam = false;
+    let isEmailVerifiedParam = false;
 
     if (contentType.includes("multipart/form-data")) {
       const formData = await req.formData();
@@ -39,6 +42,9 @@ export async function POST(req: NextRequest) {
       rwId = (formData.get("rwId") as string) || "";
       rtId = (formData.get("rtId") as string) || "";
       addressBlock = (formData.get("addressBlock") as string) || "";
+      verificationToken = (formData.get("verificationToken") as string) || "";
+      isPhoneVerifiedParam = formData.get("isPhoneVerified") === "true";
+      isEmailVerifiedParam = formData.get("isEmailVerified") === "true";
 
       const ktpFile = formData.get("ktpFile") as File | null;
       if (ktpFile && ktpFile.size > 0) {
@@ -58,6 +64,9 @@ export async function POST(req: NextRequest) {
       rwId = body.rwId;
       rtId = body.rtId;
       addressBlock = body.addressBlock;
+      verificationToken = body.verificationToken || "";
+      isPhoneVerifiedParam = !!body.isPhoneVerified;
+      isEmailVerifiedParam = !!body.isEmailVerified;
       if (body.ktpDocUrl) ktpDocUrl = body.ktpDocUrl;
     }
 
@@ -136,8 +145,14 @@ export async function POST(req: NextRequest) {
     }
 
     // 6. Save User with PENDING_VERIFICATION
-    const isEmailVerified = verificationMethod === "EMAIL";
-    const isPhoneVerified = verificationMethod === "WHATSAPP";
+    const isEmailVerified = isEmailVerifiedParam || verificationMethod === "EMAIL";
+    const isPhoneVerified = isPhoneVerifiedParam || verificationMethod === "WHATSAPP";
+
+    if (verificationToken && store.verification_otps) {
+      store.verification_otps = store.verification_otps.filter(
+        (t) => t.code !== verificationToken
+      );
+    }
 
     const newUser = {
       id: newUserId,
