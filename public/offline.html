@@ -2,7 +2,7 @@
 <html lang="id">
 <head>
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
   <title>SIM-RW Digital - Mode Offline</title>
   <style>
     * {
@@ -10,201 +10,593 @@
       margin: 0;
       padding: 0;
       font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+      -webkit-tap-highlight-color: transparent;
     }
     body {
-      background-color: #0f172a;
+      background-color: #090d16;
+      background-image: radial-gradient(at 0% 0%, rgba(5, 150, 105, 0.15) 0px, transparent 50%),
+                        radial-gradient(at 100% 100%, rgba(30, 58, 138, 0.2) 0px, transparent 50%);
       color: #f8fafc;
       min-height: 100vh;
       display: flex;
       flex-direction: column;
+      overflow-x: hidden;
+      padding-bottom: 75px;
+    }
+
+    /* Pull to refresh visual indicator */
+    #refresh-indicator {
+      position: fixed;
+      top: 15px;
+      left: 50%;
+      transform: translateX(-50%) translateY(-60px);
+      background: #059669;
+      color: white;
+      padding: 8px 16px;
+      border-radius: 9999px;
+      font-size: 12px;
+      font-weight: 700;
+      display: flex;
       align-items: center;
-      justify-content: center;
-      padding: 24px;
-      text-align: center;
+      gap: 8px;
+      box-shadow: 0 10px 25px rgba(0,0,0,0.5);
+      z-index: 100;
+      transition: transform 0.2s ease, opacity 0.2s ease;
+      opacity: 0;
     }
-    .card {
-      background: rgba(30, 41, 59, 0.85);
-      backdrop-filter: blur(12px);
-      border: 1px solid rgba(255, 255, 255, 0.1);
-      border-radius: 24px;
-      padding: 32px 24px;
-      max-width: 420px;
-      width: 100%;
-      box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.5), 0 8px 10px -6px rgba(0, 0, 0, 0.5);
+    #refresh-indicator.visible {
+      transform: translateX(-50%) translateY(0);
+      opacity: 1;
     }
-    .icon-container {
-      width: 80px;
-      height: 80px;
-      background: linear-gradient(135deg, rgba(239, 68, 68, 0.2), rgba(220, 38, 38, 0.1));
-      border: 1px solid rgba(239, 68, 68, 0.3);
+    .spinner {
+      width: 14px;
+      height: 14px;
+      border: 2px solid rgba(255,255,255,0.3);
+      border-top-color: white;
       border-radius: 50%;
+      animation: spin 0.8s linear infinite;
+    }
+    @keyframes spin {
+      to { transform: rotate(360deg); }
+    }
+
+    /* Top Offline Banner */
+    .offline-banner {
+      background: linear-gradient(90deg, #d97706, #b45309);
+      color: #ffffff;
+      padding: 8px 16px;
+      font-size: 11.5px;
+      font-weight: 700;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      position: sticky;
+      top: 0;
+      z-index: 40;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.3);
+    }
+    .offline-banner button {
+      background: rgba(0, 0, 0, 0.25);
+      border: 1px solid rgba(255, 255, 255, 0.3);
+      color: white;
+      padding: 4px 10px;
+      border-radius: 8px;
+      font-size: 10.5px;
+      font-weight: 700;
+      cursor: pointer;
+    }
+
+    /* Container */
+    .container {
+      padding: 16px;
+      max-width: 480px;
+      margin: 0 auto;
+      width: 100%;
+      flex: 1;
+    }
+
+    /* Header */
+    .header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 16px;
+    }
+    .header-info {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+    .avatar {
+      width: 44px;
+      height: 44px;
+      border-radius: 14px;
+      background: linear-gradient(135deg, #059669, #0d9488);
       display: flex;
       align-items: center;
       justify-content: center;
-      margin: 0 auto 20px;
+      font-weight: 800;
+      font-size: 18px;
+      color: white;
+      border: 2px solid rgba(255, 255, 255, 0.2);
     }
-    .icon {
-      width: 40px;
-      height: 40px;
-      color: #ef4444;
+    .greeting-sub {
+      font-size: 11px;
+      color: #94a3b8;
+      font-weight: 600;
     }
-    h1 {
-      font-size: 20px;
-      font-weight: 700;
-      margin-bottom: 8px;
+    .greeting-name {
+      font-size: 15px;
+      font-weight: 800;
       color: #ffffff;
     }
-    p {
-      font-size: 14px;
-      color: #94a3b8;
-      line-height: 1.6;
-      margin-bottom: 24px;
+
+    /* E-KTP Mini Card */
+    .ektp-card {
+      background: linear-gradient(135deg, #1e293b 0%, #0f172a 100%);
+      border: 1px solid rgba(255, 255, 255, 0.12);
+      border-radius: 20px;
+      padding: 18px;
+      position: relative;
+      overflow: hidden;
+      box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.5);
+      margin-bottom: 20px;
     }
-    .badge {
-      display: inline-flex;
+    .ektp-card::before {
+      content: "";
+      position: absolute;
+      top: -50%;
+      right: -50%;
+      width: 100%;
+      height: 100%;
+      background: radial-gradient(circle, rgba(16, 185, 129, 0.15) 0%, transparent 70%);
+      pointer-events: none;
+    }
+    .ektp-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+      margin-bottom: 14px;
+    }
+    .ektp-title {
+      font-size: 10px;
+      font-weight: 800;
+      color: #34d399;
+      letter-spacing: 1px;
+      text-transform: uppercase;
+    }
+    .ektp-badge {
+      font-size: 9.5px;
+      font-weight: 700;
+      background: rgba(16, 185, 129, 0.2);
+      border: 1px solid rgba(16, 185, 129, 0.4);
+      color: #34d399;
+      padding: 2px 8px;
+      border-radius: 9999px;
+    }
+    .ektp-nik {
+      font-size: 17px;
+      font-weight: 800;
+      letter-spacing: 2px;
+      color: #ffffff;
+      font-family: monospace;
+      margin-bottom: 12px;
+    }
+    .ektp-footer {
+      display: flex;
+      justify-content: space-between;
+      font-size: 11px;
+      color: #cbd5e1;
+      border-top: 1px solid rgba(255, 255, 255, 0.08);
+      padding-top: 10px;
+    }
+
+    /* Section Title */
+    .section-title {
+      font-size: 13px;
+      font-weight: 800;
+      color: #e2e8f0;
+      margin-bottom: 12px;
+      display: flex;
       align-items: center;
       gap: 6px;
-      padding: 4px 12px;
-      background: rgba(16, 185, 129, 0.15);
-      border: 1px solid rgba(16, 185, 129, 0.3);
-      color: #34d399;
-      border-radius: 9999px;
-      font-size: 12px;
-      font-weight: 600;
-      margin-bottom: 16px;
     }
-    .btn {
-      display: block;
-      width: 100%;
+
+    /* Quick Actions */
+    .actions-grid {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 10px;
+      margin-bottom: 20px;
+    }
+    .action-btn {
+      background: rgba(30, 41, 59, 0.7);
+      border: 1px solid rgba(255, 255, 255, 0.08);
+      border-radius: 16px;
       padding: 14px;
-      border-radius: 14px;
-      font-size: 15px;
-      font-weight: 600;
-      cursor: pointer;
-      border: none;
-      transition: all 0.2s ease;
-      text-decoration: none;
-    }
-    .btn-primary {
-      background: linear-gradient(135deg, #059669, #0d9488);
-      color: #ffffff;
-      box-shadow: 0 4px 12px rgba(5, 150, 105, 0.3);
-      margin-bottom: 12px;
-    }
-    .btn-primary:active {
-      transform: scale(0.98);
-      opacity: 0.9;
-    }
-    .btn-outline {
-      background: transparent;
-      color: #cbd5e1;
-      border: 1px solid rgba(255, 255, 255, 0.15);
-      font-size: 13px;
-    }
-    .server-settings {
-      display: none;
-      margin-top: 20px;
-      padding-top: 20px;
-      border-top: 1px solid rgba(255, 255, 255, 0.1);
       text-align: left;
+      cursor: pointer;
+      transition: all 0.2s ease;
+      color: white;
     }
-    .server-settings.active {
-      display: block;
+    .action-btn:active {
+      transform: scale(0.97);
+      background: rgba(51, 65, 85, 0.8);
     }
-    .server-settings label {
-      display: block;
-      font-size: 12px;
+    .action-icon {
+      width: 36px;
+      height: 36px;
+      border-radius: 12px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin-bottom: 10px;
+      font-size: 18px;
+    }
+    .action-name {
+      font-size: 12.5px;
+      font-weight: 700;
+      margin-bottom: 2px;
+    }
+    .action-desc {
+      font-size: 10.5px;
       color: #94a3b8;
-      margin-bottom: 6px;
-      font-weight: 500;
+      line-height: 1.3;
     }
-    .server-settings input {
-      width: 100%;
-      padding: 10px 12px;
-      background: rgba(15, 23, 42, 0.6);
-      border: 1px solid rgba(255, 255, 255, 0.2);
-      border-radius: 8px;
-      color: #ffffff;
+
+    /* SOS Button */
+    .sos-card {
+      background: linear-gradient(135deg, rgba(225, 29, 72, 0.2), rgba(159, 18, 57, 0.3));
+      border: 1px solid rgba(244, 63, 94, 0.4);
+      border-radius: 18px;
+      padding: 16px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 20px;
+    }
+    .sos-info h4 {
       font-size: 13px;
-      margin-bottom: 12px;
-      outline: none;
+      font-weight: 800;
+      color: #fecdd3;
     }
-    .server-settings input:focus {
-      border-color: #10b981;
+    .sos-info p {
+      font-size: 10.5px;
+      color: #fda4af;
+      margin-top: 2px;
     }
-    .tip {
-      margin-top: 18px;
+    .sos-btn {
+      background: #e11d48;
+      color: white;
+      border: none;
+      padding: 8px 16px;
+      border-radius: 12px;
       font-size: 12px;
+      font-weight: 800;
+      cursor: pointer;
+      text-decoration: none;
+      box-shadow: 0 4px 12px rgba(225, 29, 72, 0.4);
+    }
+
+    /* Bottom Navigation Bar */
+    .bottom-nav {
+      position: fixed;
+      bottom: 0;
+      left: 0;
+      right: 0;
+      background: rgba(15, 23, 42, 0.95);
+      backdrop-filter: blur(16px);
+      -webkit-backdrop-filter: blur(16px);
+      border-top: 1px solid rgba(255, 255, 255, 0.1);
+      display: flex;
+      justify-content: space-around;
+      padding: 8px 6px;
+      padding-bottom: max(10px, env(safe-area-inset-bottom, 10px));
+      z-index: 50;
+    }
+    .nav-item {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
       color: #64748b;
+      font-size: 10px;
+      font-weight: 600;
+      text-decoration: none;
+      cursor: pointer;
+      flex: 1;
+      padding: 4px;
+      border: none;
+      background: transparent;
+    }
+    .nav-item.active {
+      color: #10b981;
+      font-weight: 800;
+    }
+    .nav-icon {
+      font-size: 18px;
+      margin-bottom: 2px;
+    }
+
+    /* View Switcher */
+    .view-content {
+      display: none;
+    }
+    .view-content.active {
+      display: block;
+    }
+
+    .info-box {
+      background: rgba(30, 41, 59, 0.6);
+      border: 1px solid rgba(255, 255, 255, 0.08);
+      border-radius: 16px;
+      padding: 16px;
+      font-size: 12px;
+      line-height: 1.6;
+      color: #cbd5e1;
+      margin-bottom: 14px;
     }
   </style>
 </head>
 <body>
-  <div class="card">
-    <div class="badge">
-      <span>●</span> SIM-RW Digital
+  <!-- Refresh Drag Indicator -->
+  <div id="refresh-indicator">
+    <div class="spinner"></div>
+    <span>Menghubungkan ke server...</span>
+  </div>
+
+  <!-- Top Smart Offline Notification Banner -->
+  <div class="offline-banner">
+    <div style="display: flex; align-items: center; gap: 8px;">
+      <span style="font-size: 14px;">📡</span>
+      <span>Mode Offline • Data Tersimpan di HP</span>
+    </div>
+    <button onclick="attemptReconnect()">Tarik / Cek</button>
+  </div>
+
+  <div class="container">
+    <!-- VIEW: BERANDA -->
+    <div id="view-beranda" class="view-content active">
+      <div class="header">
+        <div class="header-info">
+          <div class="avatar" id="user-avatar">W</div>
+          <div>
+            <div class="greeting-sub" id="user-role-badge">WARGA RT 02 / RW 15</div>
+            <div class="greeting-name" id="user-full-name">Memuat Data Warga...</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- E-KTP Mini Digital Card -->
+      <div class="ektp-card">
+        <div class="ektp-header">
+          <span class="ektp-title">Kartu Warga Digital SIM-RW</span>
+          <span class="ektp-badge" id="card-status">TERDAFTAR</span>
+        </div>
+        <div class="ektp-nik" id="card-nik">3204••••••••••••</div>
+        <div class="ektp-footer">
+          <span id="card-address">Komplek Giri Ciheulang</span>
+          <span id="card-unit">RT 02 / RW 15</span>
+        </div>
+      </div>
+
+      <!-- Quick Actions -->
+      <div class="section-title">Menu Pelayanan Cepat</div>
+      <div class="actions-grid">
+        <div class="action-btn" onclick="switchTab('surat')">
+          <div class="action-icon" style="background: rgba(59, 130, 246, 0.2); color: #60a5fa;">📄</div>
+          <div class="action-name">Layanan Surat</div>
+          <div class="action-desc">Surat Pengantar & Keterangan</div>
+        </div>
+
+        <div class="action-btn" onclick="switchTab('iuran')">
+          <div class="action-icon" style="background: rgba(16, 185, 129, 0.2); color: #34d399;">💳</div>
+          <div class="action-name">Iuran & Kas</div>
+          <div class="action-desc">Status Pembayaran Warga</div>
+        </div>
+
+        <div class="action-btn" onclick="switchTab('pengaduan')">
+          <div class="action-icon" style="background: rgba(245, 158, 11, 0.2); color: #fbbf24;">📢</div>
+          <div class="action-name">Lapor Aduan</div>
+          <div class="action-desc">Pengaduan Fasilitas & Sosialisasi</div>
+        </div>
+
+        <div class="action-btn" onclick="switchTab('profil')">
+          <div class="action-icon" style="background: rgba(139, 92, 246, 0.2); color: #a78bfa;">👤</div>
+          <div class="action-name">Profil Saya</div>
+          <div class="action-desc">Data Diri & Pengaturan</div>
+        </div>
+      </div>
+
+      <!-- Emergency SOS Card -->
+      <div class="sos-card">
+        <div class="sos-info">
+          <h4>🚨 Telepon Darurat Lingkungan</h4>
+          <p>Hubungi Pos Ronda Satpam RW 15 langsung via pulsa seluler saat offline.</p>
+        </div>
+        <a href="tel:081234567890" class="sos-btn">PANGGIL</a>
+      </div>
+
+      <div class="info-box">
+        💡 <strong>Tips Mode Offline:</strong> Seluruh tampilan dan profil tersimpan otomatis di memori ponsel. Begitu sinyal internet kembali aktif, tarik layar ke bawah untuk menyinkronkan data terbaru.
+      </div>
     </div>
 
-    <div class="icon-container">
-      <svg class="icon" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2">
-        <path stroke-linecap="round" stroke-linejoin="round" d="M3 3l18 18M8.88 8.88A9.957 9.957 0 0112 8c2.4 0 4.6.85 6.32 2.26M10.59 13.51A4 4 0 0112 13c1.02 0 1.95.38 2.66 1.01M1.42 9A16.03 16.03 0 0112 5c3.83 0 7.37 1.35 10.15 3.61M5 19h14a2 2 0 002-2v-5a2 2 0 00-2-2H5a2 2 0 00-2 2v5a2 2 0 002 2z"></path>
-      </svg>
-    </div>
-
-    <h1>Tidak Ada Koneksi Internet</h1>
-    <p>Aplikasi tidak dapat menghubungi server. Pastikan perangkat Anda terhubung ke Wi-Fi atau paket data seluler.</p>
-
-    <button class="btn btn-primary" onclick="retryConnection()">
-      Coba Hubungkan Kembali
-    </button>
-
-    <button class="btn btn-outline" onclick="toggleServerSettings()">
-      ⚙️ Pengaturan Alamat Server
-    </button>
-
-    <div id="serverSettings" class="server-settings">
-      <label for="serverUrl">Alamat URL Server Produksi:</label>
-      <input type="text" id="serverUrl" placeholder="https://simrw.web.id atau http://IP-Debian:3000">
-      <button class="btn btn-primary" style="padding: 10px; font-size: 13px;" onclick="saveAndRedirect()">
-        Simpan & Kunjungi
+    <!-- VIEW: SURAT -->
+    <div id="view-surat" class="view-content">
+      <div class="section-title">📄 Layanan Surat Digital</div>
+      <div class="info-box">
+        <strong>Layanan Surat Offline:</strong><br>
+        Pengajuan surat memerlukan validasi tanda tangan digital dari pengurus RT/RW via server. Mohon sambungkan ke internet atau gunakan formulir fisik jika sangat mendesak.
+      </div>
+      <button onclick="attemptReconnect()" class="action-btn" style="width: 100%; text-align: center; font-weight: bold; background: #059669;">
+        Perbarui Koneksi Internet
       </button>
     </div>
 
-    <p class="tip">💡 Tarik layar ke bawah (pull-to-refresh) kapan saja untuk memperbarui koneksi.</p>
+    <!-- VIEW: IURAN -->
+    <div id="view-iuran" class="view-content">
+      <div class="section-title">💳 Iuran & Transparansi Kas</div>
+      <div class="info-box">
+        <strong>Status Rekapitulasi Iuran:</strong><br>
+        Pembayaran iuran kebersihan dan keamanan diproses otomatis saat online. Silakan sambungkan ke WiFi atau data seluler untuk melihat riwayat mutasi kas berjalan.
+      </div>
+      <button onclick="attemptReconnect()" class="action-btn" style="width: 100%; text-align: center; font-weight: bold; background: #059669;">
+        Cek Riwayat Kas Terbaru
+      </button>
+    </div>
+
+    <!-- VIEW: PENGADUAN -->
+    <div id="view-pengaduan" class="view-content">
+      <div class="section-title">📢 Pusat Aduan Warga</div>
+      <div class="info-box">
+        Ketik laporan kendala lingkungan. Laporan akan otomatis diteruskan ke Ketua RT saat koneksi internet tersambung kembali.
+      </div>
+      <textarea id="offline-complaint" style="width: 100%; height: 100px; padding: 12px; background: rgba(15,23,42,0.8); border: 1px solid rgba(255,255,255,0.15); border-radius: 12px; color: white; margin-bottom: 12px;" placeholder="Tulis keluhan atau laporan di sini..."></textarea>
+      <button onclick="saveOfflineComplaint()" class="action-btn" style="width: 100%; text-align: center; font-weight: bold; background: #059669;">
+        Simpan Draf Laporan
+      </button>
+    </div>
+
+    <!-- VIEW: PROFIL -->
+    <div id="view-profil" class="view-content">
+      <div class="section-title">👤 Data Profil Warga</div>
+      <div class="info-box" id="profile-details">
+        <div><strong>Nama Lengkap:</strong> <span id="prof-name">-</span></div>
+        <div style="margin-top: 6px;"><strong>Nomor Telepon:</strong> <span id="prof-phone">-</span></div>
+        <div style="margin-top: 6px;"><strong>Wilayah:</strong> <span id="prof-unit">-</span></div>
+        <div style="margin-top: 6px;"><strong>Alamat / Blok:</strong> <span id="prof-address">-</span></div>
+        <div style="margin-top: 6px;"><strong>Status Akun:</strong> <span id="prof-status" style="color: #34d399;">Aktif Tersimpan di Ponsel</span></div>
+      </div>
+      <button onclick="attemptReconnect()" class="action-btn" style="width: 100%; text-align: center; font-weight: bold; background: #334155;">
+        Sinkronkan Profil ke Server
+      </button>
+    </div>
   </div>
 
+  <!-- Bottom Navigation -->
+  <nav class="bottom-nav">
+    <button class="nav-item active" onclick="switchTab('beranda')">
+      <div class="nav-icon">🏠</div>
+      <span>Beranda</span>
+    </button>
+    <button class="nav-item" onclick="switchTab('surat')">
+      <div class="nav-icon">📄</div>
+      <span>Surat</span>
+    </button>
+    <button class="nav-item" onclick="switchTab('iuran')">
+      <div class="nav-icon">💳</div>
+      <span>Iuran</span>
+    </button>
+    <button class="nav-item" onclick="switchTab('pengaduan')">
+      <div class="nav-icon">📢</div>
+      <span>Aduan</span>
+    </button>
+    <button class="nav-item" onclick="switchTab('profil')">
+      <div class="nav-icon">👤</div>
+      <span>Profil</span>
+    </button>
+  </nav>
+
   <script>
-    const DEFAULT_URL = "https://simrw.web.id";
-
-    // Muat URL tersimpan jika pernah diubah
-    const savedUrl = localStorage.getItem("simrw_server_url") || DEFAULT_URL;
-    document.getElementById("serverUrl").value = savedUrl;
-
-    function retryConnection() {
-      const target = localStorage.getItem("simrw_server_url") || DEFAULT_URL;
-      window.location.href = target;
-    }
-
-    function toggleServerSettings() {
-      const box = document.getElementById("serverSettings");
-      box.classList.toggle("active");
-    }
-
-    function saveAndRedirect() {
-      let val = document.getElementById("serverUrl").value.trim();
-      if (!val) val = DEFAULT_URL;
-      if (!val.startsWith("http://") && !val.startsWith("https://")) {
-        val = "http://" + val;
+    // 1. Muat data profil dari localStorage ponsel
+    function loadSavedUserData() {
+      try {
+        const rawUser = localStorage.getItem("warga_user");
+        if (rawUser) {
+          const user = JSON.parse(rawUser);
+          if (user.fullName) {
+            document.getElementById("user-full-name").textContent = user.fullName;
+            document.getElementById("prof-name").textContent = user.fullName;
+            document.getElementById("user-avatar").textContent = user.fullName.charAt(0).toUpperCase();
+          }
+          if (user.phoneNumber) {
+            document.getElementById("prof-phone").textContent = user.phoneNumber;
+          }
+          if (user.address_block || user.address) {
+            const addr = user.address_block || user.address;
+            document.getElementById("card-address").textContent = addr;
+            document.getElementById("prof-address").textContent = addr;
+          }
+          if (user.rt || user.rw) {
+            const rtText = user.rt ? "RT " + (user.rt.number || user.rt) : "RT 02";
+            const rwText = user.rw ? "RW " + (user.rw.number || user.rw) : "RW 15";
+            const unitStr = rtText + " / " + rwText;
+            document.getElementById("user-role-badge").textContent = unitStr;
+            document.getElementById("card-unit").textContent = unitStr;
+            document.getElementById("prof-unit").textContent = unitStr;
+          }
+          if (user.status) {
+            document.getElementById("card-status").textContent = user.status === "VERIFIED_ACTIVE" ? "TERVERIFIKASI" : user.status;
+          }
+        }
+      } catch (e) {
+        console.warn("Gagal membaca profil dari localStorage:", e);
       }
-      localStorage.setItem("simrw_server_url", val);
-      window.location.href = val;
     }
 
-    // Auto-reconnect saat perangkat kembali online
+    // 2. Tab Navigation
+    function switchTab(tabId) {
+      document.querySelectorAll(".view-content").forEach(el => el.classList.remove("active"));
+      document.querySelectorAll(".nav-item").forEach(el => el.classList.remove("active"));
+
+      const target = document.getElementById("view-" + tabId);
+      if (target) target.classList.add("active");
+
+      const navButtons = document.querySelectorAll(".nav-item");
+      const mapping = { "beranda": 0, "surat": 1, "iuran": 2, "pengaduan": 3, "profil": 4 };
+      if (mapping[tabId] !== undefined && navButtons[mapping[tabId]]) {
+        navButtons[mapping[tabId]].classList.add("active");
+      }
+      window.scrollTo({ top: 0, behavior: "smooth" });
+    }
+
+    // 3. Mencoba Reconnect ke Live Server
+    function attemptReconnect() {
+      const indicator = document.getElementById("refresh-indicator");
+      indicator.classList.add("visible");
+
+      fetch("https://simrw.web.id/api/v1/setup/status", { method: "GET", mode: "no-cors" })
+        .then(() => {
+          setTimeout(() => {
+            window.location.href = "https://simrw.web.id";
+          }, 600);
+        })
+        .catch(() => {
+          setTimeout(() => {
+            indicator.classList.remove("visible");
+            alert("Server belum terjangkau. Masih menggunakan mode offline lokal.");
+          }, 1200);
+        });
+    }
+
+    // 4. Auto-reconnect saat terhubung internet
     window.addEventListener("online", () => {
-      retryConnection();
+      attemptReconnect();
     });
+
+    // 5. Simpan draf pengaduan
+    function saveOfflineComplaint() {
+      const txt = document.getElementById("offline-complaint").value;
+      if (!txt.trim()) return alert("Tuliskan laporan terlebih dahulu.");
+      localStorage.setItem("offline_draft_complaint", txt);
+      alert("Draf aduan berhasil disimpan di ponsel! Akan disinkronkan saat terhubung internet.");
+      document.getElementById("offline-complaint").value = "";
+    }
+
+    // 6. Pull-to-refresh listener
+    let touchStartY = 0;
+    window.addEventListener("touchstart", (e) => {
+      touchStartY = e.touches[0].clientY;
+    }, { passive: true });
+
+    window.addEventListener("touchmove", (e) => {
+      const currentY = e.touches[0].clientY;
+      if (window.scrollY === 0 && currentY - touchStartY > 90) {
+        attemptReconnect();
+      }
+    }, { passive: true });
+
+    loadSavedUserData();
   </script>
 </body>
 </html>
-

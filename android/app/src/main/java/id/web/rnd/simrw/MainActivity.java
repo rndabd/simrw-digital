@@ -40,7 +40,17 @@ public class MainActivity extends BridgeActivity {
         settings.setAllowFileAccess(true);
         settings.setAllowContentAccess(true);
         settings.setMixedContentMode(WebSettings.MIXED_CONTENT_ALWAYS_ALLOW);
-        settings.setCacheMode(WebSettings.LOAD_DEFAULT);
+
+        // Cek konektivitas jaringan: gunakan cache offline jika tidak ada koneksi
+        android.net.ConnectivityManager cm = (android.net.ConnectivityManager) getSystemService(android.content.Context.CONNECTIVITY_SERVICE);
+        android.net.NetworkInfo activeNetwork = cm != null ? cm.getActiveNetworkInfo() : null;
+        boolean isOnline = activeNetwork != null && activeNetwork.isConnectedOrConnecting();
+
+        if (!isOnline) {
+            settings.setCacheMode(WebSettings.LOAD_CACHE_ELSE_NETWORK);
+        } else {
+            settings.setCacheMode(WebSettings.LOAD_DEFAULT);
+        }
 
         // 2. Custom BridgeWebViewClient: Mencegah blank screen saat ada SSL Error atau kendala jaringan
         bridge.setWebViewClient(new BridgeWebViewClient(bridge) {
@@ -54,8 +64,15 @@ public class MainActivity extends BridgeActivity {
             public void onReceivedError(WebView view, WebResourceRequest request, WebResourceError error) {
                 super.onReceivedError(view, request, error);
                 if (request != null && request.isForMainFrame()) {
-                    // Jika koneksi gagal, muat halaman offline interaktif
-                    view.loadUrl("file:///android_asset/public/offline.html");
+                    // Coba muat dari cache lokal terlebih dahulu
+                    settings.setCacheMode(WebSettings.LOAD_CACHE_ONLY);
+                    String currentUrl = view.getUrl();
+                    if (currentUrl != null && !currentUrl.contains("offline.html")) {
+                        view.reload();
+                    } else {
+                        // Jika cache belum tersedia, muat Offline App Shell UI bawaan APK
+                        view.loadUrl("file:///android_asset/public/offline.html");
+                    }
                 }
             }
         });
@@ -105,10 +122,20 @@ public class MainActivity extends BridgeActivity {
             });
 
             swipeRefreshLayout.setOnRefreshListener(() -> {
-                String currentUrl = webView.getUrl();
-                if (currentUrl != null && currentUrl.contains("offline.html")) {
-                    webView.loadUrl("https://simrw.web.id");
+                android.net.ConnectivityManager refreshCm = (android.net.ConnectivityManager) getSystemService(android.content.Context.CONNECTIVITY_SERVICE);
+                android.net.NetworkInfo refreshNet = refreshCm != null ? refreshCm.getActiveNetworkInfo() : null;
+                boolean canConnect = refreshNet != null && refreshNet.isConnectedOrConnecting();
+
+                if (canConnect) {
+                    settings.setCacheMode(WebSettings.LOAD_DEFAULT);
+                    String currentUrl = webView.getUrl();
+                    if (currentUrl != null && currentUrl.contains("offline.html")) {
+                        webView.loadUrl("https://simrw.web.id");
+                    } else {
+                        webView.reload();
+                    }
                 } else {
+                    settings.setCacheMode(WebSettings.LOAD_CACHE_ELSE_NETWORK);
                     webView.reload();
                 }
 
@@ -116,7 +143,7 @@ public class MainActivity extends BridgeActivity {
                     if (swipeRefreshLayout != null && swipeRefreshLayout.isRefreshing()) {
                         swipeRefreshLayout.setRefreshing(false);
                     }
-                }, 2000);
+                }, 1500);
             });
         }
     }
