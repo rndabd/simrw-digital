@@ -5,7 +5,7 @@ const config: CapacitorConfig = {
   appName: "SIM-RW Digital",
   webDir: "public",
   server: {
-    url: "https://dev.rnd.web.id",
+    url: "https://simrw.web.id",
     cleartext: true,
   },
   android: {
