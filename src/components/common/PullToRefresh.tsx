@@ -2,6 +2,7 @@
 
 import React, { useState, useRef, useEffect, ReactNode } from "react";
 import { RefreshCw } from "lucide-react";
+import { Capacitor } from "@capacitor/core";
 
 interface PullToRefreshProps {
   children: ReactNode;
@@ -9,6 +10,14 @@ interface PullToRefreshProps {
 }
 
 export default function PullToRefresh({ children, onRefresh }: PullToRefreshProps) {
+  const [isNative, setIsNative] = useState(false);
+
+  useEffect(() => {
+    if (typeof window !== "undefined" && Capacitor.isNativePlatform()) {
+      setIsNative(true);
+    }
+  }, []);
+
   const [pullDistance, setPullDistance] = useState(0);
   const [isRefreshing, setIsRefreshing] = useState(false);
   const startY = useRef(0);
@@ -16,6 +25,11 @@ export default function PullToRefresh({ children, onRefresh }: PullToRefreshProp
   const isPulling = useRef(false);
 
   const THRESHOLD = 70;
+
+  // Jika di native Android / iOS, serahkan sepenuhnya ke SwipeRefreshLayout bawaan Android
+  if (isNative) {
+    return <div className="w-full h-full flex flex-col min-h-0 flex-1">{children}</div>;
+  }
 
   const handleTouchStart = (e: React.TouchEvent) => {
     if (isRefreshing) return;

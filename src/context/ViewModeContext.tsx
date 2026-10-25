@@ -1,6 +1,7 @@
 "use client";
 
 import React, { createContext, useContext, useState, useEffect, ReactNode } from "react";
+import { Capacitor } from "@capacitor/core";
 
 export type ViewMode = "desktop" | "mobile";
 
@@ -14,24 +15,37 @@ interface ViewModeContextType {
 const ViewModeContext = createContext<ViewModeContextType | undefined>(undefined);
 
 export function ViewModeProvider({ children }: { children: ReactNode }) {
-  const [viewMode, setViewModeState] = useState<ViewMode>("desktop");
+  // Default to "mobile" on native apps (Android/iOS) or when screen is small
+  const [viewMode, setViewModeState] = useState<ViewMode>("mobile");
 
   useEffect(() => {
-    // Check saved preference or screen size
-    const saved = localStorage.getItem("sim_rw_view_mode") as ViewMode | null;
-    if (saved === "desktop" || saved === "mobile") {
-      setViewModeState(saved);
-    } else if (typeof window !== "undefined") {
-      // Auto detect: if screen width is smaller than 768px, default to mobile
-      if (window.innerWidth < 768) {
-        setViewModeState("mobile");
+    // 1. Jika berjalan di aplikasi native Android / iOS via Capacitor, SELALU gunakan mode "mobile"
+    if (typeof window !== "undefined" && Capacitor.isNativePlatform()) {
+      setViewModeState("mobile");
+      return;
+    }
+
+    // 2. Di browser: Cek preferensi tersimpan atau lebar layar
+    if (typeof window !== "undefined") {
+      const saved = localStorage.getItem("sim_rw_view_mode") as ViewMode | null;
+      if (saved === "desktop" || saved === "mobile") {
+        setViewModeState(saved);
       } else {
-        setViewModeState("desktop");
+        if (window.innerWidth < 1024) {
+          setViewModeState("mobile");
+        } else {
+          setViewModeState("desktop");
+        }
       }
     }
   }, []);
 
   const setViewMode = (mode: ViewMode) => {
+    // Di aplikasi native, jangan biarkan berpindah ke desktop simulation frame
+    if (Capacitor.isNativePlatform()) {
+      setViewModeState("mobile");
+      return;
+    }
     setViewModeState(mode);
     if (typeof window !== "undefined") {
       localStorage.setItem("sim_rw_view_mode", mode);
@@ -39,6 +53,7 @@ export function ViewModeProvider({ children }: { children: ReactNode }) {
   };
 
   const toggleViewMode = () => {
+    if (Capacitor.isNativePlatform()) return;
     setViewMode(viewMode === "desktop" ? "mobile" : "desktop");
   };
 

@@ -9,25 +9,18 @@ export async function initPushNotifications() {
     return;
   }
 
+  if (!Capacitor.isPluginAvailable("PushNotifications")) {
+    console.warn("[PushNotifications] Plugin PushNotifications tidak tersedia di platform ini");
+    return;
+  }
+
   try {
-    // 1. Cek izin notifikasi perangkat
-    let permStatus = await PushNotifications.checkPermissions();
+    // 1. Pasang listener terlebih dahulu sebelum meminta izin / registrasi
+    await PushNotifications.removeAllListeners().catch(() => {});
 
-    if (permStatus.receive === "prompt") {
-      permStatus = await PushNotifications.requestPermissions();
-    }
-
-    if (permStatus.receive !== "granted") {
-      console.warn("[PushNotifications] Izin notifikasi ditolak oleh pengguna");
-      return;
-    }
-
-    // 2. Daftarkan perangkat ke FCM
-    await PushNotifications.register();
-
-    // 3. Listener saat token FCM berhasil didapatkan
+    // Listener saat token FCM berhasil didapatkan
     PushNotifications.addListener("registration", async (token) => {
-      console.log("[PushNotifications] Device token berhasil dibuat:", token.value);
+      console.log("[PushNotifications] Device token FCM berhasil dibuat:", token.value);
       try {
         await fetch("/api/v1/notifications/token", {
           method: "POST",
@@ -39,20 +32,39 @@ export async function initPushNotifications() {
       }
     });
 
-    // 4. Listener saat terjadi error registrasi FCM
+    // Listener saat terjadi error registrasi FCM
     PushNotifications.addListener("registrationError", (err) => {
-      console.warn("[PushNotifications] Registrasi token gagal (biasanya karena google-services.json belum dimasukkan):", err.error);
+      console.warn("[PushNotifications] Registrasi token dilewati/gagal:", err.error);
     });
 
-    // 5. Listener saat notifikasi masuk ketika aplikasi sedang dibuka (foreground)
+    // Listener saat notifikasi masuk ketika aplikasi sedang dibuka (foreground)
     PushNotifications.addListener("pushNotificationReceived", (notification) => {
       console.log("[PushNotifications] Notifikasi masuk di latar depan:", notification);
     });
 
-    // 6. Listener saat warga mengetuk/menekan notifikasi di status bar
+    // Listener saat warga mengetuk/menekan notifikasi di status bar
     PushNotifications.addListener("pushNotificationActionPerformed", (action) => {
       console.log("[PushNotifications] Notifikasi diketuk oleh pengguna:", action);
     });
+
+    // 2. Cek izin notifikasi perangkat
+    let permStatus = await PushNotifications.checkPermissions();
+
+    if (permStatus.receive === "prompt") {
+      permStatus = await PushNotifications.requestPermissions();
+    }
+
+    if (permStatus.receive !== "granted") {
+      console.warn("[PushNotifications] Izin notifikasi belum diberikan atau ditolak pengguna");
+      return;
+    }
+
+    // 3. Daftarkan perangkat ke FCM dengan proteksi try-catch ekstra
+    try {
+      await PushNotifications.register();
+    } catch (regError) {
+      console.warn("[PushNotifications] Registrasi token FCM dilewati:", regError);
+    }
   } catch (err) {
     console.warn("[PushNotifications] Inisialisasi Push Notifications dilewati:", err);
   }

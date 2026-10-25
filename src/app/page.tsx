@@ -19,12 +19,14 @@ import PengaduanTab from "@/components/warga/PengaduanTab";
 import OfficerDashboard from "@/components/officer/OfficerDashboard";
 import SuperAdminDashboard from "@/components/admin/SuperAdminDashboard";
 import { Siren, X, MessageSquare, Bell, Building2, Phone } from "lucide-react";
+import { App } from "@capacitor/app";
+import { Capacitor } from "@capacitor/core";
 
 export default function HomePage() {
   const router = useRouter();
   const { user, isLoading, isOfficerMode } = useAuth();
   const { isDesktop } = useViewMode();
-  const [activeTab, setActiveTab] = useState<NavTab | "admin" | "pengaduan">("beranda");
+  const [activeTab, setActiveTab] = useState<NavTab>("beranda");
   const [wargaSubTab, setWargaSubTab] = useState<"BAGAN" | "KONTAK" | "DARURAT">("BAGAN");
   const [forceReady, setForceReady] = useState(false);
 
@@ -32,8 +34,10 @@ export default function HomePage() {
   useEffect(() => {
     if (user?.isSuperAdmin) {
       setActiveTab("admin");
+    } else if (isOfficerMode && user?.isOfficer) {
+      setActiveTab("admin");
     }
-  }, [user?.isSuperAdmin]);
+  }, [user?.isSuperAdmin, isOfficerMode, user?.isOfficer]);
 
   // Fallback to guarantee the screen never hangs
   useEffect(() => {
@@ -49,6 +53,53 @@ export default function HomePage() {
   const [laporText, setLaporText] = useState("");
   const [selectedAnnouncement, setSelectedAnnouncement] = useState<AnnouncementItem | null>(null);
   const [showNotificationsModal, setShowNotificationsModal] = useState(false);
+
+  // Hardware Back Button Handler for Android
+  useEffect(() => {
+    if (typeof window === "undefined" || !Capacitor.isNativePlatform()) return;
+
+    let backListener: any;
+    try {
+      backListener = App.addListener("backButton", ({ canGoBack }) => {
+        // 1. Close active modals first if any are open
+        if (showEmergencyModal) {
+          setShowEmergencyModal(false);
+          return;
+        }
+        if (showNotificationsModal) {
+          setShowNotificationsModal(false);
+          return;
+        }
+        if (showLaporModal) {
+          setShowLaporModal(false);
+          return;
+        }
+        if (selectedAnnouncement) {
+          setSelectedAnnouncement(null);
+          return;
+        }
+
+        // 2. If on sub-tab or admin tab, navigate back to 'beranda'
+        if (activeTab !== "beranda") {
+          setActiveTab("beranda");
+          return;
+        }
+
+        // 3. If already on 'beranda', let native Android MainActivity handle double-tap to exit
+        if (canGoBack) {
+          window.history.back();
+        }
+      });
+    } catch (e) {
+      console.warn("BackButton listener error:", e);
+    }
+
+    return () => {
+      if (backListener && backListener.remove) {
+        backListener.remove();
+      }
+    };
+  }, [showEmergencyModal, showNotificationsModal, showLaporModal, selectedAnnouncement, activeTab]);
 
   if (isLoading && !forceReady) {
     return (
@@ -127,112 +178,100 @@ export default function HomePage() {
       }}
       onOpenNotif={() => setShowNotificationsModal(true)}
     >
-      {/* Super Admin Dashboard tab */}
-      {activeTab === "admin" && user.isSuperAdmin ? (
-        <div className={!isDesktop ? "flex-1 min-h-0 overflow-y-auto p-4 pb-8" : ""}>
-          <SuperAdminDashboard />
-        </div>
-      ) : isOfficerMode && user.isOfficer ? (
-        /* Officer Dashboard */
-        <div className={!isDesktop ? "flex-1 min-h-0 overflow-y-auto p-4 pb-8" : ""}>
-          <OfficerDashboard />
-        </div>
-      ) : (
-        /* Citizen View */
-        <div className={isDesktop ? "min-h-full flex flex-col" : "flex-1 min-h-0 flex flex-col h-full overflow-hidden"}>
-          {/* Header (rendered in mobile mode, or compact sub-header) */}
-          {!isDesktop && (
-            <div className="shrink-0 z-30">
-              <HeaderDashboard onOpenNotifications={() => setShowNotificationsModal(true)} />
+      {/* Main Unified Viewport */}
+      <div className={isDesktop ? "min-h-full flex flex-col" : "flex-1 min-h-0 flex flex-col h-full relative"}>
+        {/* Header (rendered in mobile mode) */}
+        {!isDesktop && (
+          <div className="shrink-0 z-30">
+            <HeaderDashboard onOpenNotifications={() => setShowNotificationsModal(true)} />
+          </div>
+        )}
+
+        {/* Desktop Sub-Header Title */}
+        {isDesktop && (
+          <div className="mb-6 pb-4 border-b border-slate-100 flex items-center justify-between">
+            <div>
+              <h1 className="text-xl font-extrabold text-slate-900 capitalize">
+                {activeTab === "admin"
+                  ? user.isSuperAdmin
+                    ? "Portal Super Admin Kelurahan"
+                    : "Dasbor Pengurus RT/RW"
+                  : activeTab === "beranda"
+                  ? "Beranda & Pengumuman Warga"
+                  : activeTab === "surat"
+                  ? "Pengajuan Surat Online"
+                  : activeTab === "iuran"
+                  ? "Iuran & Transparansi Kas"
+                  : activeTab === "pengaduan"
+                  ? "Pusat Pengaduan & Keluhan Warga"
+                  : activeTab === "warga"
+                  ? "Direktori & Kontak Pengurus"
+                  : "Profil Warga & E-KTP Digital"}
+              </h1>
+              <p className="text-xs text-slate-700 font-medium mt-0.5">
+                Pelayanan Administrasi Warga Digital Multi-RW Sukamaju, Bandung.
+              </p>
             </div>
-          )}
 
-          {/* Desktop Sub-Header Title */}
-          {isDesktop && (
-            <div className="mb-6 pb-4 border-b border-slate-100 flex items-center justify-between">
-              <div>
-                <h1 className="text-xl font-extrabold text-slate-900 capitalize">
-                  {activeTab === "beranda"
-                    ? "Beranda & Pengumuman Warga"
-                    : activeTab === "surat"
-                    ? "Pengajuan Surat Online"
-                    : activeTab === "iuran"
-                    ? "Iuran & Transparansi Kas"
-                    : activeTab === "pengaduan"
-                    ? "Pusat Pengaduan & Keluhan Warga"
-                    : activeTab === "warga"
-                    ? "Direktori & Kontak Pengurus"
-                    : "Profil Warga & E-KTP Digital"}
-                </h1>
-                <p className="text-xs text-slate-700 font-medium mt-0.5">
-                  Pelayanan Administrasi Warga Digital Multi-RW Sukamaju, Bandung.
-                </p>
-              </div>
-
-              <div className="flex items-center gap-2">
-                <span className="px-3 py-1 rounded-full text-xs font-bold bg-emerald-100 text-emerald-800 border border-emerald-300">
-                  {user.isSuperAdmin
-                    ? "Super Admin Kelurahan"
-                    : `RT ${user.rt?.number || "02"} / RW ${user.rw?.number || "05"}`}
-                </span>
-              </div>
+            <div className="flex items-center gap-2">
+              <span className="px-3 py-1 rounded-full text-xs font-bold bg-emerald-100 text-emerald-800 border border-emerald-300">
+                {user.isSuperAdmin
+                  ? "Super Admin Kelurahan"
+                  : `RT ${user.rt?.number || "02"} / RW ${user.rw?.number || "05"}`}
+              </span>
             </div>
-          )}
+          </div>
+        )}
 
-          {/* Main Tab Render */}
-          <div className={isDesktop ? "flex-1" : "flex-1 min-h-0 overflow-y-auto overscroll-contain"}>
-            {activeTab === "beranda" &&
-              (isDesktop ? (
-                /* DESKTOP BERANDA (Spacious 2-Column Grid) */
-                <div className="grid grid-cols-12 gap-6 lg:gap-8 items-start">
-                  <div className="col-span-12 lg:col-span-5 xl:col-span-4 space-y-6">
-                    <EKtpMiniCard />
-                    <QuickActions onActionClick={handleQuickAction} />
-                  </div>
-                  <div className="col-span-12 lg:col-span-7 xl:col-span-8 space-y-6">
-                    <AnnouncementFeed onSelectAnnouncement={(ann) => setSelectedAnnouncement(ann)} />
-                  </div>
-                </div>
-              ) : (
-                /* MOBILE BERANDA (Stacked Mobile View) */
-                <div className="p-4 space-y-5 pb-6">
+        {/* Main Content Area - Smooth Momentum Scroll without nested scroll traps */}
+        <div
+          className={
+            isDesktop
+              ? "flex-1"
+              : "flex-1 min-h-0 overflow-y-auto overscroll-y-contain px-3 sm:px-4 pt-2 pb-24 touch-pan-y"
+          }
+          style={{ WebkitOverflowScrolling: "touch" }}
+        >
+          {/* Admin / Officer Tab */}
+          {activeTab === "admin" && user.isSuperAdmin && <SuperAdminDashboard />}
+          {activeTab === "admin" && !user.isSuperAdmin && user.isOfficer && <OfficerDashboard />}
+
+          {/* Citizen Views */}
+          {activeTab === "beranda" &&
+            (isDesktop ? (
+              /* DESKTOP BERANDA (Spacious 2-Column Grid) */
+              <div className="grid grid-cols-12 gap-6 lg:gap-8 items-start">
+                <div className="col-span-12 lg:col-span-5 xl:col-span-4 space-y-6">
                   <EKtpMiniCard />
                   <QuickActions onActionClick={handleQuickAction} />
+                </div>
+                <div className="col-span-12 lg:col-span-7 xl:col-span-8 space-y-6">
                   <AnnouncementFeed onSelectAnnouncement={(ann) => setSelectedAnnouncement(ann)} />
                 </div>
-              ))}
+              </div>
+            ) : (
+              /* MOBILE BERANDA (Stacked Mobile View) */
+              <div className="space-y-4">
+                <EKtpMiniCard />
+                <QuickActions onActionClick={handleQuickAction} />
+                <AnnouncementFeed onSelectAnnouncement={(ann) => setSelectedAnnouncement(ann)} />
+              </div>
+            ))}
 
-            {activeTab === "surat" && (
-              <div className={!isDesktop ? "p-4 pb-6" : ""}>
-                <SuratTab />
-              </div>
-            )}
-            {activeTab === "iuran" && (
-              <div className={!isDesktop ? "p-4 pb-6" : ""}>
-                <IuranTab />
-              </div>
-            )}
-            {activeTab === "pengaduan" && (
-              <div className={!isDesktop ? "p-4 pb-6" : ""}>
-                <PengaduanTab />
-              </div>
-            )}
-            {activeTab === "warga" && (
-              <div className={!isDesktop ? "p-4 pb-6" : ""}>
-                <WargaTab initialTab={wargaSubTab} />
-              </div>
-            )}
-            {activeTab === "profil" && (
-              <div className={!isDesktop ? "p-4 pb-6" : ""}>
-                <ProfilTab />
-              </div>
-            )}
-          </div>
-
-          {/* Bottom Navigation (Only visible on mobile mode) */}
-          <BottomNav activeTab={activeTab as NavTab} onChangeTab={setActiveTab} />
+          {activeTab === "surat" && <SuratTab />}
+          {activeTab === "iuran" && <IuranTab />}
+          {activeTab === "pengaduan" && <PengaduanTab />}
+          {activeTab === "warga" && <WargaTab initialTab={wargaSubTab} />}
+          {activeTab === "profil" && <ProfilTab />}
         </div>
-      )}
+
+        {/* Bottom Navigation: Selalu terlihat di bagian bawah pada layar mobile */}
+        {!isDesktop && (
+          <div className="shrink-0 sticky bottom-0 z-40">
+            <BottomNav activeTab={activeTab as NavTab} onChangeTab={setActiveTab} />
+          </div>
+        )}
+      </div>
 
       {/* EMERGENCY SOS MODAL */}
       {showEmergencyModal && (

@@ -11,6 +11,7 @@ import android.webkit.WebResourceError;
 import android.webkit.WebResourceRequest;
 import android.webkit.WebSettings;
 import android.webkit.WebView;
+import android.widget.Toast;
 import androidx.coordinatorlayout.widget.CoordinatorLayout;
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 import com.getcapacitor.Bridge;
@@ -19,6 +20,7 @@ import com.getcapacitor.BridgeWebViewClient;
 
 public class MainActivity extends BridgeActivity {
     private SwipeRefreshLayout swipeRefreshLayout;
+    private long lastBackPressTime = 0;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -96,7 +98,10 @@ public class MainActivity extends BridgeActivity {
 
             // canScrollVertically(-1) mengembalikan true jika halaman sedang di-scroll ke bawah (bukan di pucuk atas)
             swipeRefreshLayout.setOnChildScrollUpCallback((parentLayout, child) -> {
-                return webView.canScrollVertically(-1);
+                if (webView != null) {
+                    return webView.getScrollY() > 0 || webView.canScrollVertically(-1);
+                }
+                return false;
             });
 
             swipeRefreshLayout.setOnRefreshListener(() -> {
@@ -113,6 +118,30 @@ public class MainActivity extends BridgeActivity {
                     }
                 }, 2000);
             });
+        }
+    }
+
+    @Override
+    public void onBackPressed() {
+        Bridge bridge = getBridge();
+        if (bridge != null) {
+            WebView webView = bridge.getWebView();
+            if (webView != null && webView.canGoBack()) {
+                webView.goBack();
+                return;
+            }
+        }
+
+        long currentTime = System.currentTimeMillis();
+        if (currentTime - lastBackPressTime < 2000) {
+            super.onBackPressed();
+        } else {
+            lastBackPressTime = currentTime;
+            Toast.makeText(
+                this,
+                "Tekan sekali lagi untuk keluar dari aplikasi",
+                Toast.LENGTH_SHORT
+            ).show();
         }
     }
 }
