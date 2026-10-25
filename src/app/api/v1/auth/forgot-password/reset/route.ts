@@ -6,11 +6,18 @@ import { recordAuditLog } from "@/lib/audit";
 
 export async function POST(req: NextRequest) {
   try {
-    const { resetToken, newPassword } = await req.json();
+    const { resetToken, newPassword, confirmPassword } = await req.json();
 
     if (!resetToken || !newPassword) {
       return NextResponse.json(
         { success: false, message: "Token pemulihan dan kata sandi baru wajib diisi." },
+        { status: 400 }
+      );
+    }
+
+    if (confirmPassword !== undefined && confirmPassword !== newPassword) {
+      return NextResponse.json(
+        { success: false, message: "Kata sandi dan konfirmasi kata sandi tidak sama." },
         { status: 400 }
       );
     }

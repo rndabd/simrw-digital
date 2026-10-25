@@ -22,6 +22,7 @@ import {
   Send,
   Info,
 } from "lucide-react";
+import { getFriendlyErrorMessage } from "@/lib/network-error";
 
 export default function SetupPage() {
   const router = useRouter();
@@ -143,7 +144,7 @@ export default function SetupPage() {
     } catch (err: any) {
       setOtpMessage({
         type: "error",
-        text: err.message || "Gagal menghubungi server untuk mengirim OTP.",
+        text: getFriendlyErrorMessage(err, "Gagal menghubungi server untuk mengirim OTP."),
       });
     } finally {
       setSendingOtp(false);
@@ -196,7 +197,7 @@ export default function SetupPage() {
     } catch (err: any) {
       setOtpMessage({
         type: "error",
-        text: err.message || "Gagal memverifikasi OTP.",
+        text: getFriendlyErrorMessage(err, "Gagal memverifikasi OTP."),
       });
     } finally {
       setVerifyingOtp(false);
@@ -221,7 +222,7 @@ export default function SetupPage() {
       return;
     }
     if (password !== confirmPassword) {
-      setErrorMsg("Konfirmasi kata sandi tidak cocok.");
+      setErrorMsg("Kata sandi tidak sama! Harap pastikan kedua kata sandi cocok.");
       return;
     }
 
@@ -285,7 +286,7 @@ export default function SetupPage() {
         setErrorMsg(json.message || "Gagal melakukan inisialisasi sistem.");
       }
     } catch (err: any) {
-      setErrorMsg(err.message || "Terjadi kesalahan jaringan.");
+      setErrorMsg(getFriendlyErrorMessage(err, "Terjadi kesalahan jaringan saat melakukan inisialisasi."));
     } finally {
       setSubmitting(false);
     }
@@ -704,7 +705,8 @@ export default function SetupPage() {
 
             <button
               type="submit"
-              className="w-full py-3 px-4 rounded-xl bg-emerald-600 hover:bg-emerald-700 text-white font-bold text-xs flex items-center justify-center gap-2 shadow-sm transition-all"
+              disabled={Boolean(confirmPassword && password !== confirmPassword) || password.length < 6}
+              className="w-full py-3 px-4 rounded-xl bg-emerald-600 hover:bg-emerald-700 disabled:opacity-50 text-white font-bold text-xs flex items-center justify-center gap-2 shadow-sm transition-all"
             >
               Lanjut ke Pengaturan Wilayah
               <ArrowRight className="w-4 h-4" />

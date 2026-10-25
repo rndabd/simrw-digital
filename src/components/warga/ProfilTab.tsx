@@ -3,6 +3,7 @@
 import React, { useState, useRef } from "react";
 import { useAuth } from "@/context/AuthContext";
 import EKtpMiniCard from "./EKtpMiniCard";
+import { getFriendlyErrorMessage } from "@/lib/network-error";
 import {
   Shield,
   Award,
@@ -85,7 +86,7 @@ export default function ProfilTab() {
         setEditProfileError(json.message || "Gagal memperbarui profil.");
       }
     } catch (err: any) {
-      setEditProfileError(err.message || "Koneksi terputus saat menyimpan profil.");
+      setEditProfileError(getFriendlyErrorMessage(err, "Koneksi terputus saat menyimpan profil."));
     } finally {
       setIsSavingProfile(false);
     }
@@ -103,7 +104,7 @@ export default function ProfilTab() {
   const handleChangePassword = async (e: React.FormEvent) => {
     e.preventDefault();
     if (newPassword !== confirmPassword) {
-      setChangePasswordError("Konfirmasi kata sandi baru tidak cocok.");
+      setChangePasswordError("Kata sandi tidak sama! Harap pastikan kedua kata sandi cocok.");
       return;
     }
     if (newPassword.length < 6) {
@@ -120,6 +121,7 @@ export default function ProfilTab() {
         body: JSON.stringify({
           currentPassword,
           newPassword,
+          confirmPassword,
         }),
       });
       const json = await res.json();
@@ -136,7 +138,7 @@ export default function ProfilTab() {
         setChangePasswordError(json.message || "Gagal mengubah kata sandi.");
       }
     } catch (err: any) {
-      setChangePasswordError(err.message || "Koneksi terputus saat mengubah kata sandi.");
+      setChangePasswordError(getFriendlyErrorMessage(err, "Koneksi terputus saat mengubah kata sandi."));
     } finally {
       setIsChangingPassword(false);
     }
@@ -956,9 +958,29 @@ export default function ProfilTab() {
                   value={confirmPassword}
                   onChange={(e) => setConfirmPassword(e.target.value)}
                   placeholder="Ulangi kata sandi baru"
-                  className="w-full text-xs p-3 rounded-xl border border-slate-300 font-medium focus:ring-2 focus:ring-emerald-500"
+                  className={`w-full text-xs p-3 rounded-xl border font-medium transition-all ${
+                    confirmPassword && newPassword !== confirmPassword
+                      ? "border-rose-400 bg-rose-50/40 focus:ring-2 focus:ring-rose-500"
+                      : confirmPassword && newPassword === confirmPassword
+                      ? "border-emerald-500 bg-emerald-50/20 focus:ring-2 focus:ring-emerald-500"
+                      : "border-slate-300 focus:ring-2 focus:ring-emerald-500"
+                  }`}
                 />
               </div>
+
+              {/* Notifikasi Realtime Kecocokan Password Baru */}
+              {confirmPassword && newPassword !== confirmPassword && (
+                <div className="p-2.5 rounded-xl bg-rose-50 border border-rose-200 text-rose-700 text-[11px] font-bold flex items-center gap-1.5 animate-shake">
+                  <AlertCircle className="w-4 h-4 text-rose-500 shrink-0" />
+                  <span>Kata sandi tidak sama! Harap pastikan kedua kata sandi cocok.</span>
+                </div>
+              )}
+              {confirmPassword && newPassword === confirmPassword && (
+                <div className="p-2 px-3 rounded-xl bg-emerald-50 border border-emerald-200 text-emerald-800 text-[11px] font-bold flex items-center gap-1.5">
+                  <CheckCircle2 className="w-4 h-4 text-emerald-600 shrink-0" />
+                  <span>Kata sandi cocok!</span>
+                </div>
+              )}
 
               <div className="pt-2 flex gap-2">
                 <button
@@ -970,7 +992,11 @@ export default function ProfilTab() {
                 </button>
                 <button
                   type="submit"
-                  disabled={isChangingPassword}
+                  disabled={
+                    isChangingPassword ||
+                    Boolean(confirmPassword && newPassword !== confirmPassword) ||
+                    newPassword.length < 6
+                  }
                   className="w-2/3 py-2.5 px-4 rounded-xl bg-emerald-600 hover:bg-emerald-700 disabled:opacity-50 text-white font-bold text-xs flex items-center justify-center gap-2 shadow-sm transition-all"
                 >
                   {isChangingPassword ? (

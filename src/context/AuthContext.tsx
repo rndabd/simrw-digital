@@ -2,6 +2,7 @@
 
 import React, { createContext, useContext, useState, useEffect, ReactNode } from "react";
 import { initPushNotifications } from "@/lib/push-notifications";
+import { getFriendlyErrorMessage } from "@/lib/network-error";
 
 export interface UserProfile {
   id: string;
@@ -120,7 +121,10 @@ export function AuthProvider({ children }: { children: ReactNode }) {
         return { success: false, message: data.message || "Login gagal" };
       }
     } catch (err: any) {
-      return { success: false, message: err.message || "Network error" };
+      return {
+        success: false,
+        message: getFriendlyErrorMessage(err, "Tidak dapat terhubung ke server. Periksa koneksi internet Anda atau coba beberapa saat lagi."),
+      };
     } finally {
       setIsLoading(false);
     }

@@ -2,6 +2,7 @@
 
 import React, { useState, useEffect, useRef } from "react";
 import { useAuth } from "@/context/AuthContext";
+import { getFriendlyErrorMessage } from "@/lib/network-error";
 import {
   ShieldCheck,
   UserCheck,
@@ -284,7 +285,11 @@ export default function AuthView() {
       const res = await fetch("/api/v1/auth/forgot-password/verify", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ nik: cleanNik, identifier: cleanContact }),
+        body: JSON.stringify({
+          nik: cleanNik,
+          identifier: cleanContact,
+          channel: forgotChannel,
+        }),
       });
       const data = await res.json();
       if (data.success && data.data) {
@@ -292,7 +297,7 @@ export default function AuthView() {
           fullName: data.data.fullName,
           maskedNik: data.data.maskedNik,
         });
-        setForgotChannel(data.data.channel || "WHATSAPP");
+        setForgotChannel(data.data.channel || forgotChannel || "WHATSAPP");
         setForgotTargetMasked(data.data.targetMasked || cleanContact);
         if (data.data.devOtpCode) {
           setForgotDevOtp(data.data.devOtpCode);
@@ -310,7 +315,7 @@ export default function AuthView() {
         });
       }
     } catch (err: any) {
-      setForgotError(err.message || "Gagal menghubungi server");
+      setForgotError(getFriendlyErrorMessage(err, "Gagal menghubungi server"));
     } finally {
       setForgotLoading(false);
     }
@@ -342,7 +347,7 @@ export default function AuthView() {
         setForgotError(data.message || "Kode OTP salah atau telah kedaluwarsa.");
       }
     } catch (err: any) {
-      setForgotError(err.message || "Gagal menghubungi server");
+      setForgotError(getFriendlyErrorMessage(err, "Gagal menghubungi server"));
     } finally {
       setForgotLoading(false);
     }
@@ -356,7 +361,7 @@ export default function AuthView() {
       return;
     }
     if (forgotNewPassword !== forgotConfirmPassword) {
-      setForgotError("Konfirmasi kata sandi tidak cocok.");
+      setForgotError("Kata sandi tidak sama! Harap pastikan kedua kata sandi cocok.");
       return;
     }
     setForgotLoading(true);
@@ -364,7 +369,11 @@ export default function AuthView() {
       const res = await fetch("/api/v1/auth/forgot-password/reset", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ resetToken: forgotToken, newPassword: forgotNewPassword }),
+        body: JSON.stringify({
+          resetToken: forgotToken,
+          newPassword: forgotNewPassword,
+          confirmPassword: forgotConfirmPassword,
+        }),
       });
       const data = await res.json();
       if (data.success) {
@@ -375,7 +384,7 @@ export default function AuthView() {
         setForgotError(data.message || "Gagal memperbarui kata sandi.");
       }
     } catch (err: any) {
-      setForgotError(err.message || "Gagal menghubungi server");
+      setForgotError(getFriendlyErrorMessage(err, "Gagal menghubungi server"));
     } finally {
       setForgotLoading(false);
     }
@@ -389,7 +398,7 @@ export default function AuthView() {
 
     const result = await login(phone, password);
     if (!result.success) {
-      setErrorMessage(result.message || "Nomor WhatsApp atau kata sandi tidak cocok.");
+      setErrorMessage(getFriendlyErrorMessage(result.message, "Nomor WhatsApp atau kata sandi tidak cocok."));
     }
     setIsSubmitting(false);
   };
@@ -429,7 +438,7 @@ export default function AuthView() {
         setResOtpMessage({ type: "error", text: data.message || "Gagal mengirimkan OTP." });
       }
     } catch (err: any) {
-      setResOtpMessage({ type: "error", text: err.message || "Terjadi kesalahan jaringan." });
+      setResOtpMessage({ type: "error", text: getFriendlyErrorMessage(err, "Terjadi kesalahan jaringan.") });
     } finally {
       setResSendingOtp(false);
     }
@@ -468,7 +477,7 @@ export default function AuthView() {
         setResOtpMessage({ type: "error", text: data.message || "Kode OTP salah atau kedaluwarsa." });
       }
     } catch (err: any) {
-      setResOtpMessage({ type: "error", text: err.message || "Gagal memverifikasi OTP." });
+      setResOtpMessage({ type: "error", text: getFriendlyErrorMessage(err, "Gagal memverifikasi OTP.") });
     } finally {
       setResVerifyingOtp(false);
     }
@@ -506,7 +515,7 @@ export default function AuthView() {
         setOffOtpMessage({ type: "error", text: data.message || "Gagal mengirimkan OTP." });
       }
     } catch (err: any) {
-      setOffOtpMessage({ type: "error", text: err.message || "Terjadi kesalahan jaringan." });
+      setOffOtpMessage({ type: "error", text: getFriendlyErrorMessage(err, "Terjadi kesalahan jaringan.") });
     } finally {
       setOffSendingOtp(false);
     }
@@ -545,7 +554,7 @@ export default function AuthView() {
         setOffOtpMessage({ type: "error", text: data.message || "Kode OTP salah atau kedaluwarsa." });
       }
     } catch (err: any) {
-      setOffOtpMessage({ type: "error", text: err.message || "Gagal memverifikasi OTP." });
+      setOffOtpMessage({ type: "error", text: getFriendlyErrorMessage(err, "Gagal memverifikasi OTP.") });
     } finally {
       setOffVerifyingOtp(false);
     }
@@ -619,7 +628,7 @@ export default function AuthView() {
         setErrorMessage(json.message || "Gagal melakukan pendaftaran warga.");
       }
     } catch (err: any) {
-      setErrorMessage(err.message || "Terjadi kesalahan koneksi.");
+      setErrorMessage(getFriendlyErrorMessage(err, "Terjadi kesalahan koneksi."));
     } finally {
       setIsSubmitting(false);
     }
@@ -696,7 +705,7 @@ export default function AuthView() {
         setErrorMessage(json.message || "Gagal mendaftarkan kepengurusan.");
       }
     } catch (err: any) {
-      setErrorMessage(err.message || "Terjadi kesalahan koneksi jaringan.");
+      setErrorMessage(getFriendlyErrorMessage(err, "Terjadi kesalahan koneksi jaringan."));
     } finally {
       setIsSubmitting(false);
     }
@@ -1360,8 +1369,12 @@ export default function AuthView() {
 
                 <button
                   type="submit"
-                  disabled={isSubmitting}
-                  className="w-full py-3 px-4 rounded-xl bg-emerald-600 hover:bg-emerald-700 text-white font-bold text-xs flex items-center justify-center gap-2 shadow-sm transition-all"
+                  disabled={
+                    isSubmitting ||
+                    Boolean(resConfirmPassword && resPassword !== resConfirmPassword) ||
+                    resPassword.length < 6
+                  }
+                  className="w-full py-3 px-4 rounded-xl bg-emerald-600 hover:bg-emerald-700 disabled:opacity-50 text-white font-bold text-xs flex items-center justify-center gap-2 shadow-sm transition-all"
                 >
                   {isSubmitting ? "Mengenkripsi & Mengunggah..." : "Kirim Pendaftaran Warga"}
                 </button>
@@ -1879,8 +1892,12 @@ export default function AuthView() {
 
                 <button
                   type="submit"
-                  disabled={isSubmitting}
-                  className="w-full py-3 px-4 rounded-xl bg-slate-900 hover:bg-slate-800 text-white font-extrabold text-xs flex items-center justify-center gap-2 shadow-md transition-all"
+                  disabled={
+                    isSubmitting ||
+                    Boolean(offConfirmPassword && offPassword !== offConfirmPassword) ||
+                    offPassword.length < 6
+                  }
+                  className="w-full py-3 px-4 rounded-xl bg-slate-900 hover:bg-slate-800 disabled:opacity-50 text-white font-extrabold text-xs flex items-center justify-center gap-2 shadow-md transition-all"
                 >
                   <PlusCircle className="w-4 h-4 text-emerald-400" />
                   {isSubmitting ? "Mengajukan Pengurus..." : "Kirim Pendaftaran Kepengurusan"}
@@ -1966,16 +1983,53 @@ export default function AuthView() {
                   />
                 </div>
 
+                {/* Pilihan Kanal Pengiriman OTP */}
+                <div>
+                  <label className="text-xs font-semibold text-slate-700 block mb-1.5">
+                    Kirim Kode OTP Melalui:
+                  </label>
+                  <div className="grid grid-cols-2 gap-2">
+                    <button
+                      type="button"
+                      onClick={() => setForgotChannel("WHATSAPP")}
+                      className={`py-2 px-3 rounded-xl border text-xs font-bold flex items-center justify-center gap-1.5 transition-all ${
+                        forgotChannel === "WHATSAPP"
+                          ? "bg-emerald-50 border-emerald-500 text-emerald-800 shadow-xs"
+                          : "bg-slate-50 border-slate-200 text-slate-600 hover:bg-slate-100"
+                      }`}
+                    >
+                      <MessageSquare className="w-4 h-4 text-emerald-600" />
+                      WhatsApp OTP
+                    </button>
+                    <button
+                      type="button"
+                      onClick={() => setForgotChannel("EMAIL")}
+                      className={`py-2 px-3 rounded-xl border text-xs font-bold flex items-center justify-center gap-1.5 transition-all ${
+                        forgotChannel === "EMAIL"
+                          ? "bg-emerald-50 border-emerald-500 text-emerald-800 shadow-xs"
+                          : "bg-slate-50 border-slate-200 text-slate-600 hover:bg-slate-100"
+                      }`}
+                    >
+                      <Mail className="w-4 h-4 text-emerald-600" />
+                      Email OTP
+                    </button>
+                  </div>
+                </div>
+
                 <div>
                   <label className="text-xs font-semibold text-slate-700 block mb-1">
-                    Nomor WhatsApp atau Alamat Email Terdaftar
+                    {forgotChannel === "EMAIL" ? "Alamat Email Terdaftar" : "Nomor WhatsApp Terdaftar"}
                   </label>
                   <input
-                    type="text"
+                    type={forgotChannel === "EMAIL" ? "email" : "tel"}
                     required
                     value={forgotContact}
                     onChange={(e) => setForgotContact(e.target.value)}
-                    placeholder="Contoh: 0812xxxxxxxx atau admin@simrw.web.id"
+                    placeholder={
+                      forgotChannel === "EMAIL"
+                        ? "Contoh: warga@email.com atau admin@simrw.web.id"
+                        : "Contoh: 0812xxxxxxxx"
+                    }
                     className="w-full text-xs p-3 rounded-xl border border-slate-300 font-medium focus:ring-2 focus:ring-emerald-500"
                   />
                 </div>
@@ -2121,14 +2175,38 @@ export default function AuthView() {
                     value={forgotConfirmPassword}
                     onChange={(e) => setForgotConfirmPassword(e.target.value)}
                     placeholder="Ketik ulang kata sandi baru"
-                    className="w-full text-xs p-3 rounded-xl border border-slate-300 font-medium focus:ring-2 focus:ring-emerald-500"
+                    className={`w-full text-xs p-3 rounded-xl border font-medium transition-all ${
+                      forgotConfirmPassword && forgotNewPassword !== forgotConfirmPassword
+                        ? "border-rose-400 bg-rose-50/40 focus:ring-2 focus:ring-rose-500"
+                        : forgotConfirmPassword && forgotNewPassword === forgotConfirmPassword
+                        ? "border-emerald-500 bg-emerald-50/20 focus:ring-2 focus:ring-emerald-500"
+                        : "border-slate-300 focus:ring-2 focus:ring-emerald-500"
+                    }`}
                   />
                 </div>
 
+                {/* Notifikasi Realtime Kecocokan Password Pemulihan */}
+                {forgotConfirmPassword && forgotNewPassword !== forgotConfirmPassword && (
+                  <div className="p-2.5 rounded-xl bg-rose-50 border border-rose-200 text-rose-700 text-[11px] font-bold flex items-center gap-1.5 animate-shake">
+                    <AlertCircle className="w-4 h-4 text-rose-500 shrink-0" />
+                    <span>Kata sandi tidak sama! Harap pastikan kedua kata sandi cocok.</span>
+                  </div>
+                )}
+                {forgotConfirmPassword && forgotNewPassword === forgotConfirmPassword && (
+                  <div className="p-2 px-3 rounded-xl bg-emerald-50 border border-emerald-200 text-emerald-800 text-[11px] font-bold flex items-center gap-1.5">
+                    <CheckCircle2 className="w-4 h-4 text-emerald-600 shrink-0" />
+                    <span>Kata sandi cocok!</span>
+                  </div>
+                )}
+
                 <button
                   type="submit"
-                  disabled={forgotLoading}
-                  className="w-full py-3 px-4 rounded-xl bg-emerald-600 hover:bg-emerald-700 text-white font-bold text-xs flex items-center justify-center gap-2 shadow-sm transition-all"
+                  disabled={
+                    forgotLoading ||
+                    Boolean(forgotConfirmPassword && forgotNewPassword !== forgotConfirmPassword) ||
+                    forgotNewPassword.length < 6
+                  }
+                  className="w-full py-3 px-4 rounded-xl bg-emerald-600 hover:bg-emerald-700 disabled:opacity-50 text-white font-bold text-xs flex items-center justify-center gap-2 shadow-sm transition-all"
                 >
                   {forgotLoading ? (
                     <>

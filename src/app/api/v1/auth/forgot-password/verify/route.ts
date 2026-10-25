@@ -9,7 +9,7 @@ import { recordAuditLog } from "@/lib/audit";
 export async function POST(req: NextRequest) {
   try {
     const body = await req.json();
-    const { nik, phoneNumber, email, identifier } = body;
+    const { nik, phoneNumber, email, identifier, channel } = body;
 
     const cleanNik = (nik || "").trim();
     const cleanContact = (identifier || phoneNumber || email || "").trim();
@@ -69,9 +69,24 @@ export async function POST(req: NextRequest) {
       );
     }
 
-    // Tentukan kanal pengiriman OTP
-    const activeChannel = isEmail ? "EMAIL" : "WHATSAPP";
-    const targetDestination = isEmail ? user.email || cleanContact : user.phone_number;
+    // Tentukan kanal pengiriman OTP berdasarkan preferensi pengguna atau deteksi otomatis
+    let activeChannel: "WHATSAPP" | "EMAIL" = "WHATSAPP";
+    if (channel === "EMAIL" || (!channel && isEmail)) {
+      activeChannel = "EMAIL";
+    }
+
+    if (activeChannel === "EMAIL" && !user.email && !isEmail) {
+      return NextResponse.json(
+        {
+          success: false,
+          message: "Akun Anda belum memiliki alamat email terdaftar. Silakan pilih opsi pengiriman via WhatsApp.",
+          canContactAdmin: true,
+        },
+        { status: 400 }
+      );
+    }
+
+    const targetDestination = activeChannel === "EMAIL" ? (user.email || cleanContact) : user.phone_number;
 
     // Generate 6-digit OTP untuk Reset Kata Sandi
     const otpCode = Math.floor(100000 + Math.random() * 900000).toString();
@@ -84,17 +99,29 @@ export async function POST(req: NextRequest) {
       (t) =>
         t.type !== "PASSWORD_RESET_OTP" ||
         (t.target !== cleanContact &&
+          t.target !== targetDestination &&
           normalizePhoneNumber(t.target) !== normalizePhoneNumber(cleanContact))
     );
 
     store.verification_otps.push({
       id: crypto.randomUUID(),
-      target: cleanContact,
+      target: targetDestination,
       code: otpCode,
       type: "PASSWORD_RESET_OTP",
       expires_at: expiresAt,
       created_at: new Date().toISOString(),
     });
+
+    if (cleanContact !== targetDestination) {
+      store.verification_otps.push({
+        id: crypto.randomUUID(),
+        target: cleanContact,
+        code: otpCode,
+        type: "PASSWORD_RESET_OTP",
+        expires_at: expiresAt,
+        created_at: new Date().toISOString(),
+      });
+    }
 
     saveStore(store);
 

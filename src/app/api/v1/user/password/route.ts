@@ -14,11 +14,18 @@ export async function POST(req: NextRequest) {
     }
 
     const body = await req.json();
-    const { currentPassword, newPassword } = body;
+    const { currentPassword, newPassword, confirmPassword } = body;
 
     if (!currentPassword || !newPassword) {
       return NextResponse.json(
         { success: false, message: "Kata sandi lama dan kata sandi baru wajib diisi." },
+        { status: 400 }
+      );
+    }
+
+    if (confirmPassword !== undefined && confirmPassword !== newPassword) {
+      return NextResponse.json(
+        { success: false, message: "Kata sandi dan konfirmasi kata sandi tidak sama." },
         { status: 400 }
       );
     }
