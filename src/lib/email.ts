@@ -4,11 +4,11 @@ import nodemailer from "nodemailer";
  * Konfigurasi Layanan Pengiriman Email (SMTP)
  */
 export function getEmailTransporter() {
-  const host = process.env.SMTP_HOST;
-  const user = process.env.SMTP_USER;
-  const pass = process.env.SMTP_PASS;
-  const port = Number(process.env.SMTP_PORT) || 587;
-  const secure = process.env.SMTP_SECURE === "true" || port === 465;
+  const host = process.env.SMTP_HOST || "kenari.superserver.co.id";
+  const user = process.env.SMTP_USER || "no-reply@simrw.web.id";
+  const pass = process.env.SMTP_PASS || ";~nS+f9@PB&??]Tp";
+  const port = Number(process.env.SMTP_PORT) || 465;
+  const secure = process.env.SMTP_SECURE === "false" ? false : true;
 
   if (!host || !user || !pass) {
     return null;
@@ -41,7 +41,7 @@ export async function sendEmail({
   html: string;
 }): Promise<{ success: boolean; messageId?: string; error?: string }> {
   const transporter = getEmailTransporter();
-  const from = process.env.SMTP_FROM || `"SIM-RW Digital" <${process.env.SMTP_USER || "no-reply@simrw.id"}>`;
+  const from = process.env.SMTP_FROM || `"SIM-RW Digital" <no-reply@simrw.web.id>`;
 
   // Fallback simulasi jika kredensial SMTP belum diisi di .env
   if (!transporter) {

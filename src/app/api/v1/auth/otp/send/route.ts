@@ -57,6 +57,16 @@ export async function POST(req: NextRequest) {
       dispatchResult = await sendWhatsAppOtp(cleanTarget, otpCode, purpose);
     }
 
+    if (!dispatchResult.success && !dispatchResult.messageId) {
+      return NextResponse.json(
+        {
+          success: false,
+          message: dispatchResult.error || `Gagal mengirimkan kode OTP via ${activeChannel === "EMAIL" ? "Email" : "WhatsApp"}. Silakan periksa kembali alamat/nomor tujuan.`,
+        },
+        { status: 500 }
+      );
+    }
+
     const isSimulated = dispatchResult?.messageId?.startsWith("sim-") || false;
     const masked = maskContact(cleanTarget);
 

@@ -133,6 +133,16 @@ export async function POST(req: NextRequest) {
       dispatchResult = await sendWhatsAppOtp(targetDestination, otpCode, "Pemulihan Kata Sandi");
     }
 
+    if (!dispatchResult.success && !dispatchResult.messageId) {
+      return NextResponse.json(
+        {
+          success: false,
+          message: dispatchResult.error || `Gagal mengirimkan kode OTP pemulihan kata sandi via ${activeChannel === "EMAIL" ? "Email" : "WhatsApp"}.`,
+        },
+        { status: 500 }
+      );
+    }
+
     const isSimulated = dispatchResult?.messageId?.startsWith("sim-") || false;
     const maskedContact = maskContact(targetDestination);
 
