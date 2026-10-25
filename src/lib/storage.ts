@@ -24,10 +24,11 @@ export interface StoredFileResult {
 export async function savePrivateFile(
   buffer: Buffer,
   originalName: string,
-  mimeType: string
+  mimeType: string,
+  customFileId?: string
 ): Promise<StoredFileResult> {
   const ext = path.extname(originalName) || ".jpg";
-  const fileId = `${crypto.randomUUID()}${ext}`;
+  const fileId = customFileId || `${crypto.randomUUID()}${ext}`;
   const targetPath = path.join(STORAGE_DIR, fileId);
 
   await fs.promises.writeFile(targetPath, buffer);

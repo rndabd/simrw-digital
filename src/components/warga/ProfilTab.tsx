@@ -22,6 +22,8 @@ import {
   Phone,
   ArrowRight,
   ShieldCheck,
+  Edit3,
+  KeyRound,
 } from "lucide-react";
 
 export default function ProfilTab() {
@@ -32,6 +34,113 @@ export default function ProfilTab() {
   const [isUploadingAvatar, setIsUploadingAvatar] = useState(false);
   const [avatarUploadError, setAvatarUploadError] = useState<string | null>(null);
   const [avatarUploadSuccess, setAvatarUploadSuccess] = useState<string | null>(null);
+
+  // State for Edit Profile Modal
+  const [showEditProfileModal, setShowEditProfileModal] = useState(false);
+  const [editFullName, setEditFullName] = useState("");
+  const [editAddressBlock, setEditAddressBlock] = useState("");
+  const [editPhone, setEditPhone] = useState("");
+  const [editEmail, setEditEmail] = useState("");
+  const [isSavingProfile, setIsSavingProfile] = useState(false);
+  const [editProfileError, setEditProfileError] = useState<string | null>(null);
+
+  // State for Change Password Modal
+  const [showChangePasswordModal, setShowChangePasswordModal] = useState(false);
+  const [currentPassword, setCurrentPassword] = useState("");
+  const [newPassword, setNewPassword] = useState("");
+  const [confirmPassword, setConfirmPassword] = useState("");
+  const [isChangingPassword, setIsChangingPassword] = useState(false);
+  const [changePasswordError, setChangePasswordError] = useState<string | null>(null);
+  const [changePasswordSuccess, setChangePasswordSuccess] = useState<string | null>(null);
+
+  const openEditProfile = () => {
+    setEditFullName(user?.fullName || "");
+    setEditAddressBlock(user?.addressBlock || "");
+    setEditPhone(user?.phoneNumber || "");
+    setEditEmail(user?.email || "");
+    setEditProfileError(null);
+    setShowEditProfileModal(true);
+  };
+
+  const handleSaveProfile = async (e: React.FormEvent) => {
+    e.preventDefault();
+    setIsSavingProfile(true);
+    setEditProfileError(null);
+    try {
+      const res = await fetch("/api/v1/user/profile", {
+        method: "PATCH",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          fullName: editFullName,
+          addressBlock: editAddressBlock,
+          phoneNumber: editPhone,
+          email: editEmail,
+        }),
+      });
+      const json = await res.json();
+      if (json.success) {
+        await refreshProfile();
+        setShowEditProfileModal(false);
+      } else {
+        setEditProfileError(json.message || "Gagal memperbarui profil.");
+      }
+    } catch (err: any) {
+      setEditProfileError(err.message || "Koneksi terputus saat menyimpan profil.");
+    } finally {
+      setIsSavingProfile(false);
+    }
+  };
+
+  const openChangePassword = () => {
+    setCurrentPassword("");
+    setNewPassword("");
+    setConfirmPassword("");
+    setChangePasswordError(null);
+    setChangePasswordSuccess(null);
+    setShowChangePasswordModal(true);
+  };
+
+  const handleChangePassword = async (e: React.FormEvent) => {
+    e.preventDefault();
+    if (newPassword !== confirmPassword) {
+      setChangePasswordError("Konfirmasi kata sandi baru tidak cocok.");
+      return;
+    }
+    if (newPassword.length < 6) {
+      setChangePasswordError("Kata sandi baru minimal 6 karakter.");
+      return;
+    }
+    setIsChangingPassword(true);
+    setChangePasswordError(null);
+    setChangePasswordSuccess(null);
+    try {
+      const res = await fetch("/api/v1/user/password", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          currentPassword,
+          newPassword,
+        }),
+      });
+      const json = await res.json();
+      if (json.success) {
+        setChangePasswordSuccess(json.message || "Kata sandi berhasil diubah!");
+        setCurrentPassword("");
+        setNewPassword("");
+        setConfirmPassword("");
+        setTimeout(() => {
+          setShowChangePasswordModal(false);
+          setChangePasswordSuccess(null);
+        }, 1800);
+      } else {
+        setChangePasswordError(json.message || "Gagal mengubah kata sandi.");
+      }
+    } catch (err: any) {
+      setChangePasswordError(err.message || "Koneksi terputus saat mengubah kata sandi.");
+    } finally {
+      setIsChangingPassword(false);
+    }
+  };
 
   // State for OTP Verification Modal
   const [showOtpModal, setShowOtpModal] = useState(false);
@@ -264,6 +373,26 @@ export default function ProfilTab() {
                   ✉️ {user.email}
                 </span>
               )}
+            </div>
+
+            {/* Tombol Aksi Ubah Profil & Ganti Kata Sandi */}
+            <div className="pt-2 flex flex-wrap items-center justify-center sm:justify-start gap-2">
+              <button
+                type="button"
+                onClick={openEditProfile}
+                className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-emerald-50 hover:bg-emerald-100 border border-emerald-300 text-emerald-800 text-xs font-bold transition-all shadow-2xs hover:shadow-xs active:scale-95"
+              >
+                <Edit3 className="w-3.5 h-3.5 text-emerald-700" />
+                Ubah Profil & Alamat
+              </button>
+              <button
+                type="button"
+                onClick={openChangePassword}
+                className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-slate-50 hover:bg-slate-100 border border-slate-300 text-slate-700 text-xs font-bold transition-all shadow-2xs hover:shadow-xs active:scale-95"
+              >
+                <KeyRound className="w-3.5 h-3.5 text-slate-600" />
+                Ganti Kata Sandi
+              </button>
             </div>
 
             {avatarUploadSuccess && (
@@ -628,6 +757,236 @@ export default function ProfilTab() {
                 </div>
               </form>
             )}
+          </div>
+        </div>
+      )}
+
+      {/* 4. MODAL UBAH DATA PROFIL (ALAMAT, NAMA, NO TELP, EMAIL) */}
+      {showEditProfileModal && (
+        <div className="fixed inset-0 z-50 bg-slate-900/60 backdrop-blur-sm flex items-center justify-center p-4 overflow-y-auto">
+          <div className="bg-white rounded-3xl max-w-md w-full p-6 shadow-2xl border border-slate-100 relative animate-in fade-in zoom-in duration-200">
+            <div className="flex items-start justify-between mb-4">
+              <div className="flex items-center gap-3">
+                <div className="w-10 h-10 rounded-2xl bg-emerald-100 text-emerald-800 flex items-center justify-center shrink-0">
+                  <Edit3 className="w-5 h-5" />
+                </div>
+                <div>
+                  <h3 className="text-base font-extrabold text-slate-900">Ubah Data Profil</h3>
+                  <p className="text-xs text-slate-500">Perbarui informasi kontak & alamat domisili</p>
+                </div>
+              </div>
+              <button
+                type="button"
+                onClick={() => setShowEditProfileModal(false)}
+                className="p-1.5 rounded-full text-slate-400 hover:text-slate-700 hover:bg-slate-100 transition-colors"
+              >
+                <X className="w-5 h-5" />
+              </button>
+            </div>
+
+            {editProfileError && (
+              <div className="mb-4 p-3 rounded-xl bg-rose-50 border border-rose-200 text-rose-700 text-xs flex items-start gap-2">
+                <AlertCircle className="w-4 h-4 shrink-0 mt-0.5" />
+                <div>{editProfileError}</div>
+              </div>
+            )}
+
+            <form onSubmit={handleSaveProfile} className="space-y-3.5">
+              <div>
+                <label className="text-xs font-semibold text-slate-700 block mb-1">
+                  Nama Lengkap
+                </label>
+                <input
+                  type="text"
+                  required
+                  value={editFullName}
+                  onChange={(e) => setEditFullName(e.target.value)}
+                  placeholder="Nama Lengkap Sesuai KTP"
+                  className="w-full text-xs p-3 rounded-xl border border-slate-300 font-medium focus:ring-2 focus:ring-emerald-500"
+                />
+              </div>
+
+              <div>
+                <label className="text-xs font-semibold text-slate-700 block mb-1">
+                  Alamat Domisili / Blok Rumah
+                </label>
+                <input
+                  type="text"
+                  required
+                  value={editAddressBlock}
+                  onChange={(e) => setEditAddressBlock(e.target.value)}
+                  placeholder="Contoh: Blok B3 No. 12"
+                  className="w-full text-xs p-3 rounded-xl border border-slate-300 font-medium focus:ring-2 focus:ring-emerald-500"
+                />
+              </div>
+
+              <div>
+                <label className="text-xs font-semibold text-slate-700 block mb-1">
+                  Nomor WhatsApp / HP
+                </label>
+                <input
+                  type="tel"
+                  required
+                  value={editPhone}
+                  onChange={(e) => setEditPhone(e.target.value)}
+                  placeholder="08xxxxxxxxxx"
+                  className="w-full text-xs p-3 rounded-xl border border-slate-300 font-mono font-medium focus:ring-2 focus:ring-emerald-500"
+                />
+              </div>
+
+              <div>
+                <label className="text-xs font-semibold text-slate-700 block mb-1">
+                  Alamat Email (Opsional)
+                </label>
+                <input
+                  type="email"
+                  value={editEmail}
+                  onChange={(e) => setEditEmail(e.target.value)}
+                  placeholder="nama@domain.com"
+                  className="w-full text-xs p-3 rounded-xl border border-slate-300 font-medium focus:ring-2 focus:ring-emerald-500"
+                />
+              </div>
+
+              <div className="pt-2 flex gap-2">
+                <button
+                  type="button"
+                  onClick={() => setShowEditProfileModal(false)}
+                  className="w-1/3 py-2.5 px-3 rounded-xl bg-slate-100 hover:bg-slate-200 text-slate-700 font-bold text-xs"
+                >
+                  Batal
+                </button>
+                <button
+                  type="submit"
+                  disabled={isSavingProfile}
+                  className="w-2/3 py-2.5 px-4 rounded-xl bg-emerald-600 hover:bg-emerald-700 disabled:opacity-50 text-white font-bold text-xs flex items-center justify-center gap-2 shadow-sm transition-all"
+                >
+                  {isSavingProfile ? (
+                    <>
+                      <RefreshCw className="w-4 h-4 animate-spin" />
+                      Menyimpan Perubahan...
+                    </>
+                  ) : (
+                    <>
+                      <CheckCircle2 className="w-4 h-4" />
+                      Simpan Profil
+                    </>
+                  )}
+                </button>
+              </div>
+            </form>
+          </div>
+        </div>
+      )}
+
+      {/* 5. MODAL GANTI KATA SANDI */}
+      {showChangePasswordModal && (
+        <div className="fixed inset-0 z-50 bg-slate-900/60 backdrop-blur-sm flex items-center justify-center p-4 overflow-y-auto">
+          <div className="bg-white rounded-3xl max-w-md w-full p-6 shadow-2xl border border-slate-100 relative animate-in fade-in zoom-in duration-200">
+            <div className="flex items-start justify-between mb-4">
+              <div className="flex items-center gap-3">
+                <div className="w-10 h-10 rounded-2xl bg-slate-100 text-slate-800 flex items-center justify-center shrink-0">
+                  <KeyRound className="w-5 h-5" />
+                </div>
+                <div>
+                  <h3 className="text-base font-extrabold text-slate-900">Ganti Kata Sandi</h3>
+                  <p className="text-xs text-slate-500">Amankan akun Anda dengan kata sandi baru</p>
+                </div>
+              </div>
+              <button
+                type="button"
+                onClick={() => setShowChangePasswordModal(false)}
+                className="p-1.5 rounded-full text-slate-400 hover:text-slate-700 hover:bg-slate-100 transition-colors"
+              >
+                <X className="w-5 h-5" />
+              </button>
+            </div>
+
+            {changePasswordError && (
+              <div className="mb-4 p-3 rounded-xl bg-rose-50 border border-rose-200 text-rose-700 text-xs flex items-start gap-2">
+                <AlertCircle className="w-4 h-4 shrink-0 mt-0.5" />
+                <div>{changePasswordError}</div>
+              </div>
+            )}
+
+            {changePasswordSuccess && (
+              <div className="mb-4 p-3 rounded-xl bg-emerald-50 border border-emerald-200 text-emerald-800 text-xs flex items-start gap-2 font-medium">
+                <CheckCircle2 className="w-4 h-4 shrink-0 mt-0.5 text-emerald-600" />
+                <div>{changePasswordSuccess}</div>
+              </div>
+            )}
+
+            <form onSubmit={handleChangePassword} className="space-y-3.5">
+              <div>
+                <label className="text-xs font-semibold text-slate-700 block mb-1">
+                  Kata Sandi Lama
+                </label>
+                <input
+                  type="password"
+                  required
+                  value={currentPassword}
+                  onChange={(e) => setCurrentPassword(e.target.value)}
+                  placeholder="Masukkan kata sandi saat ini"
+                  className="w-full text-xs p-3 rounded-xl border border-slate-300 font-medium focus:ring-2 focus:ring-emerald-500"
+                />
+              </div>
+
+              <div>
+                <label className="text-xs font-semibold text-slate-700 block mb-1">
+                  Kata Sandi Baru (Min. 6 Karakter)
+                </label>
+                <input
+                  type="password"
+                  required
+                  minLength={6}
+                  value={newPassword}
+                  onChange={(e) => setNewPassword(e.target.value)}
+                  placeholder="Masukkan kata sandi baru"
+                  className="w-full text-xs p-3 rounded-xl border border-slate-300 font-medium focus:ring-2 focus:ring-emerald-500"
+                />
+              </div>
+
+              <div>
+                <label className="text-xs font-semibold text-slate-700 block mb-1">
+                  Konfirmasi Kata Sandi Baru
+                </label>
+                <input
+                  type="password"
+                  required
+                  minLength={6}
+                  value={confirmPassword}
+                  onChange={(e) => setConfirmPassword(e.target.value)}
+                  placeholder="Ulangi kata sandi baru"
+                  className="w-full text-xs p-3 rounded-xl border border-slate-300 font-medium focus:ring-2 focus:ring-emerald-500"
+                />
+              </div>
+
+              <div className="pt-2 flex gap-2">
+                <button
+                  type="button"
+                  onClick={() => setShowChangePasswordModal(false)}
+                  className="w-1/3 py-2.5 px-3 rounded-xl bg-slate-100 hover:bg-slate-200 text-slate-700 font-bold text-xs"
+                >
+                  Batal
+                </button>
+                <button
+                  type="submit"
+                  disabled={isChangingPassword}
+                  className="w-2/3 py-2.5 px-4 rounded-xl bg-emerald-600 hover:bg-emerald-700 disabled:opacity-50 text-white font-bold text-xs flex items-center justify-center gap-2 shadow-sm transition-all"
+                >
+                  {isChangingPassword ? (
+                    <>
+                      <RefreshCw className="w-4 h-4 animate-spin" />
+                      Memperbarui...
+                    </>
+                  ) : (
+                    <>
+                      <CheckCircle2 className="w-4 h-4" />
+                      Simpan Sandi Baru
+                    </>
+                  )}
+                </button>
+              </div>
+            </form>
           </div>
         </div>
       )}

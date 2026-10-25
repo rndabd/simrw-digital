@@ -50,6 +50,7 @@ export interface DataStoreSchema {
     full_name: string;
     phone_number: string;
     email?: string;
+    address_block?: string;
     avatar_url?: string;
     is_phone_verified?: boolean;
     is_email_verified?: boolean;

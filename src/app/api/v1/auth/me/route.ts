@@ -65,7 +65,7 @@ export async function GET(req: NextRequest) {
         verifiedAt: user.verified_at,
         rw: rw ? { id: rw.id, number: rw.rw_number, village: rw.village, city: rw.city } : null,
         rt: rt ? { id: rt.id, number: rt.rt_number } : null,
-        addressBlock: hh?.address_block || "Blok C2 No. 14",
+        addressBlock: (user as any).address_block || hh?.address_block || "",
         roles: roleNames,
         permissions: allPermissions,
         isOfficer: roleNames.some((r) =>

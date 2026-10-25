@@ -198,8 +198,10 @@ export default function AuthView() {
     const found = organizations.find((o) => o.id === rwId);
     if (found && found.rtUnits?.length > 0) {
       setOffRtId(found.rtUnits[0].id);
+      setIsNewRt(false);
     } else {
       setOffRtId("");
+      setIsNewRt(true);
     }
   };
 
@@ -208,7 +210,10 @@ export default function AuthView() {
     setOfficerLevel(level);
     if (level === "RW") {
       setOfficerRole("RW_CHAIR");
-      setIsNewRt(false);
+      const found = organizations.find((o) => o.id === offRwId);
+      if (!found || !found.rtUnits || found.rtUnits.length === 0) {
+        setIsNewRt(true);
+      }
     } else {
       setOfficerRole("RT_CHAIR");
       setIsNewRw(false);
@@ -1011,142 +1016,126 @@ export default function AuthView() {
                 </div>
 
                 {/* WILAYAH RW & RT TERKAIT */}
-                <div className="pt-2 border-t border-slate-100 space-y-2">
-                  {/* WILAYAH TINGKAT RW */}
-                  {officerLevel === "RW" && (
-                    <div className="space-y-2">
-                      <div className="flex items-center justify-between">
-                        <label className="text-xs font-semibold text-slate-700">
-                          Wilayah RW Induk
-                        </label>
-                        <label className="text-[11px] text-emerald-800 font-semibold cursor-pointer flex items-center gap-1">
-                          <input
-                            type="checkbox"
-                            checked={isNewRw}
-                            onChange={(e) => setIsNewRw(e.target.checked)}
-                            className="rounded text-emerald-600"
-                          />
-                          Daftarkan Unit RW Baru
-                        </label>
-                      </div>
-
-                      {!isNewRw ? (
-                        <select
-                          value={offRwId}
-                          onChange={(e) => handleOffRwChange(e.target.value)}
-                          className="w-full text-xs p-2.5 rounded-xl border border-slate-300 bg-white font-bold"
-                        >
-                          {organizations.map((org) => (
-                            <option key={org.id} value={org.id}>
-                              RW {org.number} ({org.village}, {org.city})
-                            </option>
-                          ))}
-                        </select>
-                      ) : (
-                        <div className="p-3 rounded-xl bg-amber-50/70 border border-amber-200 space-y-2">
-                          <div className="text-[11px] font-bold text-amber-900">
-                            Formulir Satuan RW Baru (Akan disahkan Kelurahan):
-                          </div>
-                          <div className="grid grid-cols-2 gap-2">
-                            <input
-                              type="text"
-                              required
-                              placeholder="Nomor RW (Contoh: 15)"
-                              value={newRwNumber}
-                              onChange={(e) => setNewRwNumber(e.target.value)}
-                              className="text-xs p-2 rounded-lg border border-amber-300 font-bold bg-white"
-                            />
-                            <input
-                              type="text"
-                              required
-                              placeholder="Kelurahan"
-                              value={newRwVillage}
-                              onChange={(e) => setNewRwVillage(e.target.value)}
-                              className="text-xs p-2 rounded-lg border border-amber-300 bg-white"
-                            />
-                          </div>
-                          <div className="grid grid-cols-2 gap-2">
-                            <input
-                              type="text"
-                              required
-                              placeholder="Kecamatan"
-                              value={newRwDistrict}
-                              onChange={(e) => setNewRwDistrict(e.target.value)}
-                              className="text-xs p-2 rounded-lg border border-amber-300 bg-white"
-                            />
-                            <input
-                              type="text"
-                              required
-                              placeholder="Kota / Kabupaten"
-                              value={newRwCity}
-                              onChange={(e) => setNewRwCity(e.target.value)}
-                              className="text-xs p-2 rounded-lg border border-amber-300 bg-white"
-                            />
-                          </div>
-                        </div>
-                      )}
+                <div className="pt-2 border-t border-slate-100 space-y-3">
+                  {/* WILAYAH RW */}
+                  <div className="space-y-2">
+                    <div className="flex items-center justify-between">
+                      <label className="text-xs font-semibold text-slate-700">
+                        {officerLevel === "RW" ? "Wilayah RW Pengurus" : "Pilih RW Induk Terdaftar"}
+                      </label>
+                      <label className="text-[11px] text-emerald-800 font-semibold cursor-pointer flex items-center gap-1">
+                        <input
+                          type="checkbox"
+                          checked={isNewRw}
+                          onChange={(e) => setIsNewRw(e.target.checked)}
+                          className="rounded text-emerald-600"
+                        />
+                        Daftarkan Unit RW Baru
+                      </label>
                     </div>
-                  )}
 
-                  {/* WILAYAH TINGKAT RT */}
-                  {officerLevel === "RT" && (
-                    <div className="space-y-2">
-                      <div>
-                        <label className="text-xs font-semibold text-slate-700 block mb-1">
-                          Pilih RW Induk Terdaftar
-                        </label>
-                        <select
-                          value={offRwId}
-                          onChange={(e) => handleOffRwChange(e.target.value)}
-                          className="w-full text-xs p-2.5 rounded-xl border border-slate-300 bg-white font-bold"
-                        >
-                          {organizations.map((org) => (
-                            <option key={org.id} value={org.id}>
-                              RW {org.number} ({org.village})
-                            </option>
-                          ))}
-                        </select>
-                      </div>
-
-                      <div className="flex items-center justify-between">
-                        <label className="text-xs font-semibold text-slate-700">
-                          Satuan Unit RT
-                        </label>
-                        <label className="text-[11px] text-teal-800 font-semibold cursor-pointer flex items-center gap-1">
+                    {!isNewRw ? (
+                      <select
+                        value={offRwId}
+                        onChange={(e) => handleOffRwChange(e.target.value)}
+                        className="w-full text-xs p-2.5 rounded-xl border border-slate-300 bg-white font-bold"
+                      >
+                        {organizations.map((org) => (
+                          <option key={org.id} value={org.id}>
+                            RW {org.number} ({org.village}, {org.city})
+                          </option>
+                        ))}
+                      </select>
+                    ) : (
+                      <div className="p-3 rounded-xl bg-amber-50/70 border border-amber-200 space-y-2">
+                        <div className="text-[11px] font-bold text-amber-900">
+                          Formulir Satuan RW Baru (Akan disahkan Kelurahan):
+                        </div>
+                        <div className="grid grid-cols-2 gap-2">
                           <input
-                            type="checkbox"
-                            checked={isNewRt}
-                            onChange={(e) => setIsNewRt(e.target.checked)}
-                            className="rounded text-teal-600"
+                            type="text"
+                            required
+                            placeholder="Nomor RW (Contoh: 15)"
+                            value={newRwNumber}
+                            onChange={(e) => setNewRwNumber(e.target.value)}
+                            className="text-xs p-2 rounded-lg border border-amber-300 font-bold bg-white"
                           />
-                          Daftarkan Unit RT Baru
-                        </label>
+                          <input
+                            type="text"
+                            required
+                            placeholder="Kelurahan"
+                            value={newRwVillage}
+                            onChange={(e) => setNewRwVillage(e.target.value)}
+                            className="text-xs p-2 rounded-lg border border-amber-300 bg-white"
+                          />
+                        </div>
+                        <div className="grid grid-cols-2 gap-2">
+                          <input
+                            type="text"
+                            required
+                            placeholder="Kecamatan"
+                            value={newRwDistrict}
+                            onChange={(e) => setNewRwDistrict(e.target.value)}
+                            className="text-xs p-2 rounded-lg border border-amber-300 bg-white"
+                          />
+                          <input
+                            type="text"
+                            required
+                            placeholder="Kota / Kabupaten"
+                            value={newRwCity}
+                            onChange={(e) => setNewRwCity(e.target.value)}
+                            className="text-xs p-2 rounded-lg border border-amber-300 bg-white"
+                          />
+                        </div>
                       </div>
+                    )}
+                  </div>
 
-                      {!isNewRt ? (
-                        <select
-                          value={offRtId}
-                          onChange={(e) => setOffRtId(e.target.value)}
-                          className="w-full text-xs p-2.5 rounded-xl border border-slate-300 bg-white font-bold"
-                        >
-                          {currentOffRw?.rtUnits?.map((rt: any) => (
-                            <option key={rt.id} value={rt.id}>
-                              RT {rt.number}
-                            </option>
-                          ))}
-                        </select>
-                      ) : (
+                  {/* WILAYAH RT (WAJIB ADA UNTUK PENGURUS RW MAUPUN RT) */}
+                  <div className="space-y-2 pt-2 border-t border-slate-100">
+                    <div className="flex items-center justify-between">
+                      <label className="text-xs font-semibold text-slate-700">
+                        Satuan Unit RT Domisili Pengurus:
+                      </label>
+                      <label className="text-[11px] text-teal-800 font-semibold cursor-pointer flex items-center gap-1">
+                        <input
+                          type="checkbox"
+                          checked={isNewRt}
+                          onChange={(e) => setIsNewRt(e.target.checked)}
+                          className="rounded text-teal-600"
+                        />
+                        Daftarkan Unit RT Baru
+                      </label>
+                    </div>
+
+                    {!isNewRt && currentOffRw?.rtUnits && currentOffRw.rtUnits.length > 0 ? (
+                      <select
+                        value={offRtId}
+                        onChange={(e) => setOffRtId(e.target.value)}
+                        className="w-full text-xs p-2.5 rounded-xl border border-slate-300 bg-white font-bold"
+                      >
+                        {currentOffRw.rtUnits.map((rt: any) => (
+                          <option key={rt.id} value={rt.id}>
+                            RT {rt.number}
+                          </option>
+                        ))}
+                      </select>
+                    ) : (
+                      <div className="space-y-1">
                         <input
                           type="text"
                           required
-                          placeholder="Nomor RT Baru (Contoh: 05)"
+                          placeholder="Nomor Unit RT (Contoh: 01, 02, atau 05)"
                           value={newRtNumber}
                           onChange={(e) => setNewRtNumber(e.target.value)}
-                          className="w-full text-xs p-2.5 rounded-xl border border-teal-300 font-bold bg-white"
+                          className="w-full text-xs p-2.5 rounded-xl border border-teal-400 font-bold bg-white text-slate-800"
                         />
-                      )}
-                    </div>
-                  )}
+                        <p className="text-[10px] text-teal-700">
+                          *Unit RT ini akan otomatis terdaftar aktif di sistem SIM-RW.
+                        </p>
+                      </div>
+                    )}
+                  </div>
                 </div>
 
                 {/* BIODATA CALON PENGURUS */}

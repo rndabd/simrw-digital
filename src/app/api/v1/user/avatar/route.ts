@@ -1,4 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
+import path from "path";
+import crypto from "crypto";
 import { getAuthUser } from "@/lib/auth";
 import { getStore, saveStore } from "@/lib/data-store";
 import { savePrivateFile } from "@/lib/storage";
@@ -35,9 +37,11 @@ export async function POST(req: NextRequest) {
         );
       }
 
+      const ext = path.extname(file.name) || ".jpg";
+      const customFileId = `avatar-${crypto.randomUUID()}${ext}`;
       const buffer = Buffer.from(await file.arrayBuffer());
-      const saved = await savePrivateFile(buffer, file.name, file.type);
-      avatarUrl = `/api/v1/storage/view?id=${saved.fileId}`;
+      const saved = await savePrivateFile(buffer, file.name, file.type, customFileId);
+      avatarUrl = `/api/v1/storage/view?fileId=${saved.fileId}&type=avatar`;
     } else {
       const body = await req.json();
       if (!body.avatarUrl) {
@@ -83,4 +87,3 @@ export async function POST(req: NextRequest) {
     );
   }
 }
-

@@ -38,136 +38,57 @@ export default function WargaTab({ initialTab = "BAGAN" }: WargaTabProps) {
     }
   }, [initialTab]);
 
-  // Struktur Hierarki Organisasi RW 15 Komplek Giri Ciheulang
-  const pimpinanRw = {
-    name: "Budi Santoso",
-    role: "Ketua RW 15",
-    subrole: "Penanggung Jawab Wilayah & Kebijakan Lingkungan",
-    phone: "081200000001",
-    address: "Komplek Giri Ciheulang Blok A1 No. 01",
-    tupoksi:
-      "Memimpin penyelenggaraan urusan kerukunan warga, menjembatani hubungan dengan pemerintah desa/kelurahan, dan mengoordinasikan pelaksanaan program kerja seluruh RT di RW 15.",
+  // Dynamic Officer Structure State (Menghubungkan ke database riil SIM-RW)
+  const [structureData, setStructureData] = useState<any>(null);
+  const [isLoadingStructure, setIsLoadingStructure] = useState(true);
+
+  useEffect(() => {
+    let isMounted = true;
+    const fetchStructure = async () => {
+      try {
+        const res = await fetch("/api/v1/officer/structure");
+        const json = await res.json();
+        if (isMounted && json.success && json.data) {
+          setStructureData(json.data);
+        }
+      } catch (err) {
+        console.error("Gagal memuat struktur pengurus:", err);
+      } finally {
+        if (isMounted) setIsLoadingStructure(false);
+      }
+    };
+    fetchStructure();
+    return () => {
+      isMounted = false;
+    };
+  }, []);
+
+  const rwInfo = structureData?.rw;
+  const pimpinanRw = structureData?.pimpinanRw;
+  const wakilRw = structureData?.wakilRw;
+  const sekretariatKeuangan = structureData?.sekretariatKeuangan || [];
+  const seksiOperasional = structureData?.seksiOperasional || [];
+  const jajaranRt = structureData?.jajaranRt || [];
+  const allContacts = structureData?.allContacts || [];
+
+  const getSeksiIcon = (iconType: string) => {
+    switch (iconType) {
+      case "SHIELD":
+        return Shield;
+      case "BUILDING":
+        return Building;
+      case "STETHOSCOPE":
+        return Stethoscope;
+      case "SPARKLES":
+        return Sparkles;
+      case "AWARD":
+        return Award;
+      case "HEART":
+        return HeartHandshake;
+      default:
+        return Shield;
+    }
   };
-
-  const wakilRw = {
-    name: "H. Rachmat Hidayat",
-    role: "Wakil Ketua RW 15",
-    subrole: "Membidangi Operasional & Pengawasan RT",
-    phone: "081223344551",
-    address: "Komplek Giri Ciheulang Blok A2 No. 05",
-    tupoksi:
-      "Membantu Ketua RW dalam pengawasan lapangan, perumusan kebijakan teknis, dan mewakili pimpinan saat berhalangan hadir.",
-  };
-
-  const sekretariatKeuangan = [
-    {
-      name: "Bambang Soedirman",
-      role: "Sekretaris RW 15",
-      subrole: "Administrasi & Persuratan Warga",
-      phone: "081200000099",
-      address: "Komplek Giri Ciheulang Blok A3 No. 12",
-      tupoksi:
-        "Pengelolaan surat pengantar, data sensus kependudukan, arsip BAST rollover, dan notulensi musyawarah warga.",
-    },
-    {
-      name: "Ahmad Dahlan, S.E.",
-      role: "Bendahara RW 15",
-      subrole: "Pengelolaan Kas & Pembukuan",
-      phone: "081200000088",
-      address: "Komplek Giri Ciheulang Blok B1 No. 02",
-      tupoksi:
-        "Pencatatan buku kas RW, verifikasi pengajuan dana kegiatan RT, rekonsiliasi iuran lingkungan, dan laporan transparansi berkala.",
-    },
-  ];
-
-  const seksiOperasional = [
-    {
-      name: "Sutisna & Regu Ronda",
-      role: "Seksi Keamanan & Ketertiban",
-      subrole: "Koordinator Satpam Gerbang & Portal",
-      phone: "081200000099",
-      address: "Pos Satpam Utama Gerbang Timur",
-      icon: Shield,
-      badgeColor: "bg-blue-100 text-blue-900 border-blue-300 dark:bg-blue-950 dark:text-blue-200",
-      tupoksi:
-        "Patroli ronda malam 24 jam, pengawasan portal masuk tamu, respon cepat sinyal darurat SOS, dan koordinasi Babinsa/Bhabinkamtibmas.",
-    },
-    {
-      name: "Ir. Dedi Mulyadi",
-      role: "Seksi Pembangunan & Sarpras",
-      subrole: "Pemeliharaan CCTV & Fasilitas Umum",
-      phone: "081311223344",
-      address: "Komplek Giri Ciheulang Blok B3 No. 08",
-      icon: Building,
-      badgeColor: "bg-amber-100 text-amber-900 border-amber-300 dark:bg-amber-950 dark:text-amber-200",
-      tupoksi:
-        "Pemeliharaan lampu penerangan jalan, saluran drainase air hujan, perbaikan jalan paving, dan instalasi fasilitas publik warga.",
-    },
-    {
-      name: "dr. Linda Permata",
-      role: "Seksi Kesehatan & Posyandu",
-      subrole: "Koordinator Posbindu & Bidan RW",
-      phone: "081388884433",
-      address: "Balai Warga RW 15 Giri Ciheulang",
-      icon: Stethoscope,
-      badgeColor: "bg-emerald-100 text-emerald-900 border-emerald-300 dark:bg-emerald-950 dark:text-emerald-200",
-      tupoksi:
-        "Pemeriksaan kesehatan lansia berkala, penimbangan balita Posyandu, program sanitasi lingkungan, dan penanganan kegawatdaruratan warga.",
-    },
-    {
-      name: "Cecep Supriatna",
-      role: "Seksi Kebersihan & Lingkungan",
-      subrole: "Pengangkutan Sampah & Drainase",
-      phone: "081566778899",
-      address: "Komplek Giri Ciheulang Blok C2 No. 10",
-      icon: Sparkles,
-      badgeColor: "bg-teal-100 text-teal-900 border-teal-300 dark:bg-teal-950 dark:text-teal-200",
-      tupoksi:
-        "Jadwal rit pengangkutan sampah, kerja bakti berkala, pemilahan bank sampah organik/anorganik, dan perawatan taman penghijauan.",
-    },
-    {
-      name: "Rian Firmansyah",
-      role: "Seksi Karang Taruna & Pemuda",
-      subrole: "Kegiatan Olahraga & Kepemudaan",
-      phone: "081788990011",
-      address: "Komplek Giri Ciheulang Blok D1 No. 03",
-      icon: Award,
-      badgeColor: "bg-purple-100 text-purple-900 border-purple-300 dark:bg-purple-950 dark:text-purple-200",
-      tupoksi:
-        "Penyelenggaraan turnamen olahraga warga, kepanitiaan HUT RI, bakti sosial kepemudaan, dan digitalisasi media informasi warga.",
-    },
-  ];
-
-  const jajaranRt = [
-    {
-      rt: "RT 01",
-      name: "Drs. Agus Supriyadi",
-      role: "Ketua RT 01",
-      address: "Blok A1 - A4 (Warga 42 KK)",
-      phone: "081211110001",
-    },
-    {
-      rt: "RT 02",
-      name: "Hendra Gunawan",
-      role: "Ketua RT 02",
-      address: "Blok B1 - B4 (Warga 38 KK)",
-      phone: "081200000002",
-    },
-    {
-      rt: "RT 03",
-      name: "Iwan Setiawan",
-      role: "Ketua RT 03",
-      address: "Blok C1 - C4 (Warga 45 KK)",
-      phone: "081233330003",
-    },
-    {
-      rt: "RT 04",
-      name: "Asep Hidayat",
-      role: "Ketua RT 04",
-      address: "Blok D1 - D3 (Warga 35 KK)",
-      phone: "081244440004",
-    },
-  ];
 
   const { user } = useAuth();
   const isOfficer = user?.isOfficer || user?.isSuperAdmin;
@@ -504,19 +425,19 @@ export default function WargaTab({ initialTab = "BAGAN" }: WargaTabProps) {
             <div className="flex items-center gap-2">
               <span className="w-2.5 h-2.5 rounded-full bg-emerald-500 animate-ping" />
               <span className="text-xs font-bold text-slate-900 dark:text-slate-100">
-                Bagan Struktur Resmi Kepengurusan RW 15 Giri Ciheulang (Periode Berjalan)
+                Bagan Struktur Resmi Kepengurusan RW {rwInfo?.number || "15"} {rwInfo?.village || "Giri Ciheulang"} (Periode {rwInfo?.termPeriod || "Berjalan"})
               </span>
             </div>
             <span className="text-xs font-bold text-emerald-700 bg-emerald-50 px-3 py-1 rounded-full border border-emerald-200">
-              4 Tingkatan Organisasi
+              {jajaranRt.length > 0 ? `RW ${rwInfo?.number || "15"} • ${jajaranRt.length} Unit RT` : "Struktur Organisasi"}
             </span>
           </div>
 
-          {/* LEVEL 1: PIMPINAN RW 15 */}
+          {/* LEVEL 1: PIMPINAN RW */}
           <div className="space-y-3">
             <div className="text-center">
               <span className="px-3.5 py-1 bg-emerald-100 dark:bg-emerald-950 text-emerald-900 dark:text-emerald-200 border border-emerald-300 dark:border-emerald-800 rounded-full text-xs font-black uppercase tracking-wider">
-                Tingkat 1: Pimpinan Rukun Warga (RW 15)
+                Tingkat 1: Pimpinan Rukun Warga (RW {rwInfo?.number || "15"})
               </span>
             </div>
 
@@ -527,13 +448,13 @@ export default function WargaTab({ initialTab = "BAGAN" }: WargaTabProps) {
                   <div className="flex items-start justify-between">
                     <div>
                       <span className="px-2.5 py-0.5 rounded-full text-[10px] font-black bg-emerald-600 text-white uppercase tracking-wider">
-                        {pimpinanRw.role}
+                        {pimpinanRw ? pimpinanRw.role : `Ketua RW ${rwInfo?.number || "15"}`}
                       </span>
                       <h3 className="text-lg font-black text-slate-900 dark:text-white mt-1.5">
-                        {pimpinanRw.name}
+                        {pimpinanRw ? pimpinanRw.name : "(Belum Terisi / Menunggu Pendaftaran)"}
                       </h3>
                       <p className="text-xs font-bold text-emerald-700 dark:text-emerald-400">
-                        {pimpinanRw.subrole}
+                        {pimpinanRw ? pimpinanRw.subrole : "Penanggung Jawab Wilayah & Kebijakan Lingkungan"}
                       </p>
                     </div>
                     <div className="w-12 h-12 rounded-2xl bg-emerald-100 text-emerald-800 flex items-center justify-center font-black text-lg border border-emerald-300">
@@ -542,30 +463,38 @@ export default function WargaTab({ initialTab = "BAGAN" }: WargaTabProps) {
                   </div>
 
                   <p className="text-xs text-slate-700 font-bold dark:text-slate-300 mt-2 flex items-center gap-1.5">
-                    <Home className="w-3.5 h-3.5 shrink-0 text-slate-600" /> {pimpinanRw.address}
+                    <Home className="w-3.5 h-3.5 shrink-0 text-slate-600" /> {pimpinanRw?.address || `Kantor Sekretariat RW ${rwInfo?.number || "15"}`}
                   </p>
 
                   <p className="text-xs text-slate-800 font-medium dark:text-slate-300 mt-2.5 bg-slate-50 dark:bg-slate-800/60 p-3 rounded-2xl border border-slate-200 dark:border-slate-800 leading-relaxed italic">
-                    "{pimpinanRw.tupoksi}"
+                    "{pimpinanRw?.tupoksi || "Memimpin penyelenggaraan urusan kerukunan warga, menjembatani hubungan dengan pemerintah desa/kelurahan, dan mengoordinasikan pelaksanaan program kerja seluruh RT."}"
                   </p>
                 </div>
 
                 <div className="mt-4 pt-3 border-t border-slate-100 dark:border-slate-800 flex items-center gap-2">
-                  <a
-                    href={`https://wa.me/62${pimpinanRw.phone.slice(1)}`}
-                    target="_blank"
-                    rel="noreferrer"
-                    className="flex-1 py-2 px-3 rounded-xl bg-emerald-600 hover:bg-emerald-700 text-white text-xs font-bold flex items-center justify-center gap-1.5 transition shadow-xs"
-                  >
-                    <MessageCircle className="w-3.5 h-3.5" /> WhatsApp Ketua RW
-                  </a>
-                  <a
-                    href={`tel:${pimpinanRw.phone}`}
-                    className="py-2 px-3 rounded-xl bg-slate-100 hover:bg-slate-200 text-slate-700 text-xs font-bold flex items-center justify-center gap-1"
-                    title="Telepon Langsung"
-                  >
-                    <Phone className="w-3.5 h-3.5" />
-                  </a>
+                  {pimpinanRw && pimpinanRw.phone ? (
+                    <>
+                      <a
+                        href={`https://wa.me/62${pimpinanRw.phone.replace(/^0+/, "")}`}
+                        target="_blank"
+                        rel="noreferrer"
+                        className="flex-1 py-2 px-3 rounded-xl bg-emerald-600 hover:bg-emerald-700 text-white text-xs font-bold flex items-center justify-center gap-1.5 transition shadow-xs"
+                      >
+                        <MessageCircle className="w-3.5 h-3.5" /> WhatsApp Ketua RW
+                      </a>
+                      <a
+                        href={`tel:${pimpinanRw.phone}`}
+                        className="py-2 px-3 rounded-xl bg-slate-100 hover:bg-slate-200 text-slate-700 text-xs font-bold flex items-center justify-center gap-1"
+                        title="Telepon Langsung"
+                      >
+                        <Phone className="w-3.5 h-3.5" />
+                      </a>
+                    </>
+                  ) : (
+                    <span className="w-full py-2 px-3 rounded-xl bg-slate-100 text-slate-400 text-xs font-bold text-center">
+                      Posisi Belum Terisi
+                    </span>
+                  )}
                 </div>
               </div>
 
@@ -575,13 +504,13 @@ export default function WargaTab({ initialTab = "BAGAN" }: WargaTabProps) {
                   <div className="flex items-start justify-between">
                     <div>
                       <span className="px-2.5 py-0.5 rounded-full text-[10px] font-black bg-slate-800 text-white uppercase tracking-wider">
-                        {wakilRw.role}
+                        {wakilRw ? wakilRw.role : `Wakil Ketua RW ${rwInfo?.number || "15"}`}
                       </span>
                       <h3 className="text-lg font-black text-slate-900 dark:text-white mt-1.5">
-                        {wakilRw.name}
+                        {wakilRw ? wakilRw.name : "(Belum Terisi / Menunggu Pendaftaran)"}
                       </h3>
                       <p className="text-xs font-bold text-slate-700 dark:text-slate-300">
-                        {wakilRw.subrole}
+                        {wakilRw ? wakilRw.subrole : "Membidangi Operasional & Pengawasan RT"}
                       </p>
                     </div>
                     <div className="w-12 h-12 rounded-2xl bg-slate-100 text-slate-800 flex items-center justify-center font-black text-lg border border-slate-300">
@@ -590,30 +519,38 @@ export default function WargaTab({ initialTab = "BAGAN" }: WargaTabProps) {
                   </div>
 
                   <p className="text-xs text-slate-700 font-bold dark:text-slate-300 mt-2 flex items-center gap-1.5">
-                    <Home className="w-3.5 h-3.5 shrink-0 text-slate-600" /> {wakilRw.address}
+                    <Home className="w-3.5 h-3.5 shrink-0 text-slate-600" /> {wakilRw?.address || `Kantor Sekretariat RW ${rwInfo?.number || "15"}`}
                   </p>
 
                   <p className="text-xs text-slate-800 font-medium dark:text-slate-300 mt-2.5 bg-slate-50 dark:bg-slate-800/60 p-3 rounded-2xl border border-slate-200 dark:border-slate-800 leading-relaxed italic">
-                    "{wakilRw.tupoksi}"
+                    "{wakilRw?.tupoksi || "Membantu Ketua RW dalam pengawasan lapangan, perumusan kebijakan teknis, dan mewakili pimpinan saat berhalangan hadir."}"
                   </p>
                 </div>
 
                 <div className="mt-4 pt-3 border-t border-slate-100 dark:border-slate-800 flex items-center gap-2">
-                  <a
-                    href={`https://wa.me/62${wakilRw.phone.slice(1)}`}
-                    target="_blank"
-                    rel="noreferrer"
-                    className="flex-1 py-2 px-3 rounded-xl bg-slate-800 hover:bg-slate-700 text-white text-xs font-bold flex items-center justify-center gap-1.5 transition shadow-xs"
-                  >
-                    <MessageCircle className="w-3.5 h-3.5" /> WhatsApp Wakil RW
-                  </a>
-                  <a
-                    href={`tel:${wakilRw.phone}`}
-                    className="py-2 px-3 rounded-xl bg-slate-100 hover:bg-slate-200 text-slate-700 text-xs font-bold flex items-center justify-center gap-1"
-                    title="Telepon Langsung"
-                  >
-                    <Phone className="w-3.5 h-3.5" />
-                  </a>
+                  {wakilRw && wakilRw.phone ? (
+                    <>
+                      <a
+                        href={`https://wa.me/62${wakilRw.phone.replace(/^0+/, "")}`}
+                        target="_blank"
+                        rel="noreferrer"
+                        className="flex-1 py-2 px-3 rounded-xl bg-slate-800 hover:bg-slate-700 text-white text-xs font-bold flex items-center justify-center gap-1.5 transition shadow-xs"
+                      >
+                        <MessageCircle className="w-3.5 h-3.5" /> WhatsApp Wakil RW
+                      </a>
+                      <a
+                        href={`tel:${wakilRw.phone}`}
+                        className="py-2 px-3 rounded-xl bg-slate-100 hover:bg-slate-200 text-slate-700 text-xs font-bold flex items-center justify-center gap-1"
+                        title="Telepon Langsung"
+                      >
+                        <Phone className="w-3.5 h-3.5" />
+                      </a>
+                    </>
+                  ) : (
+                    <span className="w-full py-2 px-3 rounded-xl bg-slate-100 text-slate-400 text-xs font-bold text-center">
+                      Posisi Belum Terisi
+                    </span>
+                  )}
                 </div>
               </div>
             </div>
@@ -623,62 +560,79 @@ export default function WargaTab({ initialTab = "BAGAN" }: WargaTabProps) {
           <div className="space-y-3">
             <div className="text-center">
               <span className="px-3.5 py-1 bg-blue-100 dark:bg-blue-950 text-blue-900 dark:text-blue-200 border border-blue-300 dark:border-blue-800 rounded-full text-xs font-black uppercase tracking-wider">
-                Tingkat 2: Sekretariat & Manajemen Keuangan RW 15
+                Tingkat 2: Sekretariat & Manajemen Keuangan RW {rwInfo?.number || "15"}
               </span>
             </div>
 
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4 max-w-4xl mx-auto">
-              {sekretariatKeuangan.map((officer, idx) => (
-                <div
-                  key={idx}
-                  className="p-5 rounded-3xl bg-white/95 dark:bg-slate-900/95 border border-slate-200 dark:border-slate-800 shadow-md flex flex-col justify-between"
-                >
-                  <div>
-                    <div className="flex items-start justify-between">
-                      <div>
-                        <span className="px-2.5 py-0.5 rounded-full text-[10px] font-bold bg-blue-50 text-blue-800 border border-blue-200">
-                          {officer.role}
-                        </span>
-                        <h4 className="font-black text-base text-slate-900 dark:text-white mt-1">
-                          {officer.name}
-                        </h4>
-                        <p className="text-xs font-bold text-slate-700 dark:text-slate-300">
-                          {officer.subrole}
-                        </p>
+              {sekretariatKeuangan.map((item: any, idx: number) => {
+                const isFilled = !!item.officer;
+                const officerName = isFilled ? item.officer.name : "(Belum Terisi / Menunggu Pendaftaran)";
+                const officerRole = isFilled ? item.officer.role : item.defaultRole;
+                const officerSubrole = isFilled ? item.officer.subrole : item.defaultSubrole;
+                const officerAddress = isFilled ? item.officer.address : `Kantor Sekretariat RW ${rwInfo?.number || "15"}`;
+                const officerPhone = isFilled ? item.officer.phone : "";
+
+                return (
+                  <div
+                    key={idx}
+                    className="p-5 rounded-3xl bg-white/95 dark:bg-slate-900/95 border border-slate-200 dark:border-slate-800 shadow-md flex flex-col justify-between"
+                  >
+                    <div>
+                      <div className="flex items-start justify-between">
+                        <div>
+                          <span className="px-2.5 py-0.5 rounded-full text-[10px] font-bold bg-blue-50 text-blue-800 border border-blue-200">
+                            {officerRole}
+                          </span>
+                          <h4 className="font-black text-base text-slate-900 dark:text-white mt-1">
+                            {officerName}
+                          </h4>
+                          <p className="text-xs font-bold text-slate-700 dark:text-slate-300">
+                            {officerSubrole}
+                          </p>
+                        </div>
+                        <div className="w-10 h-10 rounded-xl bg-blue-50 text-blue-800 flex items-center justify-center font-black text-xs border border-blue-200">
+                          {item.roleKey.includes("SECRETARY") ? "SEK" : "BEN"}
+                        </div>
                       </div>
-                      <div className="w-10 h-10 rounded-xl bg-blue-50 text-blue-800 flex items-center justify-center font-black text-xs border border-blue-200">
-                        {officer.role.includes("Sekretaris") ? "SEK" : "BEN"}
-                      </div>
+
+                      <p className="text-xs text-slate-700 font-bold mt-2 flex items-center gap-1">
+                        <Home className="w-3.5 h-3.5 text-slate-600" /> {officerAddress}
+                      </p>
+
+                      <p className="text-xs text-slate-800 font-medium dark:text-slate-300 mt-2 bg-slate-50 dark:bg-slate-800/40 p-2.5 rounded-xl border border-slate-200 dark:border-slate-800 text-[11px] leading-relaxed">
+                        {item.tupoksi}
+                      </p>
                     </div>
 
-                    <p className="text-xs text-slate-700 font-bold mt-2 flex items-center gap-1">
-                      <Home className="w-3.5 h-3.5 text-slate-600" /> {officer.address}
-                    </p>
-
-                    <p className="text-xs text-slate-800 font-medium dark:text-slate-300 mt-2 bg-slate-50 dark:bg-slate-800/40 p-2.5 rounded-xl border border-slate-200 dark:border-slate-800 text-[11px] leading-relaxed">
-                      {officer.tupoksi}
-                    </p>
+                    <div className="mt-4 pt-3 border-t border-slate-100 dark:border-slate-800 flex items-center gap-2">
+                      {isFilled && officerPhone ? (
+                        <>
+                          <a
+                            href={`https://wa.me/62${officerPhone.replace(/^0+/, "")}`}
+                            target="_blank"
+                            rel="noreferrer"
+                            className="flex-1 py-1.5 px-3 rounded-xl bg-blue-600 hover:bg-blue-700 text-white text-xs font-bold flex items-center justify-center gap-1.5"
+                          >
+                            <MessageCircle className="w-3.5 h-3.5" /> WhatsApp
+                          </a>
+                          <a
+                            href={`tel:${officerPhone}`}
+                            className="py-1.5 px-3 rounded-xl bg-slate-100 hover:bg-slate-200 text-slate-700 text-xs font-bold flex items-center"
+                            title="Telepon"
+                          >
+                            <Phone className="w-3.5 h-3.5" />
+                          </a>
+                        </>
+                      ) : (
+                        <span className="w-full py-1.5 px-3 rounded-xl bg-slate-100 text-slate-400 text-xs font-bold text-center">
+                          Posisi Belum Terisi
+                        </span>
+                      )}
+                    </div>
                   </div>
-
-                  <div className="mt-4 pt-3 border-t border-slate-100 dark:border-slate-800 flex items-center gap-2">
-                    <a
-                      href={`https://wa.me/62${officer.phone.slice(1)}`}
-                      target="_blank"
-                      rel="noreferrer"
-                      className="flex-1 py-1.5 px-3 rounded-xl bg-blue-600 hover:bg-blue-700 text-white text-xs font-bold flex items-center justify-center gap-1.5"
-                    >
-                      <MessageCircle className="w-3.5 h-3.5" /> WhatsApp
-                    </a>
-                    <a
-                      href={`tel:${officer.phone}`}
-                      className="py-1.5 px-3 rounded-xl bg-slate-100 hover:bg-slate-200 text-slate-700 text-xs font-bold flex items-center"
-                      title="Telepon"
-                    >
-                      <Phone className="w-3.5 h-3.5" />
-                    </a>
-                  </div>
-                </div>
-              ))}
+                );
+              })}
             </div>
           </div>
 
@@ -686,13 +640,18 @@ export default function WargaTab({ initialTab = "BAGAN" }: WargaTabProps) {
           <div className="space-y-3">
             <div className="text-center">
               <span className="px-3.5 py-1 bg-purple-100 dark:bg-purple-950 text-purple-900 dark:text-purple-200 border border-purple-300 dark:border-purple-800 rounded-full text-xs font-black uppercase tracking-wider">
-                Tingkat 3: Koordinator Seksi Pelayanan Lingkungan RW 15
+                Tingkat 3: Koordinator Seksi Pelayanan Lingkungan RW {rwInfo?.number || "15"}
               </span>
             </div>
 
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
-              {seksiOperasional.map((seksi, idx) => {
-                const IconComponent = seksi.icon;
+              {seksiOperasional.map((seksi: any, idx: number) => {
+                const IconComponent = getSeksiIcon(seksi.iconType);
+                const isFilled = !!seksi.officer;
+                const officerName = isFilled ? seksi.officer.name : "(Belum Terisi / Menunggu Pendaftaran)";
+                const officerAddress = isFilled ? seksi.officer.address : `Balai Warga RW ${rwInfo?.number || "15"}`;
+                const officerPhone = isFilled ? seksi.officer.phone : "";
+
                 return (
                   <div
                     key={idx}
@@ -709,12 +668,12 @@ export default function WargaTab({ initialTab = "BAGAN" }: WargaTabProps) {
                       </div>
 
                       <h4 className="font-black text-sm text-slate-900 dark:text-white mt-2">
-                        {seksi.name}
+                        {officerName}
                       </h4>
                       <p className="text-xs text-slate-700 font-bold dark:text-slate-300">{seksi.subrole}</p>
 
                       <p className="text-xs text-slate-700 font-bold mt-2 flex items-center gap-1">
-                        <MapPin className="w-3.5 h-3.5 text-slate-600 shrink-0" /> {seksi.address}
+                        <MapPin className="w-3.5 h-3.5 text-slate-600 shrink-0" /> {officerAddress}
                       </p>
 
                       <p className="text-[11px] text-slate-800 font-medium dark:text-slate-300 mt-2 bg-slate-50 dark:bg-slate-800/40 p-2.5 rounded-xl border border-slate-200 dark:border-slate-800 leading-relaxed">
@@ -723,21 +682,29 @@ export default function WargaTab({ initialTab = "BAGAN" }: WargaTabProps) {
                     </div>
 
                     <div className="mt-4 pt-3 border-t border-slate-100 dark:border-slate-800 flex items-center gap-2">
-                      <a
-                        href={`https://wa.me/62${seksi.phone.slice(1)}`}
-                        target="_blank"
-                        rel="noreferrer"
-                        className="flex-1 py-1.5 px-3 rounded-xl bg-emerald-600 hover:bg-emerald-700 text-white text-xs font-bold flex items-center justify-center gap-1"
-                      >
-                        <MessageCircle className="w-3.5 h-3.5" /> WhatsApp
-                      </a>
-                      <a
-                        href={`tel:${seksi.phone}`}
-                        className="p-1.5 rounded-xl bg-slate-100 hover:bg-slate-200 text-slate-700"
-                        title="Telepon"
-                      >
-                        <Phone className="w-3.5 h-3.5" />
-                      </a>
+                      {isFilled && officerPhone ? (
+                        <>
+                          <a
+                            href={`https://wa.me/62${officerPhone.replace(/^0+/, "")}`}
+                            target="_blank"
+                            rel="noreferrer"
+                            className="flex-1 py-1.5 px-3 rounded-xl bg-emerald-600 hover:bg-emerald-700 text-white text-xs font-bold flex items-center justify-center gap-1"
+                          >
+                            <MessageCircle className="w-3.5 h-3.5" /> WhatsApp
+                          </a>
+                          <a
+                            href={`tel:${officerPhone}`}
+                            className="p-1.5 rounded-xl bg-slate-100 hover:bg-slate-200 text-slate-700"
+                            title="Telepon"
+                          >
+                            <Phone className="w-3.5 h-3.5" />
+                          </a>
+                        </>
+                      ) : (
+                        <span className="w-full py-1.5 px-3 rounded-xl bg-slate-100 text-slate-400 text-xs font-bold text-center">
+                          Posisi Belum Terisi
+                        </span>
+                      )}
                     </div>
                   </div>
                 );
@@ -745,63 +712,87 @@ export default function WargaTab({ initialTab = "BAGAN" }: WargaTabProps) {
             </div>
           </div>
 
-          {/* LEVEL 4: JAJARAN RUKUN TETANGGA (RT 01 s/d RT 04) */}
+          {/* LEVEL 4: JAJARAN RUKUN TETANGGA */}
           <div className="space-y-3">
             <div className="text-center">
               <span className="px-3.5 py-1 bg-indigo-100 dark:bg-indigo-950 text-indigo-900 dark:text-indigo-200 border border-indigo-300 dark:border-indigo-800 rounded-full text-xs font-black uppercase tracking-wider">
-                Tingkat 4: Jajaran Rukun Tetangga (RT 01 s/d RT 04)
+                Tingkat 4: Jajaran Rukun Tetangga (RT)
               </span>
             </div>
 
             <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-4">
-              {jajaranRt.map((rt, idx) => (
-                <div
-                  key={idx}
-                  className={`p-4 rounded-3xl bg-white/95 dark:bg-slate-900/95 border shadow-sm flex flex-col justify-between ${
-                    rt.rt === "RT 02"
-                      ? "border-emerald-500 shadow-md ring-2 ring-emerald-500/20"
-                      : "border-slate-200 dark:border-slate-800"
-                  }`}
-                >
-                  <div>
-                    <div className="flex items-center justify-between">
-                      <span className="px-2.5 py-0.5 rounded-full text-xs font-black bg-indigo-600 text-white">
-                        {rt.rt}
-                      </span>
-                      {rt.rt === "RT 02" && (
-                        <span className="text-[10px] font-bold text-emerald-600 uppercase">
-                          RT Anda
-                        </span>
-                      )}
-                    </div>
-                    <h4 className="font-black text-sm text-slate-900 dark:text-white mt-2">
-                      {rt.name}
-                    </h4>
-                    <p className="text-xs text-slate-700 font-bold dark:text-slate-300 mt-0.5">{rt.role}</p>
-                    <p className="text-[11px] text-slate-700 font-semibold mt-1 flex items-center gap-1">
-                      <Home className="w-3 h-3 text-slate-600 shrink-0" /> {rt.address}
-                    </p>
-                  </div>
-
-                  <div className="mt-3 pt-2.5 border-t border-slate-100 dark:border-slate-800 flex items-center gap-1.5">
-                    <a
-                      href={`https://wa.me/62${rt.phone.slice(1)}`}
-                      target="_blank"
-                      rel="noreferrer"
-                      className="flex-1 py-1.5 px-2 rounded-xl bg-emerald-600 hover:bg-emerald-700 text-white text-[11px] font-bold text-center flex items-center justify-center gap-1"
-                    >
-                      <MessageCircle className="w-3 h-3" /> WhatsApp
-                    </a>
-                    <a
-                      href={`tel:${rt.phone}`}
-                      className="p-1.5 rounded-xl bg-slate-100 hover:bg-slate-200 text-slate-700"
-                      title="Telepon"
-                    >
-                      <Phone className="w-3 h-3" />
-                    </a>
-                  </div>
+              {jajaranRt.length === 0 ? (
+                <div className="col-span-full p-8 text-center bg-white rounded-2xl border border-slate-200 text-slate-500 text-xs font-bold">
+                  Belum ada satuan unit RT terdaftar pada RW ini.
                 </div>
-              ))}
+              ) : (
+                jajaranRt.map((rt: any, idx: number) => {
+                  const isFilled = !!rt.chair;
+                  const chairName = isFilled ? rt.chair.name : "(Belum ada Ketua RT)";
+                  const chairAddress = isFilled ? rt.chair.address : `Wilayah ${rt.rtTitle}`;
+                  const chairPhone = isFilled ? rt.chair.phone : "";
+                  const isUserRt = user?.rt?.number === rt.rtNumber;
+
+                  return (
+                    <div
+                      key={idx}
+                      className={`p-4 rounded-3xl bg-white/95 dark:bg-slate-900/95 border shadow-sm flex flex-col justify-between ${
+                        isUserRt
+                          ? "border-emerald-500 shadow-md ring-2 ring-emerald-500/20"
+                          : "border-slate-200 dark:border-slate-800"
+                      }`}
+                    >
+                      <div>
+                        <div className="flex items-center justify-between">
+                          <span className="px-2.5 py-0.5 rounded-full text-xs font-black bg-indigo-600 text-white">
+                            {rt.rtTitle}
+                          </span>
+                          {isUserRt && (
+                            <span className="text-[10px] font-bold text-emerald-600 uppercase">
+                              RT Anda
+                            </span>
+                          )}
+                        </div>
+                        <h4 className="font-black text-sm text-slate-900 dark:text-white mt-2">
+                          {chairName}
+                        </h4>
+                        <p className="text-xs text-slate-700 font-bold dark:text-slate-300 mt-0.5">
+                          Ketua {rt.rtTitle}
+                        </p>
+                        <p className="text-[11px] text-slate-700 font-semibold mt-1 flex items-center gap-1">
+                          <Home className="w-3 h-3 text-slate-600 shrink-0" /> {chairAddress}
+                        </p>
+                      </div>
+
+                      <div className="mt-3 pt-2.5 border-t border-slate-100 dark:border-slate-800 flex items-center gap-1.5">
+                        {isFilled && chairPhone ? (
+                          <>
+                            <a
+                              href={`https://wa.me/62${chairPhone.replace(/^0+/, "")}`}
+                              target="_blank"
+                              rel="noreferrer"
+                              className="flex-1 py-1.5 px-2 rounded-xl bg-emerald-600 hover:bg-emerald-700 text-white text-[11px] font-bold text-center flex items-center justify-center gap-1"
+                            >
+                              <MessageCircle className="w-3 h-3" /> WhatsApp
+                            </a>
+                            <a
+                              href={`tel:${chairPhone}`}
+                              className="p-1.5 rounded-xl bg-slate-100 hover:bg-slate-200 text-slate-700"
+                              title="Telepon"
+                            >
+                              <Phone className="w-3 h-3" />
+                            </a>
+                          </>
+                        ) : (
+                          <span className="w-full py-1.5 px-2 rounded-xl bg-slate-100 text-slate-400 text-[11px] font-bold text-center">
+                            Belum Terdaftar
+                          </span>
+                        )}
+                      </div>
+                    </div>
+                  );
+                })
+              )}
             </div>
           </div>
         </div>
@@ -814,59 +805,79 @@ export default function WargaTab({ initialTab = "BAGAN" }: WargaTabProps) {
         <div className="space-y-6 animate-in fade-in duration-300">
           <div className="p-4 bg-white/95 dark:bg-slate-900/95 rounded-2xl border border-slate-200 shadow-sm flex flex-wrap items-center justify-between gap-2">
             <span className="text-xs font-bold text-slate-800 dark:text-slate-200">
-              Direktori Resmi Kontak & WhatsApp Pengurus Lingkungan RW 15 Giri Ciheulang
+              Direktori Resmi Kontak & WhatsApp Pengurus Lingkungan RW {rwInfo?.number || "15"} {rwInfo?.village || "Giri Ciheulang"}
             </span>
             <span className="text-xs font-black text-emerald-800 bg-emerald-50 px-3 py-1 rounded-full border border-emerald-200">
-              Total 11 Pengurus Wilayah
+              Total {allContacts.length} Pengurus Terdaftar
             </span>
           </div>
 
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-            {[pimpinanRw, wakilRw, ...sekretariatKeuangan, ...seksiOperasional, ...jajaranRt].map((person: any, idx) => (
-              <div
-                key={idx}
-                className="p-4 rounded-3xl bg-white/95 dark:bg-slate-900/95 border border-slate-200 shadow-sm flex flex-col justify-between hover:border-emerald-300 transition"
-              >
-                <div>
-                  <div className="flex items-center justify-between">
-                    <span className="px-2.5 py-0.5 rounded-full text-[10px] font-bold bg-slate-100 dark:bg-slate-800 text-slate-800 dark:text-slate-100 border border-slate-200">
-                      {person.role}
-                    </span>
-                    <span className="text-[11px] font-mono text-slate-900 dark:text-slate-100 font-black">
-                      {person.phone}
-                    </span>
-                  </div>
-                  <h4 className="font-black text-sm text-slate-900 dark:text-white mt-2">
-                    {person.name}
-                  </h4>
-                  <p className="text-xs text-slate-700 font-bold dark:text-slate-300 mt-0.5">
-                    {person.subrole || person.role}
-                  </p>
-                  <p className="text-xs text-slate-600 font-medium flex items-center gap-1 mt-1.5">
-                    <Home className="w-3.5 h-3.5 text-slate-500 shrink-0" /> {person.address}
-                  </p>
-                </div>
-
-                <div className="mt-3.5 pt-2.5 border-t border-slate-100 dark:border-slate-800 flex items-center gap-2">
-                  <a
-                    href={`https://wa.me/62${person.phone.slice(1)}`}
-                    target="_blank"
-                    rel="noreferrer"
-                    className="flex-1 py-2 px-3 rounded-xl bg-emerald-600 hover:bg-emerald-700 text-white text-xs font-bold flex items-center justify-center gap-1.5 transition shadow-xs"
-                  >
-                    <MessageCircle className="w-3.5 h-3.5" /> WhatsApp
-                  </a>
-                  <a
-                    href={`tel:${person.phone}`}
-                    className="py-2 px-3 rounded-xl bg-slate-100 hover:bg-slate-200 text-slate-700 text-xs font-bold flex items-center transition"
-                    title="Telepon Langsung"
-                  >
-                    <Phone className="w-3.5 h-3.5" />
-                  </a>
-                </div>
+          {allContacts.length === 0 ? (
+            <div className="p-10 rounded-3xl bg-white border border-slate-200 text-center space-y-3">
+              <div className="w-16 h-16 rounded-full bg-slate-100 text-slate-400 mx-auto flex items-center justify-center">
+                <Users className="w-8 h-8" />
               </div>
-            ))}
-          </div>
+              <h4 className="font-extrabold text-slate-800 text-sm">
+                Belum Ada Pengurus Terdaftar
+              </h4>
+              <p className="text-xs text-slate-500 max-w-sm mx-auto">
+                Saat ini belum ada pengurus RW atau RT yang terdaftar dan disahkan untuk wilayah ini. Kontak akan muncul secara otomatis setelah pengurus mendaftar.
+              </p>
+            </div>
+          ) : (
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+              {allContacts.map((person: any, idx: number) => (
+                <div
+                  key={idx}
+                  className="p-4 rounded-3xl bg-white/95 dark:bg-slate-900/95 border border-slate-200 shadow-sm flex flex-col justify-between hover:border-emerald-300 transition"
+                >
+                  <div>
+                    <div className="flex items-center justify-between">
+                      <span className="px-2.5 py-0.5 rounded-full text-[10px] font-bold bg-slate-100 dark:bg-slate-800 text-slate-800 dark:text-slate-100 border border-slate-200">
+                        {person.role}
+                      </span>
+                      {person.phone && (
+                        <span className="text-[11px] font-mono text-slate-900 dark:text-slate-100 font-black">
+                          {person.phone}
+                        </span>
+                      )}
+                    </div>
+                    <h4 className="font-black text-sm text-slate-900 dark:text-white mt-2">
+                      {person.name}
+                    </h4>
+                    <p className="text-xs text-slate-700 font-bold dark:text-slate-300 mt-0.5">
+                      {person.subrole || person.role}
+                    </p>
+                    {person.address && (
+                      <p className="text-xs text-slate-600 font-medium flex items-center gap-1 mt-1.5">
+                        <Home className="w-3.5 h-3.5 text-slate-500 shrink-0" /> {person.address}
+                      </p>
+                    )}
+                  </div>
+
+                  {person.phone && (
+                    <div className="mt-3.5 pt-2.5 border-t border-slate-100 dark:border-slate-800 flex items-center gap-2">
+                      <a
+                        href={`https://wa.me/62${person.phone.replace(/^0+/, "")}`}
+                        target="_blank"
+                        rel="noreferrer"
+                        className="flex-1 py-1.5 px-3 rounded-xl bg-emerald-600 hover:bg-emerald-700 text-white text-xs font-bold text-center flex items-center justify-center gap-1.5"
+                      >
+                        <MessageCircle className="w-3.5 h-3.5" /> WhatsApp
+                      </a>
+                      <a
+                        href={`tel:${person.phone}`}
+                        className="py-1.5 px-3 rounded-xl bg-slate-100 hover:bg-slate-200 text-slate-700 text-xs font-bold flex items-center transition"
+                        title="Telepon Langsung"
+                      >
+                        <Phone className="w-3.5 h-3.5" />
+                      </a>
+                    </div>
+                  )}
+                </div>
+              ))}
+            </div>
+          )}
         </div>
       )}
 

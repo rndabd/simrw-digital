@@ -171,41 +171,56 @@ export async function POST(req: NextRequest) {
       }
     }
 
-    // 4. Proses Pembentukan RT Baru jika dipilih
-    if (isNewRt && !isNewRw) {
-      if (!newRtNumber) {
-        return NextResponse.json(
-          { success: false, message: "Nomor RT baru wajib diisi jika mendaftarkan unit RT baru." },
-          { status: 400 }
-        );
-      }
+    // 4. Proses Pembentukan / Pemilihan RT (Satuan unit RT langsung terdaftar di sistem)
+    if (newRtNumber) {
       const formattedRt = newRtNumber.padStart(2, "0");
       targetRtId = `rt-${formattedRt}-${targetRwId}`;
-
       const existingRt = store.rts.find(
-        (r) => r.rw_id === targetRwId && r.rt_number === formattedRt && r.status !== "REJECTED"
+        (r) => r.id === targetRtId || (r.rw_id === targetRwId && r.rt_number === formattedRt)
       );
-      if (existingRt) {
-        return NextResponse.json(
-          { success: false, message: `RT ${formattedRt} sudah terdaftar pada RW ini.` },
-          { status: 409 }
-        );
+      if (!existingRt) {
+        store.rts.push({
+          id: targetRtId,
+          rw_id: targetRwId,
+          rt_number: formattedRt,
+          term_period: termPeriod,
+          status: "ACTIVE",
+          applicant_user_id: newUserId,
+          sk_document_url: skDocumentUrl,
+          created_at: new Date().toISOString(),
+        });
+      } else {
+        targetRtId = existingRt.id;
       }
-
-      const newRt = {
-        id: targetRtId,
-        rw_id: targetRwId,
-        rt_number: formattedRt,
-        term_period: termPeriod,
-        status: "PENDING_APPROVAL" as const,
-        applicant_user_id: newUserId,
-        sk_document_url: skDocumentUrl,
-        created_at: new Date().toISOString(),
-      };
-      store.rts.push(newRt);
-    } else if (!isNewRw && !targetRtId) {
+    } else if (targetRtId) {
+      const existingRt = store.rts.find((r) => r.id === targetRtId);
+      if (!existingRt) {
+        const parts = targetRtId.split("-");
+        const rtNum = parts[1] || "01";
+        store.rts.push({
+          id: targetRtId,
+          rw_id: targetRwId,
+          rt_number: rtNum.padStart(2, "0"),
+          term_period: termPeriod,
+          status: "ACTIVE",
+          created_at: new Date().toISOString(),
+        });
+      }
+    } else {
       const foundRt = store.rts.find((r) => r.rw_id === targetRwId);
-      targetRtId = foundRt ? foundRt.id : `rt-01-${targetRwId}`;
+      if (foundRt) {
+        targetRtId = foundRt.id;
+      } else {
+        targetRtId = `rt-01-${targetRwId}`;
+        store.rts.push({
+          id: targetRtId,
+          rw_id: targetRwId,
+          rt_number: "01",
+          term_period: termPeriod,
+          status: "ACTIVE",
+          created_at: new Date().toISOString(),
+        });
+      }
     }
 
     // 5. Enkripsi Data Pribadi & Simpan Akun Pengguna (Status: PENDING_VERIFICATION)
@@ -239,6 +254,7 @@ export async function POST(req: NextRequest) {
       nik_encrypted: nikEncrypted,
       full_name: fullName.trim(),
       phone_number: phoneNumber.trim(),
+      address_block: addressBlock ? addressBlock.trim() : "",
       password_hash: passwordHash,
       ktp_doc_url: skDocumentUrl,
       status: "PENDING_VERIFICATION" as const,
