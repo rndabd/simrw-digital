@@ -24,6 +24,9 @@ public class MainActivity extends BridgeActivity {
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
+        // Daftarkan SafePushNotificationsPlugin untuk menggantikan plugin default dan mencegah force close
+        registerPlugin(SafePushNotificationsPlugin.class);
+
         // Pasang crash protector native untuk mencegah force close dari library FCM / PushNotifications
         final Thread.UncaughtExceptionHandler defaultHandler = Thread.getDefaultUncaughtExceptionHandler();
         Thread.setDefaultUncaughtExceptionHandler((thread, throwable) -> {
