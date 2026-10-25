@@ -16,7 +16,7 @@ export interface UserProfile {
   maskedNik: string;
   rejectionNote?: string;
   verifiedAt?: string;
-  rw?: { id: string; number: string; village: string; city: string };
+  rw?: { id: string; number: string; village: string; district?: string; city: string };
   rt?: { id: string; number: string };
   addressBlock?: string;
   roles: string[];

@@ -75,11 +75,11 @@ export default function EKtpMiniCard() {
           <div className="flex items-center gap-3 text-xs text-white font-medium">
             <div className="flex items-center gap-1">
               <Home className="w-3.5 h-3.5 text-emerald-300" />
-              <span>{user.addressBlock || "Blok C2 No. 14"}</span>
+              <span>{user.addressBlock || "Alamat Terdaftar"}</span>
             </div>
             <span className="text-emerald-300">•</span>
             <div>
-              RT {user.rt?.number || "02"} / RW {user.rw?.number || "05"}
+              RT {user.rt?.number || "-"} / RW {user.rw?.number || "-"}
             </div>
           </div>
         </div>
@@ -104,7 +104,7 @@ export default function EKtpMiniCard() {
 
       {/* Card Footer Micro Bar */}
       <div className="mt-4 pt-2.5 border-t border-emerald-600/40 flex items-center justify-between text-[10px] text-emerald-200 font-bold">
-        <span>Kel. {user.rw?.village || "Sukamaju"}, Kec. Coblong</span>
+        <span>{user.rw?.village ? `Kel. ${user.rw.village}, Kec. ${user.rw.district || ""}` : "Wilayah Terdaftar"}</span>
         <span className="font-mono">ID: {user.id.substring(0, 8)}</span>
       </div>
     </div>

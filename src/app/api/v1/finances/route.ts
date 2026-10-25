@@ -89,6 +89,14 @@ export async function GET(req: NextRequest) {
       const totalIncome = initialBalance + operationalIncome;
       const balance = totalIncome - totalExpense;
 
+      const rwBankAccount = {
+        bankName: rw?.bank_name || "",
+        accountNumber: rw?.bank_account_number || "",
+        accountHolder: rw?.bank_account_holder || "",
+        notes: rw?.bank_notes || "",
+        isConfigured: Boolean(rw?.bank_name && rw?.bank_account_number),
+      };
+
       return NextResponse.json({
         success: true,
         scope: "RW",
@@ -99,7 +107,9 @@ export async function GET(req: NextRequest) {
           totalIncome,
           totalExpense,
           netBalance: balance,
+          bankAccount: rwBankAccount,
         },
+        bankAccount: rwBankAccount,
         transactions: txs,
       });
     }
@@ -126,6 +136,14 @@ export async function GET(req: NextRequest) {
     const totalIncome = initialBalance + operationalIncome;
     const balance = totalIncome - totalExpense;
 
+    const rtBankAccount = {
+      bankName: rt?.bank_name || "",
+      accountNumber: rt?.bank_account_number || "",
+      accountHolder: rt?.bank_account_holder || "",
+      notes: rt?.bank_notes || "",
+      isConfigured: Boolean(rt?.bank_name && rt?.bank_account_number),
+    };
+
     return NextResponse.json({
       success: true,
       scope: "RT",
@@ -137,7 +155,9 @@ export async function GET(req: NextRequest) {
         totalIncome,
         totalExpense,
         netBalance: balance,
+        bankAccount: rtBankAccount,
       },
+      bankAccount: rtBankAccount,
       transactions: txs,
     });
   } catch (error: any) {

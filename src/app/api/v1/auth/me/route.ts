@@ -63,7 +63,7 @@ export async function GET(req: NextRequest) {
         maskedNik,
         rejectionNote: user.rejection_note,
         verifiedAt: user.verified_at,
-        rw: rw ? { id: rw.id, number: rw.rw_number, village: rw.village, city: rw.city } : null,
+        rw: rw ? { id: rw.id, number: rw.rw_number, village: rw.village, district: rw.district, city: rw.city } : null,
         rt: rt ? { id: rt.id, number: rt.rt_number } : null,
         addressBlock: (user as any).address_block || hh?.address_block || "",
         roles: roleNames,

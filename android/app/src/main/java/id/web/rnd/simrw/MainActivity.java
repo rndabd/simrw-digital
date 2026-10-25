@@ -21,6 +21,19 @@ import com.getcapacitor.BridgeWebViewClient;
 public class MainActivity extends BridgeActivity {
     private SwipeRefreshLayout swipeRefreshLayout;
     private long lastBackPressTime = 0;
+    private volatile boolean canRefreshFromWeb = true;
+
+    public class AndroidRefresherInterface {
+        @android.webkit.JavascriptInterface
+        public void setCanRefresh(boolean canRefresh) {
+            canRefreshFromWeb = canRefresh;
+            runOnUiThread(() -> {
+                if (swipeRefreshLayout != null) {
+                    swipeRefreshLayout.setEnabled(canRefresh);
+                }
+            });
+        }
+    }
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -57,6 +70,9 @@ public class MainActivity extends BridgeActivity {
         settings.setAllowContentAccess(true);
         settings.setMixedContentMode(WebSettings.MIXED_CONTENT_ALWAYS_ALLOW);
 
+        // Pasang JavascriptInterface untuk koordinasi scroll bridge dan SwipeRefreshLayout
+        webView.addJavascriptInterface(new AndroidRefresherInterface(), "AndroidRefresher");
+
         // Cek konektivitas jaringan: gunakan cache offline jika tidak ada koneksi
         android.net.ConnectivityManager cm = (android.net.ConnectivityManager) getSystemService(android.content.Context.CONNECTIVITY_SERVICE);
         android.net.NetworkInfo activeNetwork = cm != null ? cm.getActiveNetworkInfo() : null;
@@ -74,6 +90,29 @@ public class MainActivity extends BridgeActivity {
             public void onReceivedSslError(WebView view, SslErrorHandler handler, SslError error) {
                 // Sangat penting untuk Android 13: Abaikan SSL mismatch/self-signed cert agar tidak blank
                 handler.proceed();
+            }
+
+            @Override
+            public void onPageFinished(WebView view, String url) {
+                super.onPageFinished(view, url);
+                view.evaluateJavascript(
+                    "(function(){" +
+                    "  function chk(){" +
+                    "    var t = window.pageYOffset || document.documentElement.scrollTop || document.body.scrollTop || 0;" +
+                    "    var sc = document.querySelectorAll('[class*=\"overflow-y-auto\"], [class*=\"overflow-y-scroll\"], main, .overflow-y-auto');" +
+                    "    for (var i = 0; i < sc.length; i++) {" +
+                    "      if (sc[i].scrollTop > 2) { t = Math.max(t, sc[i].scrollTop); }" +
+                    "    }" +
+                    "    var ok = (t <= 2);" +
+                    "    if (window.AndroidRefresher && window.AndroidRefresher.setCanRefresh) {" +
+                    "      window.AndroidRefresher.setCanRefresh(ok);" +
+                    "    }" +
+                    "  }" +
+                    "  window.addEventListener('scroll', chk, { passive: true, capture: true });" +
+                    "  window.addEventListener('touchmove', chk, { passive: true });" +
+                    "  window.addEventListener('touchend', chk, { passive: true });" +
+                    "  setInterval(chk, 350);" +
+                    "})();", null);
             }
 
             @Override
@@ -131,6 +170,9 @@ public class MainActivity extends BridgeActivity {
 
             // canScrollVertically(-1) mengembalikan true jika halaman sedang di-scroll ke bawah (bukan di pucuk atas)
             swipeRefreshLayout.setOnChildScrollUpCallback((parentLayout, child) -> {
+                if (!canRefreshFromWeb) {
+                    return true; // Halaman sedang di-scroll ke bawah di dalam DOM: Cegah pull-to-refresh
+                }
                 if (webView != null) {
                     return webView.getScrollY() > 0 || webView.canScrollVertically(-1);
                 }

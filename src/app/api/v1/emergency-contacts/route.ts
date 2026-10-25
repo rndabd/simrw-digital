@@ -59,49 +59,18 @@ const defaultWilayahContacts = (village: string = "Ciheulang", district: string 
   },
 ];
 
-const defaultInternalContacts = (rwNumber: string = "15") => [
-  {
-    name: "Pos Ronda & Satpam Gerbang Utama 24 Jam",
-    category: "KAMTIBMAS RW / SATPAM",
-    phone: "081200000099",
-    notes: `Portal Masuk Lingkungan RW ${rwNumber} • Siaga HT Channel 4 • Alarm SOS`,
-    type: "INTERNAL" as const,
-  },
-  {
-    name: "Koordinator Keamanan & Trantib RW",
-    category: "KAMTIBMAS RW / SATPAM",
-    phone: "081200000005",
-    notes: `Koordinator Keamanan Lingkungan & Siskamling RW ${rwNumber}`,
-    type: "INTERNAL" as const,
-  },
-  {
-    name: `Ketua RW ${rwNumber} (Jalur Eskalasi)`,
-    category: "PIMPINAN RW / RT",
-    phone: "081200000001",
-    notes: `Eskalasi Tertinggi Kepengurusan RW ${rwNumber} & Hubungan Pemerintahan Desa`,
-    type: "INTERNAL" as const,
-  },
-  {
-    name: "Satgas Saluran Air & Drainase Lingkungan",
-    category: "SARPRAS & AIR",
-    phone: "081200000006",
-    notes: "Penanganan Drainase Tersumbat, Genangan Air & Sarana Prasarana Lingkungan",
-    type: "INTERNAL" as const,
-  },
-];
-
 export async function GET(req: NextRequest) {
   try {
     const store = getStore();
     const auth = getAuthUser(req);
     const { searchParams } = new URL(req.url);
-    const requestedRwId = searchParams.get("rw_id") || auth?.rwId || "rw-05-coblong";
+    const requestedRwId = searchParams.get("rw_id") || auth?.rwId || store.rws[0]?.id || "";
 
     const rw = store.rws.find((r) => r.id === requestedRwId) || store.rws[0];
-    const village = rw?.village || "Ciheulang";
-    const district = rw?.district || "Ciparay";
-    const city = rw?.city || "Kab. Bandung";
-    const rwNum = rw?.rw_number || "15";
+    const village = rw?.village || "Desa";
+    const district = rw?.district || "Kecamatan";
+    const city = rw?.city || "Kota";
+    const rwNum = rw?.rw_number || "";
 
     if (!store.emergency_contacts) {
       store.emergency_contacts = [];
@@ -113,8 +82,8 @@ export async function GET(req: NextRequest) {
     // Strictly filter contacts belonging ONLY to this specific RW
     let rwContacts = store.emergency_contacts.filter((c) => c.rw_id === requestedRwId);
 
-    // If this RW does not have contacts yet, initialize unique contacts strictly for this RW
-    if (rwContacts.length === 0) {
+    // If this RW does not have contacts yet, initialize official public service contacts
+    if (rwContacts.length === 0 && requestedRwId) {
       const now = new Date().toISOString();
       const seedWilayah = defaultWilayahContacts(village, district, city).map((item, idx) => ({
         id: `wilayah-${requestedRwId}-${idx + 1}-${Date.now()}`,
@@ -129,19 +98,7 @@ export async function GET(req: NextRequest) {
         updated_at: now,
       }));
 
-      const seedInternal = defaultInternalContacts(rwNum).map((item, idx) => ({
-        id: `internal-${requestedRwId}-${idx + 1}-${Date.now()}`,
-        rw_id: requestedRwId,
-        name: item.name,
-        category: item.category,
-        phone: item.phone,
-        notes: item.notes,
-        type: item.type,
-        created_at: now,
-        updated_at: now,
-      }));
-
-      store.emergency_contacts.push(...seedWilayah, ...seedInternal);
+      store.emergency_contacts.push(...seedWilayah);
       saveStore(store);
       rwContacts = store.emergency_contacts.filter((c) => c.rw_id === requestedRwId);
     }
@@ -372,19 +329,7 @@ export async function POST(req: NextRequest) {
         updated_at: now,
       }));
 
-      const seedInternal = defaultInternalContacts(rwNum).map((item, idx) => ({
-        id: `internal-${targetRwId}-${idx + 1}-${Date.now()}`,
-        rw_id: targetRwId,
-        name: item.name,
-        category: item.category,
-        phone: item.phone,
-        notes: item.notes,
-        type: item.type,
-        created_at: now,
-        updated_at: now,
-      }));
-
-      store.emergency_contacts.push(...seedWilayah, ...seedInternal);
+      store.emergency_contacts.push(...seedWilayah);
 
       // Reset wilayah config only for target RW
       const existingIdx = store.wilayah_configs.findIndex((w) => w.rw_id === targetRwId);

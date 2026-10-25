@@ -134,6 +134,15 @@ export default function OfficerDashboard() {
   const [txDesc, setTxDesc] = useState("");
   const [isRecordingTx, setIsRecordingTx] = useState(false);
 
+  // State for Rekening Kas & Transfer Iuran
+  const [bankAccountData, setBankAccountData] = useState<any | null>(null);
+  const [showSetBankAccountModal, setShowSetBankAccountModal] = useState(false);
+  const [bankNameInput, setBankNameInput] = useState("Bank Mandiri");
+  const [bankAccountNumInput, setBankAccountNumInput] = useState("");
+  const [bankAccountHolderInput, setBankAccountHolderInput] = useState("");
+  const [bankNotesInput, setBankNotesInput] = useState("");
+  const [isUpdatingBankAccount, setIsUpdatingBankAccount] = useState(false);
+
   // State for RW Consolidated RT Reports (Every RT in RW)
   const [consolidatedRtReports, setConsolidatedRtReports] = useState<any[]>([]);
   const [isLoadingConsolidated, setIsLoadingConsolidated] = useState(false);
@@ -216,6 +225,24 @@ export default function OfficerDashboard() {
     }
   };
 
+  // 4b. Fetch Bank Account for dues payment
+  const fetchBankAccount = async () => {
+    try {
+      const scope = isRwOfficer ? "RW" : "RT";
+      const res = await fetch(`/api/v1/finances/bank-account?scope=${scope}`);
+      const json = await res.json();
+      if (json.success && json.data) {
+        setBankAccountData(json.data);
+        if (json.data.bankName) setBankNameInput(json.data.bankName);
+        if (json.data.accountNumber) setBankAccountNumInput(json.data.accountNumber);
+        if (json.data.accountHolder) setBankAccountHolderInput(json.data.accountHolder);
+        if (json.data.notes) setBankNotesInput(json.data.notes);
+      }
+    } catch (e) {
+      console.error(e);
+    }
+  };
+
   // 5. Fetch RW Consolidated All-RT Report
   const fetchConsolidatedReports = async () => {
     setIsLoadingConsolidated(true);
@@ -263,14 +290,21 @@ export default function OfficerDashboard() {
     fetchPendingResidents();
     fetchDuesList();
     fetchFinances();
+    fetchBankAccount();
     if (isRwOfficer) fetchRtRequests();
   }, [isRwOfficer]);
 
   useEffect(() => {
     if (activeTab === "pending") fetchPendingResidents();
     if (activeTab === "rt_approvals") fetchRtRequests();
-    if (activeTab === "dues_validation") fetchDuesList();
-    if (activeTab === "finances") fetchFinances();
+    if (activeTab === "dues_validation") {
+      fetchDuesList();
+      fetchBankAccount();
+    }
+    if (activeTab === "finances") {
+      fetchFinances();
+      fetchBankAccount();
+    }
     if (activeTab === "rw_consolidated") fetchConsolidatedReports();
     if (activeTab === "fund_requests") fetchFundRequests();
     if (activeTab === "audit") fetchAuditLogs();
@@ -478,6 +512,43 @@ export default function OfficerDashboard() {
       alert(e.message);
     } finally {
       setIsSubmittingInitBalance(false);
+    }
+  };
+
+  // Update Bank Account for dues payment
+  const handleUpdateBankAccount = async (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!bankNameInput?.trim() || !bankAccountNumInput?.trim() || !bankAccountHolderInput?.trim()) {
+      alert("Nama Bank, Nomor Rekening, dan Nama Pemilik Rekening wajib diisi.");
+      return;
+    }
+
+    setIsUpdatingBankAccount(true);
+    try {
+      const res = await fetch("/api/v1/finances/bank-account", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          orgType: isRwOfficer ? "RW" : "RT",
+          bankName: bankNameInput.trim(),
+          accountNumber: bankAccountNumInput.trim(),
+          accountHolder: bankAccountHolderInput.trim(),
+          notes: bankNotesInput.trim(),
+        }),
+      });
+      const json = await res.json();
+      if (json.success) {
+        alert(json.message || "Rekening tujuan transfer kas berhasil disimpan!");
+        setShowSetBankAccountModal(false);
+        fetchBankAccount();
+        fetchFinances();
+      } else {
+        alert(json.message || "Gagal memperbarui rekening kas.");
+      }
+    } catch (e: any) {
+      alert(e.message);
+    } finally {
+      setIsUpdatingBankAccount(false);
     }
   };
 
@@ -1455,6 +1526,43 @@ export default function OfficerDashboard() {
               </button>
             </div>
 
+            {/* Banner Rekening Kas Tujuan Transfer */}
+            <div className="p-3.5 rounded-2xl bg-white border border-slate-200/90 shadow-2xs flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3">
+              <div className="flex items-center gap-2.5">
+                <div className="w-8 h-8 rounded-lg bg-emerald-50 text-emerald-700 border border-emerald-200 flex items-center justify-center shrink-0">
+                  <CreditCard className="w-4 h-4" />
+                </div>
+                <div>
+                  <div className="text-[11px] font-bold text-slate-800 flex items-center gap-2">
+                    <span>Rekening Tujuan Transfer Iuran Warga:</span>
+                    <span className="font-mono text-emerald-800 font-extrabold">
+                      {bankAccountData?.isConfigured
+                        ? `${bankAccountData.bankName} (${bankAccountData.accountNumber}) a/n ${bankAccountData.accountHolder}`
+                        : "Belum Dikonfigurasi"}
+                    </span>
+                  </div>
+                  <div className="text-[10px] text-slate-500 font-medium">
+                    Warga akan mentransfer ke rekening ini saat membayar iuran.
+                  </div>
+                </div>
+              </div>
+              <button
+                type="button"
+                onClick={() => {
+                  if (bankAccountData) {
+                    if (bankAccountData.bankName) setBankNameInput(bankAccountData.bankName);
+                    if (bankAccountData.accountNumber) setBankAccountNumInput(bankAccountData.accountNumber);
+                    if (bankAccountData.accountHolder) setBankAccountHolderInput(bankAccountData.accountHolder);
+                    if (bankAccountData.notes) setBankNotesInput(bankAccountData.notes);
+                  }
+                  setShowSetBankAccountModal(true);
+                }}
+                className="py-1.5 px-3 rounded-xl bg-slate-100 hover:bg-slate-200 text-slate-800 font-bold text-xs border border-slate-300 transition shrink-0"
+              >
+                Ubah Rekening Transfer
+              </button>
+            </div>
+
             {/* Quick Form: Terbitkan Tagihan Iuran Baru */}
             {isRtOfficer && (
               <form onSubmit={handleCreateMonthlyDues} className="p-4 rounded-2xl bg-white border border-slate-200/90 shadow-xs space-y-3">
@@ -1591,7 +1699,7 @@ export default function OfficerDashboard() {
               <div>
                 <h3 className="text-xs font-extrabold text-slate-900 uppercase tracking-wider flex items-center gap-1.5">
                   <Wallet className="w-4 h-4 text-emerald-600" />
-                  Buku Kas & Keuangan {isRwOfficer ? "RW 05" : `RT ${user?.rt?.number || "02"}`}
+                  Buku Kas & Keuangan {isRwOfficer ? (user?.rw?.number ? `RW ${user.rw.number}` : "Tingkat RW") : (user?.rt?.number ? `RT ${user.rt.number}` : "Tingkat RT")}
                 </h3>
                 <p className="text-[11px] text-slate-600 font-medium">
                   Pembukuan arus kas masuk, pengeluaran operasional, dan saldo riil terverifikasi.
@@ -1675,6 +1783,57 @@ export default function OfficerDashboard() {
               </div>
             )}
 
+            {/* Rekening Kas & Tujuan Transfer Iuran Card */}
+            <div className="p-4 rounded-2xl bg-white border border-slate-200 shadow-xs flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3">
+              <div className="flex items-center gap-3">
+                <div className="w-10 h-10 rounded-xl bg-blue-50 text-blue-700 border border-blue-200 flex items-center justify-center shrink-0">
+                  <CreditCard className="w-5 h-5" />
+                </div>
+                <div>
+                  <div className="flex items-center gap-2">
+                    <span className="text-xs font-bold text-slate-900">
+                      Rekening Kas {isRwOfficer ? "RW" : "RT"} (Tujuan Transfer Iuran)
+                    </span>
+                    <span className={`text-[10px] font-bold px-2 py-0.5 rounded-full ${
+                      bankAccountData?.isConfigured
+                        ? "bg-emerald-100 text-emerald-800 border border-emerald-300"
+                        : "bg-amber-100 text-amber-900 border border-amber-300"
+                    }`}>
+                      {bankAccountData?.isConfigured ? "Aktif Terkonfigurasi" : "Belum Dikonfigurasi"}
+                    </span>
+                  </div>
+                  <div className="text-xs text-slate-700 font-medium mt-0.5">
+                    {bankAccountData?.isConfigured ? (
+                      <span>
+                        <strong>{bankAccountData.bankName}</strong>: <span className="font-mono font-bold text-slate-900">{bankAccountData.accountNumber}</span> a/n <strong>{bankAccountData.accountHolder}</strong>
+                        {bankAccountData.notes ? ` • ${bankAccountData.notes}` : ""}
+                      </span>
+                    ) : (
+                      <span className="text-amber-800">
+                        Atur nomor rekening agar warga dapat mentransfer iuran bulanan ke rekening resmi kas {isRwOfficer ? "RW" : "RT"}.
+                      </span>
+                    )}
+                  </div>
+                </div>
+              </div>
+              <button
+                type="button"
+                onClick={() => {
+                  if (bankAccountData) {
+                    if (bankAccountData.bankName) setBankNameInput(bankAccountData.bankName);
+                    if (bankAccountData.accountNumber) setBankAccountNumInput(bankAccountData.accountNumber);
+                    if (bankAccountData.accountHolder) setBankAccountHolderInput(bankAccountData.accountHolder);
+                    if (bankAccountData.notes) setBankNotesInput(bankAccountData.notes);
+                  }
+                  setShowSetBankAccountModal(true);
+                }}
+                className="py-2 px-3.5 rounded-xl bg-slate-900 hover:bg-slate-800 text-white font-bold text-xs flex items-center gap-1.5 transition shrink-0 shadow-xs"
+              >
+                <CreditCard className="w-3.5 h-3.5 text-emerald-400" />
+                <span>{bankAccountData?.isConfigured ? "Ubah Rekening Kas" : "Atur Rekening Kas"}</span>
+              </button>
+            </div>
+
             {/* MODAL ATUR SALDO AWAL */}
             {showSetInitBalanceModal && (
               <div className="fixed inset-0 z-50 bg-black/60 backdrop-blur-xs flex items-center justify-center p-4">
@@ -1685,7 +1844,7 @@ export default function OfficerDashboard() {
                   <div className="flex items-center justify-between pb-2 border-b border-slate-100">
                     <div className="text-sm font-extrabold text-slate-900 flex items-center gap-2">
                       <Wallet className="w-4 h-4 text-emerald-600" />
-                      Atur Saldo Awal Kas {isRwOfficer ? "RW 05" : `RT ${user?.rt?.number || "02"}`}
+                      Atur Saldo Awal Kas {isRwOfficer ? (user?.rw?.number ? `RW ${user.rw.number}` : "RW") : (user?.rt?.number ? `RT ${user.rt.number}` : "RT")}
                     </div>
                     <button
                       type="button"
@@ -1742,6 +1901,106 @@ export default function OfficerDashboard() {
                       className="py-2.5 px-3 rounded-xl bg-emerald-600 hover:bg-emerald-700 text-white font-bold text-xs"
                     >
                       {isSubmittingInitBalance ? "Menyimpan..." : "Simpan Saldo Awal"}
+                    </button>
+                  </div>
+                </form>
+              </div>
+            )}
+
+            {/* MODAL ATUR REKENING TUJUAN TRANSFER KAS */}
+            {showSetBankAccountModal && (
+              <div className="fixed inset-0 z-50 bg-black/60 backdrop-blur-xs flex items-center justify-center p-4">
+                <form
+                  onSubmit={handleUpdateBankAccount}
+                  className="bg-white rounded-3xl max-w-sm w-full p-5 space-y-3.5 shadow-2xl animate-in zoom-in-95"
+                >
+                  <div className="flex items-center justify-between pb-2 border-b border-slate-100">
+                    <div className="text-sm font-extrabold text-slate-900 flex items-center gap-2">
+                      <CreditCard className="w-4 h-4 text-emerald-600" />
+                      Atur Rekening Kas {isRwOfficer ? "RW" : "RT"}
+                    </div>
+                    <button
+                      type="button"
+                      onClick={() => setShowSetBankAccountModal(false)}
+                      className="p-1 rounded-lg text-slate-600 hover:text-slate-900"
+                    >
+                      <X className="w-4 h-4" />
+                    </button>
+                  </div>
+
+                  <p className="text-xs text-slate-700 font-medium leading-relaxed">
+                    Rekening ini akan ditampilkan kepada seluruh warga sebagai rekening tujuan resmi pembayaran iuran lingkungan.
+                  </p>
+
+                  <div>
+                    <label className="text-xs font-semibold text-slate-700 block mb-1">
+                      Nama Bank / E-Wallet
+                    </label>
+                    <input
+                      type="text"
+                      required
+                      placeholder="Contoh: Bank Mandiri / BCA / BRI / Bank BJB"
+                      value={bankNameInput}
+                      onChange={(e) => setBankNameInput(e.target.value)}
+                      className="w-full text-xs p-2.5 rounded-xl border border-slate-300 font-bold text-slate-900 focus:ring-2 focus:ring-emerald-500"
+                    />
+                  </div>
+
+                  <div>
+                    <label className="text-xs font-semibold text-slate-700 block mb-1">
+                      Nomor Rekening
+                    </label>
+                    <input
+                      type="text"
+                      required
+                      placeholder="Contoh: 131-00-9876543-2"
+                      value={bankAccountNumInput}
+                      onChange={(e) => setBankAccountNumInput(e.target.value)}
+                      className="w-full text-xs p-2.5 rounded-xl border border-slate-300 font-mono font-bold text-slate-900 focus:ring-2 focus:ring-emerald-500"
+                    />
+                  </div>
+
+                  <div>
+                    <label className="text-xs font-semibold text-slate-700 block mb-1">
+                      Nama Pemilik Rekening (a.n)
+                    </label>
+                    <input
+                      type="text"
+                      required
+                      placeholder="Contoh: Kas RT 02 / Budi Santoso (Bendahara)"
+                      value={bankAccountHolderInput}
+                      onChange={(e) => setBankAccountHolderInput(e.target.value)}
+                      className="w-full text-xs p-2.5 rounded-xl border border-slate-300 font-bold text-slate-900 focus:ring-2 focus:ring-emerald-500"
+                    />
+                  </div>
+
+                  <div>
+                    <label className="text-xs font-semibold text-slate-700 block mb-1">
+                      Instruksi / Catatan Tambahan (Opsional)
+                    </label>
+                    <input
+                      type="text"
+                      placeholder="Contoh: Cantumkan No. Rumah di berita transfer"
+                      value={bankNotesInput}
+                      onChange={(e) => setBankNotesInput(e.target.value)}
+                      className="w-full text-xs p-2.5 rounded-xl border border-slate-300 text-slate-800"
+                    />
+                  </div>
+
+                  <div className="grid grid-cols-2 gap-2 pt-2">
+                    <button
+                      type="button"
+                      onClick={() => setShowSetBankAccountModal(false)}
+                      className="py-2.5 px-3 rounded-xl border border-slate-200 text-slate-600 font-bold text-xs hover:bg-slate-50"
+                    >
+                      Batal
+                    </button>
+                    <button
+                      type="submit"
+                      disabled={isUpdatingBankAccount}
+                      className="py-2.5 px-3 rounded-xl bg-emerald-600 hover:bg-emerald-700 text-white font-bold text-xs flex items-center justify-center gap-1.5 shadow-sm"
+                    >
+                      {isUpdatingBankAccount ? "Menyimpan..." : "Simpan Rekening"}
                     </button>
                   </div>
                 </form>

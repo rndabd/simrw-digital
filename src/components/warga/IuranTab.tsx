@@ -8,6 +8,7 @@ export default function IuranTab() {
   const { user } = useAuth();
   const [bills, setBills] = useState<any[]>([]);
   const [rtFinance, setRtFinance] = useState<any | null>(null);
+  const [bankAccount, setBankAccount] = useState<any | null>(null);
   const [isLoading, setIsLoading] = useState(true);
   const [payingBill, setPayingBill] = useState<any | null>(null);
   const [isSubmittingPay, setIsSubmittingPay] = useState(false);
@@ -50,6 +51,21 @@ export default function IuranTab() {
       const json = await res.json();
       if (json.success && json.summary) {
         setRtFinance(json.summary);
+        if (json.summary.bankAccount) {
+          setBankAccount(json.summary.bankAccount);
+        }
+      }
+    } catch (e) {
+      console.error(e);
+    }
+  };
+
+  const fetchBankAccount = async () => {
+    try {
+      const res = await fetch("/api/v1/finances/bank-account?scope=RT");
+      const json = await res.json();
+      if (json.success && json.data) {
+        setBankAccount(json.data);
       }
     } catch (e) {
       console.error(e);
@@ -59,6 +75,7 @@ export default function IuranTab() {
   useEffect(() => {
     fetchBills();
     fetchRtFinance();
+    fetchBankAccount();
   }, []);
 
   const handleConfirmPayment = async (e: React.FormEvent) => {
@@ -123,8 +140,12 @@ export default function IuranTab() {
             </div>
           </div>
           <div className="text-xs text-emerald-200 mt-4 flex items-center gap-1.5 pt-3 border-t border-emerald-500/40">
-            <ShieldCheck className="w-4 h-4 text-emerald-300" />
-            Rekening Kas RT: Bank Mandiri (131-00-1234567-8) a/n Kas Lingkungan RT
+            <ShieldCheck className="w-4 h-4 text-emerald-300 shrink-0" />
+            <span>
+              {bankAccount?.isConfigured
+                ? `Rekening Kas RT: ${bankAccount.bankName} (${bankAccount.accountNumber}) a/n ${bankAccount.accountHolder}`
+                : "Rekening Kas RT: Belum dikonfigurasi oleh Pengurus RT"}
+            </span>
           </div>
         </div>
 
@@ -218,10 +239,37 @@ export default function IuranTab() {
                   </div>
                 </div>
 
-                <div className="p-3 rounded-xl bg-emerald-50/50 border border-emerald-200 text-xs space-y-1">
-                  <div className="font-bold text-emerald-950">Rekening Tujuan Transfer:</div>
-                  <div className="font-mono text-emerald-800 font-bold">Bank Mandiri: 131-00-1234567-8</div>
-                  <div className="text-[10px] text-emerald-700">a/n Kas Lingkungan RT Setempat</div>
+                <div className="p-3 rounded-xl bg-emerald-50/50 border border-emerald-200 text-xs space-y-1.5">
+                  <div className="font-bold text-emerald-950">Rekening Tujuan Transfer Kas:</div>
+                  {bankAccount?.isConfigured ? (
+                    <>
+                      <div className="font-mono text-emerald-900 font-extrabold text-sm flex items-center justify-between">
+                        <span>{bankAccount.bankName}: {bankAccount.accountNumber}</span>
+                        <button
+                          type="button"
+                          onClick={() => {
+                            if (navigator.clipboard) {
+                              navigator.clipboard.writeText(bankAccount.accountNumber);
+                              alert("Nomor rekening berhasil disalin ke clipboard!");
+                            }
+                          }}
+                          className="px-2 py-0.5 rounded bg-emerald-600 hover:bg-emerald-700 text-white text-[10px] font-bold transition shadow-2xs"
+                        >
+                          Salin No. Rek
+                        </button>
+                      </div>
+                      <div className="text-[11px] text-emerald-800 font-bold">a/n {bankAccount.accountHolder}</div>
+                      {bankAccount.notes && (
+                        <div className="text-[10px] text-slate-600 italic mt-1 pt-1 border-t border-emerald-200">
+                          Catatan: {bankAccount.notes}
+                        </div>
+                      )}
+                    </>
+                  ) : (
+                    <div className="text-xs text-amber-800 font-medium">
+                      Pengurus RT belum mengatur rekening bank tujuan transfer. Silakan konfirmasi ke Bendahara RT Anda.
+                    </div>
+                  )}
                 </div>
 
                 <div>
@@ -317,8 +365,16 @@ export default function IuranTab() {
         {isLoading ? (
           <div className="p-6 text-center text-xs text-slate-700 font-bold">Memuat data iuran...</div>
         ) : bills.length === 0 ? (
-          <div className="p-6 bg-white rounded-2xl border border-slate-200 text-center text-xs text-slate-700 font-bold">
-            Tidak ada tagihan yang ditemukan.
+          <div className="p-8 bg-white/95 backdrop-blur-md rounded-2xl border border-white/80 shadow-md text-center space-y-2">
+            <div className="w-12 h-12 rounded-2xl bg-emerald-50 text-emerald-700 flex items-center justify-center mx-auto border border-emerald-200">
+              <CheckCircle2 className="w-6 h-6" />
+            </div>
+            <div className="text-sm font-extrabold text-slate-800">
+              Belum Ada Tagihan Iuran Terbit
+            </div>
+            <p className="text-xs text-slate-600 max-w-sm mx-auto leading-relaxed">
+              Pengurus RT belum menerbitkan tagihan iuran untuk periode saat ini. Tagihan akan otomatis tampil di sini saat diterbitkan oleh Bendahara atau Ketua RT.
+            </p>
           </div>
         ) : (
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">

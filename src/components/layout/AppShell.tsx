@@ -1,6 +1,6 @@
 "use client";
 
-import React, { ReactNode } from "react";
+import React, { ReactNode, useEffect } from "react";
 import { useViewMode } from "@/context/ViewModeContext";
 import { useAuth } from "@/context/AuthContext";
 import ViewModeToggle from "@/components/common/ViewModeToggle";
@@ -54,6 +54,48 @@ export default function AppShell({
     { key: "warga", label: "Kontak & Direktori", icon: Users },
     { key: "profil", label: "Profil & E-KTP", icon: User },
   ];
+
+  // Bridge ke AndroidRefresher: Hanya aktifkan pull-to-refresh native saat berada mentok di paling atas (0px)
+  useEffect(() => {
+    if (typeof window === "undefined") return;
+
+    const updateAndroidRefresher = () => {
+      const refresher = (window as any).AndroidRefresher;
+      if (!refresher || typeof refresher.setCanRefresh !== "function") return;
+
+      const windowTop = window.scrollY || document.documentElement.scrollTop || document.body.scrollTop || 0;
+      if (windowTop > 2) {
+        refresher.setCanRefresh(false);
+        return;
+      }
+
+      const scrollables = document.querySelectorAll<HTMLElement>(
+        '[class*="overflow-y-auto"], [class*="overflow-y-scroll"], main, .overflow-y-auto'
+      );
+      let isAnyScrolled = false;
+      for (let i = 0; i < scrollables.length; i++) {
+        if (scrollables[i].scrollTop > 2) {
+          isAnyScrolled = true;
+          break;
+        }
+      }
+
+      refresher.setCanRefresh(!isAnyScrolled);
+    };
+
+    window.addEventListener("scroll", updateAndroidRefresher, { passive: true, capture: true });
+    window.addEventListener("touchmove", updateAndroidRefresher, { passive: true });
+    window.addEventListener("touchend", updateAndroidRefresher, { passive: true });
+
+    const interval = setInterval(updateAndroidRefresher, 300);
+
+    return () => {
+      window.removeEventListener("scroll", updateAndroidRefresher, { capture: true });
+      window.removeEventListener("touchmove", updateAndroidRefresher);
+      window.removeEventListener("touchend", updateAndroidRefresher);
+      clearInterval(interval);
+    };
+  }, []);
 
   if (!isDesktop) {
     // MOBILE MODE (Phone Frame)
@@ -116,7 +158,7 @@ export default function AppShell({
               </span>
             </div>
             <div className="text-xs md:text-sm font-extrabold text-white tracking-tight">
-              Inisiasi RW 15 Komplek Giri Ciheulang, Kec. Ciparay Kab. Bandung
+              {user?.rw ? `RW ${user.rw.number} ${user.rw.village || ""}` : "Pelayanan Administrasi Warga Digital"}
             </div>
           </div>
         </div>

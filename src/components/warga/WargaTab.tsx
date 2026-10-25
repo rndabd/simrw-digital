@@ -211,10 +211,10 @@ export default function WargaTab({ initialTab = "BAGAN" }: WargaTabProps) {
       textColor: "text-blue-950 dark:text-blue-100",
     },
     {
-      name: "Bripka Mulyadi (Bhabinkamtibmas Ciheulang)",
+      name: "Bhabinkamtibmas Polsek Setempat",
       category: "BHABINKAMTIBMAS POLRI",
-      phone: "081299991122",
-      notes: "Pembina Kamtibmas Wilayah Desa Ciheulang & Komplek Giri Ciheulang",
+      phone: "110",
+      notes: "Pembina Kamtibmas Wilayah & Kemitraan Kepolisian",
       icon: UserCheck,
       color: "bg-indigo-600 text-white",
       bgLight: "bg-indigo-50/95 border-indigo-300 dark:bg-indigo-950/40",
@@ -265,52 +265,7 @@ export default function WargaTab({ initialTab = "BAGAN" }: WargaTabProps) {
   ];
 
   // 3. Kontak Siaga Internal Tambahan RW 15 (Additional Pengurus RW)
-  const defaultInternalRw = [
-    {
-      id: "int-1",
-      name: "Pos Ronda & Satpam Gerbang Utama 24 Jam",
-      category: "INTERNAL RW 15",
-      phone: "081200000099",
-      notes: "Portal Masuk Komplek Giri Ciheulang • Siaga HT Channel 4 • Alarm SOS",
-      icon: Siren,
-      color: "bg-rose-600 text-white",
-      bgLight: "bg-rose-50/95 border-rose-300 dark:bg-rose-950/40",
-      textColor: "text-rose-950 dark:text-rose-100",
-    },
-    {
-      id: "int-2",
-      name: "Bapak Agus Supriatna (Trantib & Siskamling)",
-      category: "INTERNAL RW 15",
-      phone: "081200000005",
-      notes: "Koordinator Keamanan Lingkungan & Siskamling RW 15 Giri Ciheulang",
-      icon: Shield,
-      color: "bg-blue-600 text-white",
-      bgLight: "bg-blue-50/95 border-blue-300 dark:bg-blue-950/40",
-      textColor: "text-blue-950 dark:text-blue-100",
-    },
-    {
-      id: "int-3",
-      name: "Bapak Budi Santoso (Ketua RW 15 - Eskalasi)",
-      category: "INTERNAL RW 15",
-      phone: "081200000001",
-      notes: "Eskalasi Tertinggi Kepengurusan RW 15 & Hubungan Pemerintahan Desa",
-      icon: Building,
-      color: "bg-emerald-600 text-white",
-      bgLight: "bg-emerald-50/95 border-emerald-300 dark:bg-emerald-950/40",
-      textColor: "text-emerald-950 dark:text-emerald-100",
-    },
-    {
-      id: "int-4",
-      name: "Satgas Saluran Air & Kebersihan RW 15",
-      category: "INTERNAL RW 15",
-      phone: "081200000006",
-      notes: "Penanganan Drainase Tersumbat, Genangan Air & Sarana Lingkungan RW",
-      icon: Zap,
-      color: "bg-teal-600 text-white",
-      bgLight: "bg-teal-50/95 border-teal-300 dark:bg-teal-950/40",
-      textColor: "text-teal-950 dark:text-teal-100",
-    },
-  ];
+  const defaultInternalRw: any[] = [];
 
   const [customContacts, setCustomContacts] = useState<any[]>([]);
   const [showAddModal, setShowAddModal] = useState(false);
@@ -365,9 +320,9 @@ export default function WargaTab({ initialTab = "BAGAN" }: WargaTabProps) {
           <div className="space-y-1.5">
             <div className="flex flex-wrap items-center gap-2">
               <span className="px-3 py-1 bg-emerald-500/30 border border-emerald-400/40 text-emerald-200 text-xs font-bold rounded-full uppercase tracking-wider">
-                RW 15 Giri Ciheulang
+                {rwInfo?.number ? `RW ${rwInfo.number} ${rwInfo.village || ""}` : "RW Lingkungan Warga"}
               </span>
-              <span className="text-xs text-slate-300 font-semibold">Kecamatan Ciparay, Kab. Bandung</span>
+              <span className="text-xs text-slate-300 font-semibold">{rwInfo?.district ? `Kecamatan ${rwInfo.district}, ${rwInfo.city || ""}` : "Wilayah Resmi Lingkungan Setempat"}</span>
             </div>
             <h1 className="text-xl sm:text-2xl font-black tracking-tight text-white">
               Bagan Organisasi, Kontak & Layanan Tanggap Darurat
@@ -425,11 +380,11 @@ export default function WargaTab({ initialTab = "BAGAN" }: WargaTabProps) {
             <div className="flex items-center gap-2">
               <span className="w-2.5 h-2.5 rounded-full bg-emerald-500 animate-ping" />
               <span className="text-xs font-bold text-slate-900 dark:text-slate-100">
-                Bagan Struktur Resmi Kepengurusan RW {rwInfo?.number || "15"} {rwInfo?.village || "Giri Ciheulang"} (Periode {rwInfo?.termPeriod || "Berjalan"})
+                Bagan Struktur Resmi Kepengurusan RW {rwInfo?.number || ""} {rwInfo?.village || ""} (Periode {rwInfo?.termPeriod || "Berjalan"})
               </span>
             </div>
             <span className="text-xs font-bold text-emerald-700 bg-emerald-50 px-3 py-1 rounded-full border border-emerald-200">
-              {jajaranRt.length > 0 ? `RW ${rwInfo?.number || "15"} • ${jajaranRt.length} Unit RT` : "Struktur Organisasi"}
+              {jajaranRt.length > 0 ? `RW ${rwInfo?.number || ""} • ${jajaranRt.length} Unit RT` : "Struktur Organisasi"}
             </span>
           </div>
 
@@ -437,7 +392,7 @@ export default function WargaTab({ initialTab = "BAGAN" }: WargaTabProps) {
           <div className="space-y-3">
             <div className="text-center">
               <span className="px-3.5 py-1 bg-emerald-100 dark:bg-emerald-950 text-emerald-900 dark:text-emerald-200 border border-emerald-300 dark:border-emerald-800 rounded-full text-xs font-black uppercase tracking-wider">
-                Tingkat 1: Pimpinan Rukun Warga (RW {rwInfo?.number || "15"})
+                Tingkat 1: Pimpinan Rukun Warga (RW {rwInfo?.number || ""})
               </span>
             </div>
 
@@ -448,7 +403,7 @@ export default function WargaTab({ initialTab = "BAGAN" }: WargaTabProps) {
                   <div className="flex items-start justify-between">
                     <div>
                       <span className="px-2.5 py-0.5 rounded-full text-[10px] font-black bg-emerald-600 text-white uppercase tracking-wider">
-                        {pimpinanRw ? pimpinanRw.role : `Ketua RW ${rwInfo?.number || "15"}`}
+                        {pimpinanRw ? pimpinanRw.role : `Ketua RW ${rwInfo?.number || ""}`}
                       </span>
                       <h3 className="text-lg font-black text-slate-900 dark:text-white mt-1.5">
                         {pimpinanRw ? pimpinanRw.name : "(Belum Terisi / Menunggu Pendaftaran)"}
@@ -463,7 +418,7 @@ export default function WargaTab({ initialTab = "BAGAN" }: WargaTabProps) {
                   </div>
 
                   <p className="text-xs text-slate-700 font-bold dark:text-slate-300 mt-2 flex items-center gap-1.5">
-                    <Home className="w-3.5 h-3.5 shrink-0 text-slate-600" /> {pimpinanRw?.address || `Kantor Sekretariat RW ${rwInfo?.number || "15"}`}
+                    <Home className="w-3.5 h-3.5 shrink-0 text-slate-600" /> {pimpinanRw?.address || (rwInfo?.number ? `Kantor Sekretariat RW ${rwInfo.number}` : "Kantor Sekretariat RW")}
                   </p>
 
                   <p className="text-xs text-slate-800 font-medium dark:text-slate-300 mt-2.5 bg-slate-50 dark:bg-slate-800/60 p-3 rounded-2xl border border-slate-200 dark:border-slate-800 leading-relaxed italic">
@@ -504,7 +459,7 @@ export default function WargaTab({ initialTab = "BAGAN" }: WargaTabProps) {
                   <div className="flex items-start justify-between">
                     <div>
                       <span className="px-2.5 py-0.5 rounded-full text-[10px] font-black bg-slate-800 text-white uppercase tracking-wider">
-                        {wakilRw ? wakilRw.role : `Wakil Ketua RW ${rwInfo?.number || "15"}`}
+                        {wakilRw ? wakilRw.role : `Wakil Ketua RW ${rwInfo?.number || ""}`}
                       </span>
                       <h3 className="text-lg font-black text-slate-900 dark:text-white mt-1.5">
                         {wakilRw ? wakilRw.name : "(Belum Terisi / Menunggu Pendaftaran)"}
@@ -519,7 +474,7 @@ export default function WargaTab({ initialTab = "BAGAN" }: WargaTabProps) {
                   </div>
 
                   <p className="text-xs text-slate-700 font-bold dark:text-slate-300 mt-2 flex items-center gap-1.5">
-                    <Home className="w-3.5 h-3.5 shrink-0 text-slate-600" /> {wakilRw?.address || `Kantor Sekretariat RW ${rwInfo?.number || "15"}`}
+                    <Home className="w-3.5 h-3.5 shrink-0 text-slate-600" /> {wakilRw?.address || (rwInfo?.number ? `Kantor Sekretariat RW ${rwInfo.number}` : "Kantor Sekretariat RW")}
                   </p>
 
                   <p className="text-xs text-slate-800 font-medium dark:text-slate-300 mt-2.5 bg-slate-50 dark:bg-slate-800/60 p-3 rounded-2xl border border-slate-200 dark:border-slate-800 leading-relaxed italic">
@@ -560,7 +515,7 @@ export default function WargaTab({ initialTab = "BAGAN" }: WargaTabProps) {
           <div className="space-y-3">
             <div className="text-center">
               <span className="px-3.5 py-1 bg-blue-100 dark:bg-blue-950 text-blue-900 dark:text-blue-200 border border-blue-300 dark:border-blue-800 rounded-full text-xs font-black uppercase tracking-wider">
-                Tingkat 2: Sekretariat & Manajemen Keuangan RW {rwInfo?.number || "15"}
+                Tingkat 2: Sekretariat & Manajemen Keuangan RW {rwInfo?.number || ""}
               </span>
             </div>
 
@@ -570,7 +525,7 @@ export default function WargaTab({ initialTab = "BAGAN" }: WargaTabProps) {
                 const officerName = isFilled ? item.officer.name : "(Belum Terisi / Menunggu Pendaftaran)";
                 const officerRole = isFilled ? item.officer.role : item.defaultRole;
                 const officerSubrole = isFilled ? item.officer.subrole : item.defaultSubrole;
-                const officerAddress = isFilled ? item.officer.address : `Kantor Sekretariat RW ${rwInfo?.number || "15"}`;
+                const officerAddress = isFilled ? item.officer.address : (rwInfo?.number ? `Kantor Sekretariat RW ${rwInfo.number}` : "Kantor Sekretariat RW");
                 const officerPhone = isFilled ? item.officer.phone : "";
 
                 return (
@@ -805,7 +760,7 @@ export default function WargaTab({ initialTab = "BAGAN" }: WargaTabProps) {
         <div className="space-y-6 animate-in fade-in duration-300">
           <div className="p-4 bg-white/95 dark:bg-slate-900/95 rounded-2xl border border-slate-200 shadow-sm flex flex-wrap items-center justify-between gap-2">
             <span className="text-xs font-bold text-slate-800 dark:text-slate-200">
-              Direktori Resmi Kontak & WhatsApp Pengurus Lingkungan RW {rwInfo?.number || "15"} {rwInfo?.village || "Giri Ciheulang"}
+              Direktori Resmi Kontak & WhatsApp Pengurus Lingkungan RW {rwInfo?.number || ""} {rwInfo?.village || ""}
             </span>
             <span className="text-xs font-black text-emerald-800 bg-emerald-50 px-3 py-1 rounded-full border border-emerald-200">
               Total {allContacts.length} Pengurus Terdaftar
@@ -914,33 +869,46 @@ export default function WargaTab({ initialTab = "BAGAN" }: WargaTabProps) {
                 <div>
                   <div className="flex items-center gap-2">
                     <span className="text-sm font-black text-slate-900 dark:text-white">
-                      Pos Keamanan Utama Komplek Giri Ciheulang (24 Jam)
+                      {pimpinanRw?.name ? `Pusat Siaga & Koordinasi Darurat RW ${rwInfo?.number || ""}` : "Pusat Layanan & Panggilan Darurat"}
                     </span>
                     <span className="px-2 py-0.5 rounded-full text-[10px] font-bold bg-rose-100 text-rose-800 border border-rose-300">
-                      SIAGA SOS
+                      SIAGA DARURAT
                     </span>
                   </div>
                   <p className="text-xs text-slate-700 dark:text-slate-300 font-semibold mt-0.5">
-                    Petugas Satpam & Ronda Gerbang Utama • Terhubung langsung dengan sirene darurat aplikasi
+                    {pimpinanRw?.name
+                      ? `Terhubung langsung dengan Ketua RW (${pimpinanRw.name}) dan aparat siaga lingkungan`
+                      : "Gunakan saluran darurat terpadu atau hubungi layanan darurat nasional 112"}
                   </p>
                 </div>
               </div>
 
               <div className="flex items-center gap-2 self-start sm:self-auto">
-                <a
-                  href="tel:081200000099"
-                  className="px-4 py-2.5 rounded-xl bg-rose-600 hover:bg-rose-700 active:scale-95 text-white text-xs font-black shadow-md transition-all flex items-center gap-2"
-                >
-                  <Phone className="w-4 h-4" /> Telepon: 0812-0000-0099
-                </a>
-                <a
-                  href="https://wa.me/6281200000099?text=Halo%20Pos%20Satpam%20Komplek%20Giri%20Ciheulang,%20saya%20butuh%20bantuan%20darurat."
-                  target="_blank"
-                  rel="noreferrer"
-                  className="px-3.5 py-2.5 rounded-xl bg-emerald-600 hover:bg-emerald-700 active:scale-95 text-white text-xs font-bold shadow-md transition-all flex items-center gap-1.5"
-                >
-                  <MessageCircle className="w-4 h-4" /> WhatsApp
-                </a>
+                {pimpinanRw?.phone ? (
+                  <>
+                    <a
+                      href={`tel:${pimpinanRw.phone}`}
+                      className="px-4 py-2.5 rounded-xl bg-rose-600 hover:bg-rose-700 active:scale-95 text-white text-xs font-black shadow-md transition-all flex items-center gap-2"
+                    >
+                      <Phone className="w-4 h-4" /> Telepon: {pimpinanRw.phone}
+                    </a>
+                    <a
+                      href={`https://wa.me/62${pimpinanRw.phone.replace(/^0+/, "")}?text=Halo%20Ketua%20RW,%20saya%20butuh%20bantuan%20darurat.`}
+                      target="_blank"
+                      rel="noreferrer"
+                      className="px-3.5 py-2.5 rounded-xl bg-emerald-600 hover:bg-emerald-700 active:scale-95 text-white text-xs font-bold shadow-md transition-all flex items-center gap-1.5"
+                    >
+                      <MessageCircle className="w-4 h-4" /> WhatsApp
+                    </a>
+                  </>
+                ) : (
+                  <a
+                    href="tel:112"
+                    className="px-4 py-2.5 rounded-xl bg-red-600 hover:bg-red-700 active:scale-95 text-white text-xs font-black shadow-md transition-all flex items-center gap-2"
+                  >
+                    <Phone className="w-4 h-4" /> Panggil Darurat 112
+                  </a>
+                )}
               </div>
             </div>
           </div>
@@ -1103,10 +1071,10 @@ export default function WargaTab({ initialTab = "BAGAN" }: WargaTabProps) {
             <div className="p-3.5 rounded-2xl bg-slate-900 text-white border border-slate-700 flex flex-wrap items-center justify-between gap-2 shadow-sm">
               <div className="flex items-center gap-2">
                 <span className="px-2.5 py-1 rounded-xl bg-emerald-600 text-white font-black text-xs shadow-xs">
-                  3. Kontak Siaga Internal Tambahan RW 15 (Additional)
+                  3. Kontak Siaga Internal Tambahan RW {rwInfo?.number || ""}
                 </span>
                 <span className="text-xs text-slate-200 font-semibold hidden sm:inline">
-                  Komplek Giri Ciheulang (Satpam, Trantib, Satgas Lingkungan)
+                  Satpam, Trantib & Satgas Lingkungan Setempat
                 </span>
               </div>
               {isOfficer && (
@@ -1120,6 +1088,19 @@ export default function WargaTab({ initialTab = "BAGAN" }: WargaTabProps) {
               )}
             </div>
 
+            {[...defaultInternalRw, ...customContacts].length === 0 ? (
+              <div className="p-8 bg-white/95 dark:bg-slate-900/95 rounded-3xl border border-slate-200 dark:border-slate-800 text-center space-y-2">
+                <div className="w-12 h-12 rounded-2xl bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-300 flex items-center justify-center mx-auto border border-slate-200 dark:border-slate-700">
+                  <Phone className="w-5 h-5" />
+                </div>
+                <div className="text-sm font-extrabold text-slate-800 dark:text-white">
+                  Belum Ada Kontak Internal Khusus
+                </div>
+                <p className="text-xs text-slate-600 dark:text-slate-400 max-w-sm mx-auto leading-relaxed">
+                  Pengurus RW dapat mendaftarkan nomor telepon pos satpam, koordinator siskamling, atau narahubung darurat khusus melalui tombol di atas.
+                </p>
+              </div>
+            ) : (
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
               {[...defaultInternalRw, ...customContacts].map((layanan: any, idx) => {
                 const IconComp = layanan.icon || Phone;
@@ -1169,6 +1150,7 @@ export default function WargaTab({ initialTab = "BAGAN" }: WargaTabProps) {
                 );
               })}
             </div>
+            )}
           </div>
         </div>
       )}
@@ -1184,7 +1166,7 @@ export default function WargaTab({ initialTab = "BAGAN" }: WargaTabProps) {
                 </span>
                 <div>
                   <h4 className="font-black text-sm text-slate-900">Tambah Kontak Darurat RW</h4>
-                  <p className="text-[11px] text-slate-600 font-medium">Khusus nomor siaga lingkungan RW 15 Giri Ciheulang</p>
+                  <p className="text-[11px] text-slate-600 font-medium">Khusus nomor siaga lingkungan RW setempat</p>
                 </div>
               </div>
               <button

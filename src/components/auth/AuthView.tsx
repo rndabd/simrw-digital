@@ -729,7 +729,7 @@ export default function AuthView() {
           SIM-RW Digital
         </h1>
         <p className="text-xs font-bold text-emerald-300 max-w-sm mx-auto">
-          Inisiasi RW 15 Komplek Giri Ciheulang, Kec. Ciparay Kab. Bandung
+          Sistem Informasi Manajemen & Pelayanan Rukun Warga Mandiri
         </p>
         <p className="text-[11px] text-slate-200 font-semibold drop-shadow-sm max-w-sm mx-auto">
           Sistem Pelayanan Warga & Kepengurusan RT/RW Terintegrasi Terproteksi UU PDP No. 27/2022

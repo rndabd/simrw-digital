@@ -17,6 +17,10 @@ export interface DataStoreSchema {
     status: "ACTIVE" | "PENDING_APPROVAL" | "REJECTED";
     term_period: string; // e.g. "2021-2026"
     initial_balance?: number;
+    bank_name?: string;
+    bank_account_number?: string;
+    bank_account_holder?: string;
+    bank_notes?: string;
     applicant_user_id?: string;
     sk_kelurahan_url?: string;
     created_at: string;
@@ -28,6 +32,10 @@ export interface DataStoreSchema {
     term_period?: string;
     status: "ACTIVE" | "PENDING_APPROVAL" | "REJECTED";
     initial_balance?: number;
+    bank_name?: string;
+    bank_account_number?: string;
+    bank_account_holder?: string;
+    bank_notes?: string;
     applicant_user_id?: string;
     sk_document_url?: string;
     created_at: string;

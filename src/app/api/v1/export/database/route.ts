@@ -351,9 +351,11 @@ export async function GET(req: NextRequest) {
       if (targetRtId) {
         const rtObj = rtMap.get(targetRtId);
         const rtNumber = rtObj ? `RT ${rtObj.rt_number}` : "";
-        wilayahText = `${rtNumber} / ${rwNumber} Komplek Giri Ciheulang, Ciparay`;
+        const locStr = [rwObj?.village, rwObj?.district].filter(Boolean).join(", ");
+        wilayahText = `${rtNumber} / ${rwNumber} ${locStr}`.trim();
       } else {
-        wilayahText = `${rwNumber} Komplek Giri Ciheulang, Ciparay`;
+        const locStr = [rwObj?.village, rwObj?.district].filter(Boolean).join(", ");
+        wilayahText = `${rwNumber} ${locStr}`.trim();
       }
     }
 

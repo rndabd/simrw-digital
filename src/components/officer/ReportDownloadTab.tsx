@@ -209,8 +209,12 @@ export default function ReportDownloadTab() {
       year: "numeric",
     });
 
-    lines.push(`"LAPORAN RESMI KEPENGURUSAN RW 15 KOMPLEK GIRI CIHEULANG"`);
-    lines.push(`"Kecamatan Ciparay - Kabupaten Bandung"`);
+    const rwNum = user?.rw?.number || "";
+    const rwVill = user?.rw?.village || "";
+    const rwDist = user?.rw?.district || "";
+    const rwCity = user?.rw?.city || "";
+    lines.push(`"${rwNum ? `LAPORAN RESMI KEPENGURUSAN RW ${rwNum} ${rwVill}`.trim() : "LAPORAN RESMI KEPENGURUSAN LINGKUNGAN RW"}"`);
+    if (rwDist) lines.push(`"Kecamatan ${rwDist}${rwCity ? ` - ${rwCity}` : ""}"`);
     lines.push(`"Tanggal Unduh: ${dateStr}"`);
     lines.push(`"Pengunduh: ${user?.fullName} (${user?.roles?.join(", ")})"`);
     lines.push("");
@@ -303,7 +307,7 @@ export default function ReportDownloadTab() {
       <html lang="id">
       <head>
         <meta charset="utf-8">
-        <title>Laporan Resmi SIM-RW - RW 15 Giri Ciheulang</title>
+        <title>Laporan Resmi SIM-RW - Kepengurusan RW</title>
         <style>
           body { font-family: 'Times New Roman', Times, serif; padding: 30px; color: #111; line-height: 1.5; }
           .kop-surat { text-align: center; border-bottom: 3px double #000; padding-bottom: 12px; margin-bottom: 24px; }
@@ -333,9 +337,8 @@ export default function ReportDownloadTab() {
         </div>
 
         <div class="kop-surat">
-          <h2>RUKUN WARGA (RW) 15 KOMPLEK GIRI CIHEULANG</h2>
-          <h3>DESA / KELURAHAN CIHEULANG • KECAMATAN CIPARAY</h3>
-          <p>KABUPATEN BANDUNG, JAWA BARAT 40381</p>
+          <h2>RUKUN WARGA (RW) ${user?.rw?.number || ""} ${user?.rw?.village || ""}</h2>
+          <h3>${user?.rw?.district ? `KECAMATAN ${user.rw.district.toUpperCase()}` : ""} ${user?.rw?.city ? `• ${user.rw.city.toUpperCase()}` : ""}</h3>
           <p>Inisiasi Pelayanan Mandiri Berbasis Digital SIM-RW & Kepatuhan UU PDP No. 27/2022</p>
         </div>
 
@@ -344,7 +347,7 @@ export default function ReportDownloadTab() {
         </div>
 
         <div class="meta-info">
-          <div><strong>Wilayah Pelaporan:</strong> Rukun Tetangga (RT) 02 / RW 15 Komplek Giri Ciheulang</div>
+          <div><strong>Wilayah Pelaporan:</strong> ${user?.rt?.number ? `Rukun Tetangga (RT) ${user.rt.number} / ` : ""}RW ${user?.rw?.number || ""} ${user?.rw?.village || ""}</div>
           <div><strong>Tanggal Cetak:</strong> ${dateStr}</div>
           <div><strong>Pejabat Pengunduh:</strong> ${user?.fullName || "Ketua Pengurus"}</div>
         </div>
@@ -439,7 +442,7 @@ export default function ReportDownloadTab() {
     contentHtml += `
         <div class="ttd-container">
           <div class="ttd-box">
-            <p>Mengetahui,<br><strong>Ketua RW 15 Giri Ciheulang</strong></p>
+            <p>Mengetahui,<br><strong>Ketua RW ${user?.rw?.number || ""} ${user?.rw?.village || ""}</strong></p>
             <div class="ttd-space"></div>
             <p><strong>( Budi Santoso )</strong></p>
           </div>
@@ -487,7 +490,7 @@ export default function ReportDownloadTab() {
             </div>
             <h2 className="text-2xl font-bold tracking-tight">Unduh Laporan Lingkungan RT / RW</h2>
             <p className="text-sm text-slate-200 font-medium mt-1 max-w-2xl">
-              Fasilitas cetak PDF ber-Kop Surat resmi RW 15 Komplek Giri Ciheulang, Kec. Ciparay Kab. Bandung, serta unduh spreadsheet CSV untuk Microsoft Excel.
+              Fasilitas cetak PDF ber-Kop Surat resmi kepengurusan RW, serta unduh spreadsheet CSV untuk Microsoft Excel.
             </p>
           </div>
 
@@ -681,7 +684,7 @@ export default function ReportDownloadTab() {
             Siap Mengekspor Dokumen Resmi
           </h4>
           <p className="text-xs text-slate-700 font-medium mt-0.5">
-            Format: Kop Surat Resmi RW 15 Giri Ciheulang, Ciparay • Sesuai format kearsipan desa/kelurahan
+            Format: Kop Surat Resmi Kepengurusan RW • Sesuai format kearsipan desa/kelurahan
           </p>
         </div>
 

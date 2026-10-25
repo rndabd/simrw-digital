@@ -26,7 +26,7 @@ export default function HeaderDashboard({ onOpenNotifications }: HeaderDashboard
       return (
         <span className="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full text-xs font-extrabold bg-emerald-100 text-emerald-900 border border-emerald-300">
           <CheckCircle2 className="w-3.5 h-3.5 text-emerald-700" />
-          RT {user.rt?.number || "02"} / RW {user.rw?.number || "05"} • Warga Tetap
+          RT {user.rt?.number || "-"} / RW {user.rw?.number || "-"} • Warga Tetap
         </span>
       );
     }

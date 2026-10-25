@@ -51,22 +51,7 @@ export async function GET(req: NextRequest) {
     }
 
     // 3. Default: Citizen views their own bills
-    let myBills = store.bills.filter((b) => b.user_id === auth.userId);
-    if (myBills.length === 0) {
-      const defaultBill = {
-        id: `bill-${Date.now()}`,
-        user_id: auth.userId,
-        rw_id: auth.rwId,
-        rt_id: auth.rtId,
-        month: "Oktober",
-        year: 2026,
-        amount: 50000,
-        category: "IURAN_KEBERSIHAN_KEAMANAN" as const,
-        status: "UNPAID" as const,
-      };
-      store.bills.push(defaultBill);
-      myBills = [defaultBill];
-    }
+    const myBills = store.bills.filter((b) => b.user_id === auth.userId);
 
     return NextResponse.json({
       success: true,

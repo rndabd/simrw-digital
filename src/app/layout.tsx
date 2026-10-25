@@ -6,9 +6,9 @@ import { ViewModeProvider } from "@/context/ViewModeContext";
 import ServiceWorkerRegister from "@/components/common/ServiceWorkerRegister";
 
 export const metadata: Metadata = {
-  title: "SIM-RW Digital | Inisiasi RW 15 Komplek Giri Ciheulang",
+  title: "SIM-RW Digital | Sistem Informasi Manajemen & Pelayanan Warga",
   description:
-    "Sistem Informasi & Aplikasi Pelayanan Warga Digital Terpadu - Inisiasi RW 15 Komplek Giri Ciheulang, Kec. Ciparay Kab. Bandung.",
+    "Sistem Informasi & Aplikasi Pelayanan Warga Digital Terpadu untuk Rukun Warga dan Rukun Tetangga.",
   manifest: "/manifest.json",
   icons: {
     icon: [

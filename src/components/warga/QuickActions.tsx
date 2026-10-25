@@ -30,7 +30,7 @@ export default function QuickActions({ onActionClick }: QuickActionsProps) {
       desc: "Kas & Kebersihan",
       icon: CreditCard,
       color: "bg-blue-50 text-blue-700 border-blue-200",
-      badge: "1 Tagihan",
+      badge: null,
     },
     {
       key: "lapor",

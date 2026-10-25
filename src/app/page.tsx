@@ -217,7 +217,7 @@ export default function HomePage() {
               <span className="px-3 py-1 rounded-full text-xs font-bold bg-emerald-100 text-emerald-800 border border-emerald-300">
                 {user.isSuperAdmin
                   ? "Super Admin Kelurahan"
-                  : `RT ${user.rt?.number || "02"} / RW ${user.rw?.number || "05"}`}
+                  : `RT ${user.rt?.number || "-"} / RW ${user.rw?.number || "-"}`}
               </span>
             </div>
           </div>
@@ -289,7 +289,7 @@ export default function HomePage() {
             </div>
 
             <div className="p-3 rounded-2xl bg-slate-50 border border-slate-200 text-xs text-slate-800 font-bold">
-              Lokasi: {user.addressBlock || "Blok C2 No. 14"}, RT {user.rt?.number || "02"} / RW {user.rw?.number || "05"}
+              Lokasi: {user.addressBlock ? `${user.addressBlock}, ` : ""}RT {user.rt?.number || "-"} / RW {user.rw?.number || "-"}
             </div>
 
             <div className="flex gap-2">
