@@ -24,6 +24,19 @@ public class MainActivity extends BridgeActivity {
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
+        // Pasang crash protector native untuk mencegah force close dari library FCM / PushNotifications
+        final Thread.UncaughtExceptionHandler defaultHandler = Thread.getDefaultUncaughtExceptionHandler();
+        Thread.setDefaultUncaughtExceptionHandler((thread, throwable) -> {
+            String msg = throwable != null ? throwable.getMessage() : "";
+            if (msg != null && (msg.contains("Firebase") || msg.contains("FirebaseApp") || msg.contains("PushNotifications") || msg.contains("FIS_AUTH_ERROR"))) {
+                android.util.Log.e("SIM-RW", "Suppressed native crash from PushNotifications/Firebase: " + msg);
+                return;
+            }
+            if (defaultHandler != null) {
+                defaultHandler.uncaughtException(thread, throwable);
+            }
+        });
+
         super.onCreate(savedInstanceState);
 
         Bridge bridge = getBridge();

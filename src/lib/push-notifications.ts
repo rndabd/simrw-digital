@@ -47,7 +47,7 @@ export async function initPushNotifications() {
       console.log("[PushNotifications] Notifikasi diketuk oleh pengguna:", action);
     });
 
-    // 2. Cek izin notifikasi perangkat
+    // 2. Cek izin notifikasi perangkat (Android 13+ POST_NOTIFICATIONS)
     let permStatus = await PushNotifications.checkPermissions();
 
     if (permStatus.receive === "prompt") {
@@ -59,11 +59,17 @@ export async function initPushNotifications() {
       return;
     }
 
-    // 3. Daftarkan perangkat ke FCM dengan proteksi try-catch ekstra
-    try {
-      await PushNotifications.register();
-    } catch (regError) {
-      console.warn("[PushNotifications] Registrasi token FCM dilewati:", regError);
+    console.log("[PushNotifications] Izin notifikasi aktif (granted)");
+
+    // 3. Hanya panggil register() jika kredensial FCM live telah dikonfigurasi secara eksplisit
+    // Mencegah force-close native Android jika Firebase belum dihubungkan ke Google Cloud Console
+    const isLiveFcmConfigured = typeof window !== "undefined" && (window as any).__ENABLE_FCM_REGISTRATION__ === true;
+    if (isLiveFcmConfigured) {
+      try {
+        await PushNotifications.register();
+      } catch (regError) {
+        console.warn("[PushNotifications] Registrasi token FCM dilewati:", regError);
+      }
     }
   } catch (err) {
     console.warn("[PushNotifications] Inisialisasi Push Notifications dilewati:", err);
