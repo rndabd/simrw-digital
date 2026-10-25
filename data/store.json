@@ -641,6 +641,15 @@
   ],
   "audit_logs": [
     {
+      "id": "698652fb-ae37-4384-8850-8be7f0976d12",
+      "user_id": "user-rt-01",
+      "action": "USER_LOGIN",
+      "resource": "AUTH",
+      "payload": null,
+      "ip_address": "::1",
+      "timestamp": "2026-10-25T00:34:22.645Z"
+    },
+    {
       "id": "1a1e579f-12f9-4e32-b514-34c853b681df",
       "user_id": "user-super-admin",
       "action": "USER_LOGIN",
@@ -2501,6 +2510,16 @@
     {
       "rw_id": "rw-08-coblong",
       "wilayah_name": "Wilayah Khusus RW 08 Coblong Timur"
+    }
+  ],
+  "verification_otps": [
+    {
+      "id": "3e3d284a-1a8f-4b2b-9db4-7ae5ce72ce5d",
+      "target": "no-reply@simrw.web.id",
+      "code": "540450",
+      "type": "EMAIL_VERIFICATION",
+      "expires_at": "2026-10-24T11:56:53.649Z",
+      "created_at": "2026-10-24T11:46:54.088Z"
     }
   ]
 }

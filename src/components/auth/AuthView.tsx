@@ -23,6 +23,7 @@ import {
   KeyRound,
   Phone,
   RefreshCw,
+  ArrowLeft,
 } from "lucide-react";
 
 const RW_POSITIONS = [
@@ -55,8 +56,8 @@ const RT_POSITIONS = [
 export default function AuthView() {
   const { login, quickLogin } = useAuth();
 
-  // Top-Level Navigation: CUKUP MASUK ATAU DAFTAR SAJA
-  const [authTab, setAuthTab] = useState<"login" | "register">("login");
+  // Top-Level Navigation: MASUK, DAFTAR, ATAU LUPA PASSWORD
+  const [authTab, setAuthTab] = useState<"login" | "register" | "forgot">("login");
 
   // Sub-Option on Register: WARGA ATAU KEPENGURUSAN
   const [registerType, setRegisterType] = useState<"resident" | "officer">("resident");
@@ -74,7 +75,6 @@ export default function AuthView() {
   const [password, setPassword] = useState("password123");
 
   // FORGOT PASSWORD STATE
-  const [showForgotPassword, setShowForgotPassword] = useState(false);
   const [forgotStep, setForgotStep] = useState<1 | 2 | 3>(1);
   const [forgotNik, setForgotNik] = useState("");
   const [forgotPhone, setForgotPhone] = useState("");
@@ -456,40 +456,60 @@ export default function AuthView() {
         )}
 
         {/* =========================================================================
-            MENU UTAMA: CUKUP 'MASUK' ATAU 'DAFTAR' SAJA
+            MENU UTAMA: CUKUP 'MASUK' ATAU 'DAFTAR' SAJA (atau Mode Pemulihan Sandi)
             ========================================================================= */}
-        <div className="grid grid-cols-2 bg-slate-100 p-1.5 rounded-2xl text-xs font-bold text-slate-600">
-          <button
-            type="button"
-            onClick={() => {
-              setAuthTab("login");
-              setErrorMessage(null);
-            }}
-            className={`py-2.5 rounded-xl transition-all flex items-center justify-center gap-1.5 ${
-              authTab === "login"
-                ? "bg-white text-emerald-800 shadow-sm font-extrabold"
-                : "hover:text-slate-900"
-            }`}
-          >
-            <UserCheck className="w-4 h-4" />
-            Masuk Akun
-          </button>
-          <button
-            type="button"
-            onClick={() => {
-              setAuthTab("register");
-              setErrorMessage(null);
-            }}
-            className={`py-2.5 rounded-xl transition-all flex items-center justify-center gap-1.5 ${
-              authTab === "register"
-                ? "bg-white text-emerald-800 shadow-sm font-extrabold"
-                : "hover:text-slate-900"
-            }`}
-          >
-            <PlusCircle className="w-4 h-4" />
-            Daftar Akun Baru
-          </button>
-        </div>
+        {authTab !== "forgot" ? (
+          <div className="grid grid-cols-2 bg-slate-100 p-1.5 rounded-2xl text-xs font-bold text-slate-600">
+            <button
+              type="button"
+              onClick={() => {
+                setAuthTab("login");
+                setErrorMessage(null);
+              }}
+              className={`py-2.5 rounded-xl transition-all flex items-center justify-center gap-1.5 ${
+                authTab === "login"
+                  ? "bg-white text-emerald-800 shadow-sm font-extrabold"
+                  : "hover:text-slate-900"
+              }`}
+            >
+              <UserCheck className="w-4 h-4" />
+              Masuk Akun
+            </button>
+            <button
+              type="button"
+              onClick={() => {
+                setAuthTab("register");
+                setErrorMessage(null);
+              }}
+              className={`py-2.5 rounded-xl transition-all flex items-center justify-center gap-1.5 ${
+                authTab === "register"
+                  ? "bg-white text-emerald-800 shadow-sm font-extrabold"
+                  : "hover:text-slate-900"
+              }`}
+            >
+              <PlusCircle className="w-4 h-4" />
+              Daftar Akun Baru
+            </button>
+          </div>
+        ) : (
+          <div className="flex items-center justify-between p-1 bg-slate-100 rounded-2xl">
+            <button
+              type="button"
+              onClick={() => {
+                setAuthTab("login");
+                setForgotError(null);
+              }}
+              className="px-3 py-2 rounded-xl text-xs font-bold text-slate-700 hover:text-slate-900 hover:bg-white transition-all flex items-center gap-1.5"
+            >
+              <ArrowLeft className="w-4 h-4" />
+              Kembali ke Masuk
+            </button>
+            <div className="flex items-center gap-1.5 text-xs font-extrabold text-emerald-800 bg-white px-3 py-1.5 rounded-xl shadow-xs border border-emerald-200 mr-1">
+              <KeyRound className="w-3.5 h-3.5 text-emerald-700" />
+              Pemulihan Sandi
+            </div>
+          </div>
+        )}
 
         {/* =========================================================================
             1. TAB: MASUK AKUN
@@ -518,7 +538,7 @@ export default function AuthView() {
                 <button
                   type="button"
                   onClick={() => {
-                    setShowForgotPassword(true);
+                    setAuthTab("forgot");
                     setForgotStep(1);
                     setForgotError(null);
                     setForgotNik("");
@@ -1259,282 +1279,267 @@ export default function AuthView() {
         )}
 
         {/* =========================================================================
-            3. PINTASAN UJI COBA AKUN DEMO (1-CLICK)
+            3. TAB: LUPA KATA SANDI (TERINTEGRASI DI DALAM CARD TANPA TERPOTONG)
             ========================================================================= */}
-        <div className="pt-3 border-t border-slate-200">
-          <div className="text-[11px] font-extrabold uppercase tracking-wider text-slate-700 text-center mb-2">
-            Pintasan Uji Coba Cepat (1-Click Demo):
-          </div>
-          <div className="grid grid-cols-2 md:grid-cols-3 gap-1.5">
-            <button
-              type="button"
-              onClick={() => quickLogin("ADMIN")}
-              className="p-2 rounded-xl bg-indigo-50 hover:bg-indigo-100 text-left border border-indigo-200 transition-colors col-span-2 md:col-span-3"
-            >
-              <div className="text-xs font-bold text-indigo-950 flex items-center gap-1.5">
-                <ShieldCheck className="w-3.5 h-3.5 text-indigo-700" />
-                Ibu Lurah Ratna Dewi (Super Admin)
+        {authTab === "forgot" && (
+          <div className="space-y-4">
+            <div className="text-center space-y-1">
+              <h3 className="text-sm sm:text-base font-extrabold text-slate-900 flex items-center justify-center gap-1.5">
+                <KeyRound className="w-4 h-4 text-emerald-600" />
+                Pemulihan Kata Sandi Akun
+              </h3>
+              <p className="text-[11px] text-slate-500">
+                Verifikasi identitas warga terproteksi UU PDP No. 27/2022
+              </p>
+            </div>
+
+            {/* Progress Steps */}
+            <div className="flex items-center justify-between px-3 py-2 bg-slate-50 rounded-2xl border border-slate-200">
+              <div className={`flex items-center gap-1.5 text-[11px] font-bold ${forgotStep >= 1 ? "text-emerald-700" : "text-slate-400"}`}>
+                <span className={`w-5 h-5 rounded-full flex items-center justify-center text-[10px] ${forgotStep >= 1 ? "bg-emerald-600 text-white font-black" : "bg-slate-200 text-slate-600"}`}>
+                  1
+                </span>
+                Verifikasi NIK
               </div>
-              <div className="text-[10px] text-indigo-700 font-medium">
-                Kelola Seluruh RW, Approval Pengurus RW Baru, dan Rollover 5 Tahun
+              <div className="h-0.5 w-6 bg-slate-200" />
+              <div className={`flex items-center gap-1.5 text-[11px] font-bold ${forgotStep >= 2 ? "text-emerald-700" : "text-slate-400"}`}>
+                <span className={`w-5 h-5 rounded-full flex items-center justify-center text-[10px] ${forgotStep >= 2 ? "bg-emerald-600 text-white font-black" : "bg-slate-200 text-slate-600"}`}>
+                  2
+                </span>
+                Sandi Baru
               </div>
-            </button>
+              <div className="h-0.5 w-6 bg-slate-200" />
+              <div className={`flex items-center gap-1.5 text-[11px] font-bold ${forgotStep >= 3 ? "text-emerald-700" : "text-slate-400"}`}>
+                <span className={`w-5 h-5 rounded-full flex items-center justify-center text-[10px] ${forgotStep >= 3 ? "bg-emerald-600 text-white font-black" : "bg-slate-200 text-slate-600"}`}>
+                  3
+                </span>
+                Selesai
+              </div>
+            </div>
 
-            <button
-              type="button"
-              onClick={() => quickLogin("RW")}
-              className="p-2 rounded-xl bg-teal-50 hover:bg-teal-100 text-left border border-teal-200 transition-colors"
-            >
-              <div className="text-xs font-bold text-teal-900">Pak RW Budi</div>
-              <div className="text-[10px] text-teal-700">Ketua RW 05 (Approval RT & Kas)</div>
-            </button>
+            {/* Error Message */}
+            {forgotError && (
+              <div className="p-3 rounded-xl bg-rose-50 border border-rose-200 text-rose-700 text-xs flex items-start gap-2">
+                <AlertCircle className="w-4 h-4 shrink-0 mt-0.5" />
+                <div>{forgotError}</div>
+              </div>
+            )}
 
-            <button
-              type="button"
-              onClick={() => quickLogin("RT")}
-              className="p-2 rounded-xl bg-emerald-50 hover:bg-emerald-100 text-left border border-emerald-200 transition-colors"
-            >
-              <div className="text-xs font-bold text-emerald-900">Pak RT Hendra</div>
-              <div className="text-[10px] text-emerald-700">Ketua RT 02 (Validasi Iuran)</div>
-            </button>
+            {/* STEP 1: VERIFIKASI NIK & NO HP */}
+            {forgotStep === 1 && (
+              <form onSubmit={handleVerifyForgotPassword} className="space-y-3.5">
+                <p className="text-xs text-slate-600 leading-relaxed bg-emerald-50/70 p-2.5 rounded-xl border border-emerald-200/80">
+                  Masukkan <strong>16 Digit NIK KTP</strong> dan <strong>Nomor WhatsApp</strong> yang terdaftar di akun Anda untuk memvalidasi kepemilikan.
+                </p>
 
-            <button
-              type="button"
-              onClick={() => quickLogin("RESIDENT")}
-              className="p-2 rounded-xl bg-slate-100 hover:bg-slate-200 text-left border border-slate-200 transition-colors"
-            >
-              <div className="text-xs font-bold text-slate-800">Ibu Siti Aminah</div>
-              <div className="text-[10px] text-slate-700 font-bold">Warga Aktif (Bayar Iuran)</div>
-            </button>
-          </div>
-        </div>
+                <div>
+                  <label className="text-xs font-semibold text-slate-700 block mb-1">
+                    Nomor Induk Kependudukan (NIK)
+                  </label>
+                  <input
+                    type="text"
+                    required
+                    maxLength={16}
+                    value={forgotNik}
+                    onChange={(e) => setForgotNik(e.target.value.replace(/\D/g, "").slice(0, 16))}
+                    placeholder="16 Digit NIK KTP Anda"
+                    className="w-full text-xs p-3 rounded-xl border border-slate-300 font-mono font-bold focus:ring-2 focus:ring-emerald-500"
+                  />
+                </div>
 
-        {/* =========================================================================
-            MODAL LUPA KATA SANDI (VERIFIKASI NIK & TELEPON + ADMIN FALLBACK)
-            ========================================================================= */}
-        {showForgotPassword && (
-          <div className="fixed inset-0 z-50 bg-slate-900/60 backdrop-blur-sm flex items-center justify-center p-4 overflow-y-auto">
-            <div className="bg-white rounded-3xl max-w-md w-full p-6 shadow-2xl border border-slate-100 relative animate-in fade-in zoom-in duration-200">
-              {/* Header */}
-              <div className="flex items-start justify-between mb-4">
-                <div className="flex items-center gap-3">
-                  <div className="w-10 h-10 rounded-2xl bg-emerald-100 text-emerald-800 flex items-center justify-center shrink-0">
-                    <KeyRound className="w-5 h-5" />
+                <div>
+                  <label className="text-xs font-semibold text-slate-700 block mb-1">
+                    Nomor WhatsApp / HP Terdaftar
+                  </label>
+                  <input
+                    type="tel"
+                    required
+                    value={forgotPhone}
+                    onChange={(e) => setForgotPhone(e.target.value)}
+                    placeholder="Contoh: 0812xxxxxxxx"
+                    className="w-full text-xs p-3 rounded-xl border border-slate-300 font-medium focus:ring-2 focus:ring-emerald-500"
+                  />
+                </div>
+
+                <button
+                  type="submit"
+                  disabled={forgotLoading}
+                  className="w-full py-3 px-4 rounded-xl bg-emerald-600 hover:bg-emerald-700 text-white font-bold text-xs flex items-center justify-center gap-2 shadow-sm transition-all"
+                >
+                  {forgotLoading ? (
+                    <>
+                      <RefreshCw className="w-4 h-4 animate-spin" />
+                      Memeriksa Data Kependudukan...
+                    </>
+                  ) : (
+                    <>
+                      Cek & Verifikasi Identitas
+                      <ArrowRight className="w-4 h-4" />
+                    </>
+                  )}
+                </button>
+
+                {/* Fallback Box: Hubungi Admin RT/RW jika lupa/tidak ada keduanya */}
+                <div className="mt-3 p-3.5 rounded-2xl bg-amber-50 border border-amber-200 text-xs space-y-2">
+                  <div className="flex items-center gap-2 text-amber-900 font-bold">
+                    <HelpCircle className="w-4 h-4 text-amber-600 shrink-0" />
+                    Lupa NIK atau Nomor HP Sudah Berganti?
                   </div>
-                  <div>
-                    <h3 className="text-base font-extrabold text-slate-900">
-                      Pemulihan Kata Sandi
-                    </h3>
-                    <p className="text-xs text-slate-500">
-                      Verifikasi identitas warga terproteksi UU PDP
-                    </p>
+                  <p className="text-amber-800 text-[11px] leading-relaxed">
+                    Jika Anda tidak memiliki akses ke NIK atau nomor telepon telah berganti, silakan hubungi Pengurus / Admin RT & RW setempat melalui WhatsApp untuk bantuan verifikasi akun secara langsung:
+                  </p>
+                  <a
+                    href={forgotAdminContact?.waLink || "https://wa.me/6281200000001?text=Halo%20Admin%2FPengurus%20SIM-RW%2C%20saya%20warga%20ingin%20meminta%20bantuan%20pemulihan%20akun%20karena%20lupa%20kata%20sandi."}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="w-full py-2.5 px-3 rounded-xl bg-emerald-700 hover:bg-emerald-800 text-white font-bold text-xs flex items-center justify-center gap-2 shadow-xs transition-colors"
+                  >
+                    <MessageSquare className="w-4 h-4" />
+                    Hubungi Admin RT/RW via WhatsApp
+                  </a>
+                </div>
+              </form>
+            )}
+
+            {/* STEP 2: MASUKKAN KATA SANDI BARU */}
+            {forgotStep === 2 && (
+              <form onSubmit={handleResetPasswordSubmit} className="space-y-3.5">
+                <div className="p-3 rounded-xl bg-emerald-50 border border-emerald-200 text-xs text-emerald-900">
+                  <div className="font-bold flex items-center gap-1.5">
+                    <CheckCircle2 className="w-4 h-4 text-emerald-600 shrink-0" />
+                    Identitas Terverifikasi!
                   </div>
+                  <div className="mt-1 text-slate-700">
+                    Warga: <strong>{forgotVerifiedUser?.fullName}</strong> ({forgotVerifiedUser?.maskedNik})
+                  </div>
+                </div>
+
+                <div>
+                  <label className="text-xs font-semibold text-slate-700 block mb-1">
+                    Kata Sandi Baru
+                  </label>
+                  <input
+                    type="password"
+                    required
+                    value={forgotNewPassword}
+                    onChange={(e) => setForgotNewPassword(e.target.value)}
+                    placeholder="Minimal 6 karakter"
+                    className="w-full text-xs p-3 rounded-xl border border-slate-300 font-medium focus:ring-2 focus:ring-emerald-500"
+                  />
+                </div>
+
+                <div>
+                  <label className="text-xs font-semibold text-slate-700 block mb-1">
+                    Ulangi Kata Sandi Baru
+                  </label>
+                  <input
+                    type="password"
+                    required
+                    value={forgotConfirmPassword}
+                    onChange={(e) => setForgotConfirmPassword(e.target.value)}
+                    placeholder="Ketik ulang kata sandi baru"
+                    className="w-full text-xs p-3 rounded-xl border border-slate-300 font-medium focus:ring-2 focus:ring-emerald-500"
+                  />
+                </div>
+
+                <button
+                  type="submit"
+                  disabled={forgotLoading}
+                  className="w-full py-3 px-4 rounded-xl bg-emerald-600 hover:bg-emerald-700 text-white font-bold text-xs flex items-center justify-center gap-2 shadow-sm transition-all"
+                >
+                  {forgotLoading ? (
+                    <>
+                      <RefreshCw className="w-4 h-4 animate-spin" />
+                      Menyimpan Kata Sandi...
+                    </>
+                  ) : (
+                    <>
+                      Simpan Kata Sandi Baru
+                      <CheckCircle2 className="w-4 h-4" />
+                    </>
+                  )}
+                </button>
+              </form>
+            )}
+
+            {/* STEP 3: SUKSES */}
+            {forgotStep === 3 && (
+              <div className="text-center py-4 space-y-4">
+                <div className="w-14 h-14 rounded-full bg-emerald-100 text-emerald-600 mx-auto flex items-center justify-center shadow-xs">
+                  <CheckCircle2 className="w-8 h-8" />
+                </div>
+                <div>
+                  <h4 className="text-base font-extrabold text-slate-900">
+                    Kata Sandi Berhasil Diperbarui!
+                  </h4>
+                  <p className="text-xs text-slate-500 mt-1 max-w-xs mx-auto">
+                    Kata sandi baru Anda telah aktif. Silakan masuk kembali menggunakan kata sandi yang baru dibuat.
+                  </p>
                 </div>
                 <button
                   type="button"
-                  onClick={() => setShowForgotPassword(false)}
-                  className="p-1.5 rounded-full text-slate-400 hover:text-slate-700 hover:bg-slate-100 transition-colors"
+                  onClick={() => {
+                    setAuthTab("login");
+                  }}
+                  className="w-full py-3 px-4 rounded-xl bg-emerald-600 hover:bg-emerald-700 text-white font-bold text-xs flex items-center justify-center gap-2 shadow-sm"
                 >
-                  <X className="w-5 h-5" />
+                  Masuk Sekarang
+                  <ArrowRight className="w-4 h-4" />
                 </button>
               </div>
+            )}
+          </div>
+        )}
 
-              {/* Progress Steps */}
-              <div className="flex items-center justify-between mb-5 px-1">
-                <div className={`flex items-center gap-1.5 text-xs font-bold ${forgotStep >= 1 ? "text-emerald-700" : "text-slate-400"}`}>
-                  <span className={`w-5 h-5 rounded-full flex items-center justify-center text-[10px] ${forgotStep >= 1 ? "bg-emerald-600 text-white" : "bg-slate-200 text-slate-600"}`}>
-                    1
-                  </span>
-                  Verifikasi Data
+        {/* =========================================================================
+            PINTASAN UJI COBA AKUN DEMO (1-CLICK)
+            ========================================================================= */}
+        {authTab !== "forgot" && (
+          <div className="pt-3 border-t border-slate-200">
+            <div className="text-[11px] font-extrabold uppercase tracking-wider text-slate-700 text-center mb-2">
+              Pintasan Uji Coba Cepat (1-Click Demo):
+            </div>
+            <div className="grid grid-cols-2 md:grid-cols-3 gap-1.5">
+              <button
+                type="button"
+                onClick={() => quickLogin("ADMIN")}
+                className="p-2 rounded-xl bg-indigo-50 hover:bg-indigo-100 text-left border border-indigo-200 transition-colors col-span-2 md:col-span-3"
+              >
+                <div className="text-xs font-bold text-indigo-950 flex items-center gap-1.5">
+                  <ShieldCheck className="w-3.5 h-3.5 text-indigo-700" />
+                  Ibu Lurah Ratna Dewi (Super Admin)
                 </div>
-                <div className="h-0.5 w-8 bg-slate-200" />
-                <div className={`flex items-center gap-1.5 text-xs font-bold ${forgotStep >= 2 ? "text-emerald-700" : "text-slate-400"}`}>
-                  <span className={`w-5 h-5 rounded-full flex items-center justify-center text-[10px] ${forgotStep >= 2 ? "bg-emerald-600 text-white" : "bg-slate-200 text-slate-600"}`}>
-                    2
-                  </span>
-                  Sandi Baru
+                <div className="text-[10px] text-indigo-700 font-medium">
+                  Kelola Seluruh RW, Approval Pengurus RW Baru, dan Rollover 5 Tahun
                 </div>
-                <div className="h-0.5 w-8 bg-slate-200" />
-                <div className={`flex items-center gap-1.5 text-xs font-bold ${forgotStep >= 3 ? "text-emerald-700" : "text-slate-400"}`}>
-                  <span className={`w-5 h-5 rounded-full flex items-center justify-center text-[10px] ${forgotStep >= 3 ? "bg-emerald-600 text-white" : "bg-slate-200 text-slate-600"}`}>
-                    3
-                  </span>
-                  Selesai
-                </div>
-              </div>
+              </button>
 
-              {/* Error Message */}
-              {forgotError && (
-                <div className="mb-4 p-3 rounded-xl bg-rose-50 border border-rose-200 text-rose-700 text-xs flex items-start gap-2">
-                  <AlertCircle className="w-4 h-4 shrink-0 mt-0.5" />
-                  <div>{forgotError}</div>
-                </div>
-              )}
+              <button
+                type="button"
+                onClick={() => quickLogin("RW")}
+                className="p-2 rounded-xl bg-teal-50 hover:bg-teal-100 text-left border border-teal-200 transition-colors"
+              >
+                <div className="text-xs font-bold text-teal-900">Pak RW Budi</div>
+                <div className="text-[10px] text-teal-700">Ketua RW 05 (Approval RT & Kas)</div>
+              </button>
 
-              {/* STEP 1: VERIFIKASI NIK & NO HP */}
-              {forgotStep === 1 && (
-                <form onSubmit={handleVerifyForgotPassword} className="space-y-3.5">
-                  <p className="text-xs text-slate-600 leading-relaxed">
-                    Masukkan <strong>NIK KTP</strong> dan <strong>Nomor WhatsApp</strong> yang terdaftar di akun Anda untuk memvalidasi kepemilikan.
-                  </p>
+              <button
+                type="button"
+                onClick={() => quickLogin("RT")}
+                className="p-2 rounded-xl bg-emerald-50 hover:bg-emerald-100 text-left border border-emerald-200 transition-colors"
+              >
+                <div className="text-xs font-bold text-emerald-900">Pak RT Hendra</div>
+                <div className="text-[10px] text-emerald-700">Ketua RT 02 (Validasi Iuran)</div>
+              </button>
 
-                  <div>
-                    <label className="text-xs font-semibold text-slate-700 block mb-1">
-                      Nomor Induk Kependudukan (NIK)
-                    </label>
-                    <input
-                      type="text"
-                      required
-                      maxLength={16}
-                      value={forgotNik}
-                      onChange={(e) => setForgotNik(e.target.value.replace(/\D/g, "").slice(0, 16))}
-                      placeholder="16 Digit NIK KTP Anda"
-                      className="w-full text-xs p-3 rounded-xl border border-slate-300 font-mono font-bold focus:ring-2 focus:ring-emerald-500"
-                    />
-                  </div>
-
-                  <div>
-                    <label className="text-xs font-semibold text-slate-700 block mb-1">
-                      Nomor WhatsApp / HP Terdaftar
-                    </label>
-                    <input
-                      type="tel"
-                      required
-                      value={forgotPhone}
-                      onChange={(e) => setForgotPhone(e.target.value)}
-                      placeholder="Contoh: 0812xxxxxxxx"
-                      className="w-full text-xs p-3 rounded-xl border border-slate-300 font-medium focus:ring-2 focus:ring-emerald-500"
-                    />
-                  </div>
-
-                  <button
-                    type="submit"
-                    disabled={forgotLoading}
-                    className="w-full py-3 px-4 rounded-xl bg-emerald-600 hover:bg-emerald-700 text-white font-bold text-xs flex items-center justify-center gap-2 shadow-sm transition-all"
-                  >
-                    {forgotLoading ? (
-                      <>
-                        <RefreshCw className="w-4 h-4 animate-spin" />
-                        Memeriksa Data Kependudukan...
-                      </>
-                    ) : (
-                      <>
-                        Cek & Verifikasi Identitas
-                        <ArrowRight className="w-4 h-4" />
-                      </>
-                    )}
-                  </button>
-
-                  {/* Fallback Box: Hubungi Admin RT/RW jika lupa/tidak ada keduanya */}
-                  <div className="mt-4 p-3.5 rounded-2xl bg-amber-50/80 border border-amber-200 text-xs">
-                    <div className="flex items-center gap-2 text-amber-900 font-bold mb-1">
-                      <HelpCircle className="w-4 h-4 text-amber-600 shrink-0" />
-                      Tidak Ingat NIK atau Nomor HP Tidak Aktif?
-                    </div>
-                    <p className="text-amber-800 text-[11px] mb-2.5 leading-relaxed">
-                      Jika Anda tidak memiliki akses ke NIK atau nomor telepon telah berganti, silakan hubungi Pengurus / Admin RT & RW setempat untuk bantuan verifikasi langsung.
-                    </p>
-                    <a
-                      href={forgotAdminContact?.waLink || "https://wa.me/6281234567890?text=Halo%20Admin%20SIM-RW,%20saya%20warga%20yang%20mengalami%20kendala%20lupa%20kata%20sandi%20dan%20memerlukan%20bantuan%20reset%20akun."}
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      className="w-full py-2 px-3 rounded-xl bg-emerald-600 hover:bg-emerald-700 text-white font-bold text-xs flex items-center justify-center gap-2 shadow-xs transition-colors"
-                    >
-                      <MessageSquare className="w-3.5 h-3.5" />
-                      Hubungi Admin RT/RW via WhatsApp
-                    </a>
-                  </div>
-                </form>
-              )}
-
-              {/* STEP 2: MASUKKAN KATA SANDI BARU */}
-              {forgotStep === 2 && (
-                <form onSubmit={handleResetPasswordSubmit} className="space-y-3.5">
-                  <div className="p-3 rounded-xl bg-emerald-50 border border-emerald-200 text-xs text-emerald-900">
-                    <div className="font-bold flex items-center gap-1.5">
-                      <CheckCircle2 className="w-4 h-4 text-emerald-600 shrink-0" />
-                      Identitas Terverifikasi!
-                    </div>
-                    <div className="mt-1 text-slate-700">
-                      Warga: <strong>{forgotVerifiedUser?.fullName}</strong> ({forgotVerifiedUser?.maskedNik})
-                    </div>
-                  </div>
-
-                  <div>
-                    <label className="text-xs font-semibold text-slate-700 block mb-1">
-                      Kata Sandi Baru
-                    </label>
-                    <input
-                      type="password"
-                      required
-                      value={forgotNewPassword}
-                      onChange={(e) => setForgotNewPassword(e.target.value)}
-                      placeholder="Minimal 6 karakter"
-                      className="w-full text-xs p-3 rounded-xl border border-slate-300 font-medium focus:ring-2 focus:ring-emerald-500"
-                    />
-                  </div>
-
-                  <div>
-                    <label className="text-xs font-semibold text-slate-700 block mb-1">
-                      Ulangi Kata Sandi Baru
-                    </label>
-                    <input
-                      type="password"
-                      required
-                      value={forgotConfirmPassword}
-                      onChange={(e) => setForgotConfirmPassword(e.target.value)}
-                      placeholder="Ketik ulang kata sandi baru"
-                      className="w-full text-xs p-3 rounded-xl border border-slate-300 font-medium focus:ring-2 focus:ring-emerald-500"
-                    />
-                  </div>
-
-                  <button
-                    type="submit"
-                    disabled={forgotLoading}
-                    className="w-full py-3 px-4 rounded-xl bg-emerald-600 hover:bg-emerald-700 text-white font-bold text-xs flex items-center justify-center gap-2 shadow-sm transition-all"
-                  >
-                    {forgotLoading ? (
-                      <>
-                        <RefreshCw className="w-4 h-4 animate-spin" />
-                        Menyimpan Kata Sandi...
-                      </>
-                    ) : (
-                      <>
-                        Simpan Kata Sandi Baru
-                        <CheckCircle2 className="w-4 h-4" />
-                      </>
-                    )}
-                  </button>
-                </form>
-              )}
-
-              {/* STEP 3: SUKSES */}
-              {forgotStep === 3 && (
-                <div className="text-center py-4 space-y-4">
-                  <div className="w-14 h-14 rounded-full bg-emerald-100 text-emerald-600 mx-auto flex items-center justify-center">
-                    <CheckCircle2 className="w-8 h-8" />
-                  </div>
-                  <div>
-                    <h4 className="text-base font-extrabold text-slate-900">
-                      Kata Sandi Berhasil Diperbarui!
-                    </h4>
-                    <p className="text-xs text-slate-500 mt-1 max-w-xs mx-auto">
-                      Kata sandi baru Anda telah aktif. Silakan masuk kembali menggunakan kata sandi yang baru dibuat.
-                    </p>
-                  </div>
-                  <button
-                    type="button"
-                    onClick={() => {
-                      setShowForgotPassword(false);
-                      setAuthTab("login");
-                    }}
-                    className="w-full py-3 px-4 rounded-xl bg-emerald-600 hover:bg-emerald-700 text-white font-bold text-xs flex items-center justify-center gap-2 shadow-sm"
-                  >
-                    Masuk Sekarang
-                    <ArrowRight className="w-4 h-4" />
-                  </button>
-                </div>
-              )}
+              <button
+                type="button"
+                onClick={() => quickLogin("RESIDENT")}
+                className="p-2 rounded-xl bg-slate-100 hover:bg-slate-200 text-left border border-slate-200 transition-colors"
+              >
+                <div className="text-xs font-bold text-slate-800">Ibu Siti Aminah</div>
+                <div className="text-[10px] text-slate-700 font-bold">Warga Aktif (Bayar Iuran)</div>
+              </button>
             </div>
           </div>
         )}
