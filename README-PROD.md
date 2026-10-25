@@ -1,11 +1,12 @@
 # Panduan Instalasi & Produksi SIM-RW Digital v1.0.0 (Debian 13)
 
-Dokumen ini memandu pemasangan aplikasi **SIM-RW Digital (Versi 1.0.0 Produksi)** pada server **Debian 13 (Trixie)** yang bersih/kosongan. Branch `prod` dirancang khusus tanpa data demo dummy, dan dilengkapi fitur **Setup Wizard Awal (`/setup`)** untuk membuat akun Super Administrator dan Wilayah perdana.
+Dokumen ini memandu pemasangan aplikasi **SIM-RW Digital (Versi 1.0.0 Produksi)** pada server **Debian 13 (Trixie)** yang bersih/kosongan langsung sebagai akun `root` (tanpa `sudo`). Branch `prod` dirancang khusus tanpa data demo dummy, dan dilengkapi fitur **Setup Wizard Awal (`/setup`)** untuk membuat akun Super Administrator dan Wilayah perdana.
 
 ---
 
 ## 1. Persyaratan Server (Debian 13)
 - **Sistem Operasi**: Debian 13 (64-bit)
+- **Akses**: Langsung sebagai `root` (atau tanpa `sudo`)
 - **RAM Minimum**: 1 GB (Rekomendasi: 2 GB+)
 - **CPU**: 1 Core atau lebih
 - **Penyimpanan**: 10 GB SSD/NVMe
@@ -16,12 +17,12 @@ Dokumen ini memandu pemasangan aplikasi **SIM-RW Digital (Versi 1.0.0 Produksi)*
 ## 2. Langkah-Langkah Instalasi di Server Debian 13
 
 ### A. Clone Repositori (Branch `prod`)
-Masuk ke terminal server Debian Anda (via SSH) dan clone branch `prod`:
+Masuk ke terminal server Debian Anda (via SSH sebagai `root`) dan clone branch `prod`:
 
 ```bash
+mkdir -p /var/www
 cd /var/www
-sudo git clone -b prod https://github.com/rndabd/simrw-digital.git simrw
-sudo chown -R $USER:$USER /var/www/simrw
+git clone -b prod https://github.com/rndabd/simrw-digital.git simrw
 cd /var/www/simrw
 ```
 
@@ -76,21 +77,21 @@ Skrip ini secara otomatis akan:
 
 ### A. Salin Konfigurasi Nginx
 ```bash
-sudo cp nginx.conf.example /etc/nginx/sites-available/simrw.conf
-sudo nano /etc/nginx/sites-available/simrw.conf
+cp nginx.conf.example /etc/nginx/sites-available/simrw.conf
+nano /etc/nginx/sites-available/simrw.conf
 ```
-*Ganti `example.com www.example.com` dengan nama domain atau subdomain Anda.*
+*Ganti `example.com www.example.com` dengan nama domain atau subdomain Anda (misal: `simrw.web.id`).*
 
 ### B. Aktifkan Konfigurasi & Reload Nginx
 ```bash
-sudo ln -s /etc/nginx/sites-available/simrw.conf /etc/nginx/sites-enabled/
-sudo nginx -t
-sudo systemctl reload nginx
+ln -s /etc/nginx/sites-available/simrw.conf /etc/nginx/sites-enabled/
+nginx -t
+systemctl reload nginx
 ```
 
 ### C. Pasang Sertifikat SSL Gratis (Let's Encrypt Certbot)
 ```bash
-sudo certbot --nginx -d your-domain.com -d www.your-domain.com
+certbot --nginx -d simrw.web.id -d www.simrw.web.id
 ```
 
 ---
@@ -99,7 +100,7 @@ sudo certbot --nginx -d your-domain.com -d www.your-domain.com
 
 Setelah server berjalan:
 1. Buka browser dan kunjungi:
-   `https://your-domain.com/setup` (atau `http://IP_SERVER:3000/setup`).
+   `https://simrw.web.id/setup` (atau `http://IP_SERVER:3000/setup`).
 2. Masukkan identitas **Super Administrator**:
    - Nama Lengkap Admin
    - NIK (16 digit angka KTP - otomatis dienkripsi AES-256-GCM blind index)
@@ -145,4 +146,3 @@ pm2 restart simrw-app
 - Data tersimpan terenkripsi di folder `data/store.json`.
 - Berkas unggahan warga (KTP/Bukti Iuran/Surat SK) tersimpan aman di `public/uploads/`.
 - Jangan lupa lakukan backup berkala pada direktori `data/` dan `public/uploads/`.
-

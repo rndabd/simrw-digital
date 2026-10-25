@@ -5,14 +5,16 @@
 # ==============================================================================
 set -e
 
+export DEBIAN_FRONTEND=noninteractive
+
 echo "🚀 [1/6] Memperbarui repositori sistem Debian 13..."
-sudo apt update && sudo apt upgrade -y
-sudo apt install -y curl wget git build-essential nginx certbot python3-certbot-nginx ufw
+apt update && apt upgrade -y
+apt install -y curl wget git build-essential nginx certbot python3-certbot-nginx ufw
 
 echo "📦 [2/6] Memasang Node.js 20 LTS (NodeSource)..."
 if ! command -v node &> /dev/null; then
-    curl -fsSL https://deb.nodesource.com/setup_20.x | sudo -E bash -
-    sudo apt install -y nodejs
+    curl -fsSL https://deb.nodesource.com/setup_20.x | bash -
+    apt install -y nodejs
 fi
 
 echo "Versi Terpasang:"
@@ -20,7 +22,7 @@ node -v
 npm -v
 
 echo "⚡ [3/6] Memasang PM2 Process Manager secara global..."
-sudo npm install -g pm2
+npm install -g pm2
 
 echo "📂 [4/6] Menyiapkan Dependensi & Build Next.js..."
 npm ci || npm install
@@ -40,4 +42,3 @@ echo "Aplikasi SIM-RW Digital v1.0.0 telah berjalan di port 3000."
 echo "Silakan buka browser Anda dan akses: http://IP_SERVER:3000/setup"
 echo "Untuk menghubungkan domain & SSL Nginx, lihat panduan di README-PROD.md"
 echo "=============================================================================="
-
