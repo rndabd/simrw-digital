@@ -1,17 +1,21 @@
 package id.web.rnd.simrw;
 
-import android.content.Context;
-import android.net.ConnectivityManager;
-import android.net.NetworkInfo;
+import android.net.http.SslError;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Looper;
 import android.view.ViewGroup;
 import android.view.ViewParent;
+import android.webkit.SslErrorHandler;
+import android.webkit.WebResourceError;
+import android.webkit.WebResourceRequest;
 import android.webkit.WebSettings;
 import android.webkit.WebView;
+import androidx.coordinatorlayout.widget.CoordinatorLayout;
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
+import com.getcapacitor.Bridge;
 import com.getcapacitor.BridgeActivity;
+import com.getcapacitor.BridgeWebViewClient;
 
 public class MainActivity extends BridgeActivity {
     private SwipeRefreshLayout swipeRefreshLayout;
@@ -20,68 +24,95 @@ public class MainActivity extends BridgeActivity {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        WebView webView = getBridge() != null ? getBridge().getWebView() : null;
-        if (webView != null) {
-            // 1. Caching & Offline Storage
-            WebSettings settings = webView.getSettings();
-            settings.setDomStorageEnabled(true);
-            settings.setDatabaseEnabled(true);
+        Bridge bridge = getBridge();
+        if (bridge == null) return;
 
-            try {
-                ConnectivityManager cm = (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
-                NetworkInfo activeNetwork = cm != null ? cm.getActiveNetworkInfo() : null;
-                boolean isConnected = activeNetwork != null && activeNetwork.isConnectedOrConnecting();
+        WebView webView = bridge.getWebView();
+        if (webView == null) return;
 
-                if (!isConnected) {
-                    settings.setCacheMode(WebSettings.LOAD_CACHE_ELSE_NETWORK);
-                } else {
-                    settings.setCacheMode(WebSettings.LOAD_DEFAULT);
+        // 1. WebSettings: Cache, DOM Storage, Database, File access
+        WebSettings settings = webView.getSettings();
+        settings.setDomStorageEnabled(true);
+        settings.setDatabaseEnabled(true);
+        settings.setJavaScriptEnabled(true);
+        settings.setAllowFileAccess(true);
+        settings.setAllowContentAccess(true);
+        settings.setMixedContentMode(WebSettings.MIXED_CONTENT_ALWAYS_ALLOW);
+        settings.setCacheMode(WebSettings.LOAD_DEFAULT);
+
+        // 2. Custom BridgeWebViewClient: Mencegah blank screen saat ada SSL Error atau kendala jaringan
+        bridge.setWebViewClient(new BridgeWebViewClient(bridge) {
+            @Override
+            public void onReceivedSslError(WebView view, SslErrorHandler handler, SslError error) {
+                // Sangat penting untuk Android 13: Abaikan SSL mismatch/self-signed cert agar tidak blank
+                handler.proceed();
+            }
+
+            @Override
+            public void onReceivedError(WebView view, WebResourceRequest request, WebResourceError error) {
+                super.onReceivedError(view, request, error);
+                if (request != null && request.isForMainFrame()) {
+                    // Jika koneksi gagal, muat halaman offline interaktif
+                    view.loadUrl("file:///android_asset/public/offline.html");
                 }
-            } catch (Exception e) {
-                settings.setCacheMode(WebSettings.LOAD_DEFAULT);
             }
+        });
 
-            // 2. Native SwipeRefreshLayout (Tarik ke bawah seperti Shopee / Bank)
-            ViewParent parent = webView.getParent();
-            if (parent instanceof ViewGroup) {
-                ViewGroup viewGroup = (ViewGroup) parent;
-                int index = viewGroup.indexOfChild(webView);
-                viewGroup.removeView(webView);
+        // 3. Native Pull-To-Refresh (SwipeRefreshLayout)
+        ViewParent parent = webView.getParent();
+        if (parent instanceof ViewGroup) {
+            ViewGroup viewGroup = (ViewGroup) parent;
+            int index = viewGroup.indexOfChild(webView);
+            viewGroup.removeView(webView);
 
-                swipeRefreshLayout = new SwipeRefreshLayout(this);
-                // Warna tema hijau zamrud & biru tua sesuai SIM-RW
-                swipeRefreshLayout.setColorSchemeColors(
-                    0xFF059669, // Emerald 600
-                    0xFF0D9488, // Teal 600
-                    0xFF1E293B  // Slate 800
+            swipeRefreshLayout = new SwipeRefreshLayout(this);
+            swipeRefreshLayout.setColorSchemeColors(
+                0xFF059669, // Emerald 600
+                0xFF0D9488, // Teal 600
+                0xFF1E293B  // Slate 800
+            );
+
+            swipeRefreshLayout.addView(
+                webView,
+                new ViewGroup.LayoutParams(
+                    ViewGroup.LayoutParams.MATCH_PARENT,
+                    ViewGroup.LayoutParams.MATCH_PARENT
+                )
+            );
+
+            ViewGroup.LayoutParams lp;
+            if (parent instanceof CoordinatorLayout) {
+                lp = new CoordinatorLayout.LayoutParams(
+                    CoordinatorLayout.LayoutParams.MATCH_PARENT,
+                    CoordinatorLayout.LayoutParams.MATCH_PARENT
                 );
-
-                swipeRefreshLayout.addView(
-                    webView,
-                    new ViewGroup.LayoutParams(
-                        ViewGroup.LayoutParams.MATCH_PARENT,
-                        ViewGroup.LayoutParams.MATCH_PARENT
-                    )
+            } else {
+                lp = new ViewGroup.LayoutParams(
+                    ViewGroup.LayoutParams.MATCH_PARENT,
+                    ViewGroup.LayoutParams.MATCH_PARENT
                 );
-                viewGroup.addView(swipeRefreshLayout, index);
+            }
+            viewGroup.addView(swipeRefreshLayout, index, lp);
 
-                // Tarik ke bawah hanya aktif jika scroll halaman sudah di paling atas
-                swipeRefreshLayout.setOnChildScrollUpCallback((parentLayout, child) -> {
-                    return webView.getScrollY() > 0;
-                });
+            // canScrollVertically(-1) mengembalikan true jika halaman sedang di-scroll ke bawah (bukan di pucuk atas)
+            swipeRefreshLayout.setOnChildScrollUpCallback((parentLayout, child) -> {
+                return webView.canScrollVertically(-1);
+            });
 
-                // Aksi refresh saat ditarik
-                swipeRefreshLayout.setOnRefreshListener(() -> {
+            swipeRefreshLayout.setOnRefreshListener(() -> {
+                String currentUrl = webView.getUrl();
+                if (currentUrl != null && currentUrl.contains("offline.html")) {
+                    webView.loadUrl("https://simrw.web.id");
+                } else {
                     webView.reload();
+                }
 
-                    // Hentikan animasi loading refresh setelah selesai atau timeout 2.5 detik
-                    new Handler(Looper.getMainLooper()).postDelayed(() -> {
-                        if (swipeRefreshLayout != null && swipeRefreshLayout.isRefreshing()) {
-                            swipeRefreshLayout.setRefreshing(false);
-                        }
-                    }, 2500);
-                });
-            }
+                new Handler(Looper.getMainLooper()).postDelayed(() -> {
+                    if (swipeRefreshLayout != null && swipeRefreshLayout.isRefreshing()) {
+                        swipeRefreshLayout.setRefreshing(false);
+                    }
+                }, 2000);
+            });
         }
     }
 }

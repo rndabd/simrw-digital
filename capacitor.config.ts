@@ -7,6 +7,8 @@ const config: CapacitorConfig = {
   server: {
     url: "https://simrw.web.id",
     cleartext: true,
+    errorPath: "offline.html",
+    allowNavigation: ["*"],
   },
   android: {
     allowMixedContent: true,
@@ -14,4 +16,3 @@ const config: CapacitorConfig = {
 };
 
 export default config;
-
