@@ -112,18 +112,11 @@ export async function POST(req: NextRequest) {
 
     const store = getStore();
 
-    // 2. Cek NIK dan Nomor HP Unik
+    // 2. Cek NIK Unik (NIK strictly unique, nomor telepon dapat digunakan bersama keluarga)
     const nikHash = hashBlindIndex(nik);
     if (store.users.some((u) => u.nik_hash === nikHash)) {
       return NextResponse.json(
         { success: false, message: "NIK sudah terdaftar dalam sistem SIM-RW." },
-        { status: 409 }
-      );
-    }
-
-    if (store.users.some((u) => u.phone_number === phoneNumber)) {
-      return NextResponse.json(
-        { success: false, message: "Nomor WhatsApp sudah digunakan oleh akun lain." },
         { status: 409 }
       );
     }

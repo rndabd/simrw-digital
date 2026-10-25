@@ -102,20 +102,12 @@ export async function POST(req: NextRequest) {
       rtId = foundRt ? foundRt.id : store.rts[0].id;
     }
 
-    // 3. Blind index uniqueness check
+    // 3. Blind index uniqueness check (NIK strictly unique per citizen, 1 phone can be shared by household)
     const nikHash = hashBlindIndex(nik);
     const existingNik = store.users.find((u) => u.nik_hash === nikHash);
     if (existingNik) {
       return NextResponse.json(
         { success: false, message: "NIK sudah terdaftar dalam sistem SIM-RW" },
-        { status: 409 }
-      );
-    }
-
-    const existingPhone = store.users.find((u) => u.phone_number === phoneNumber);
-    if (existingPhone) {
-      return NextResponse.json(
-        { success: false, message: "Nomor WhatsApp/HP sudah terdaftar" },
         { status: 409 }
       );
     }

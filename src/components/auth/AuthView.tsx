@@ -91,7 +91,7 @@ export default function AuthView() {
   }, []);
 
   // 1. LOGIN STATE
-  const [phone, setPhone] = useState("");
+  const [loginNik, setLoginNik] = useState("");
   const [password, setPassword] = useState("");
 
   // FORGOT PASSWORD STATE
@@ -378,7 +378,7 @@ export default function AuthView() {
       const data = await res.json();
       if (data.success) {
         setForgotStep(4);
-        setPhone(forgotContact);
+        setLoginNik(forgotNik);
         setPassword(forgotNewPassword);
       } else {
         setForgotError(data.message || "Gagal memperbarui kata sandi.");
@@ -396,9 +396,16 @@ export default function AuthView() {
     setIsSubmitting(true);
     setErrorMessage(null);
 
-    const result = await login(phone, password);
+    const cleanNik = loginNik.replace(/\D/g, "");
+    if (cleanNik.length !== 16 && loginNik.trim().length < 10) {
+      setErrorMessage("Nomor NIK harus 16 digit sesuai e-KTP.");
+      setIsSubmitting(false);
+      return;
+    }
+
+    const result = await login(cleanNik || loginNik.trim(), password);
     if (!result.success) {
-      setErrorMessage(getFriendlyErrorMessage(result.message, "Nomor WhatsApp atau kata sandi tidak cocok."));
+      setErrorMessage(getFriendlyErrorMessage(result.message, "Nomor NIK atau kata sandi tidak cocok."));
     }
     setIsSubmitting(false);
   };
@@ -621,7 +628,7 @@ export default function AuthView() {
         setTimeout(() => {
           setAuthTab("login");
           setSuccessMessage(null);
-          setPhone(resPhone);
+          setLoginNik(resNik);
           setPassword(resPassword);
         }, 2500);
       } else {
@@ -698,7 +705,7 @@ export default function AuthView() {
         setTimeout(() => {
           setAuthTab("login");
           setSuccessMessage(null);
-          setPhone(offPhone);
+          setLoginNik(offNik);
           setPassword(offPassword);
         }, 3000);
       } else {
@@ -836,16 +843,28 @@ export default function AuthView() {
           <form onSubmit={handleLoginSubmit} className="space-y-3">
             <div>
               <label className="text-xs font-semibold text-slate-700 block mb-1">
-                Nomor WhatsApp / HP
+                Nomor Induk Kependudukan (NIK)
               </label>
-              <input
-                type="tel"
-                required
-                value={phone}
-                onChange={(e) => setPhone(e.target.value)}
-                placeholder="08xxxxxxxx"
-                className="w-full text-xs p-3 rounded-xl border border-slate-300 font-medium focus:ring-2 focus:ring-emerald-500"
-              />
+              <div className="relative">
+                <input
+                  type="text"
+                  inputMode="numeric"
+                  pattern="[0-9]*"
+                  maxLength={16}
+                  required
+                  value={loginNik}
+                  onChange={(e) => setLoginNik(e.target.value.replace(/\D/g, "").slice(0, 16))}
+                  placeholder="16 digit NIK sesuai KTP"
+                  className="w-full text-xs p-3 pr-14 rounded-xl border border-slate-300 font-medium focus:ring-2 focus:ring-emerald-500 tracking-wider font-mono"
+                />
+                <span className="absolute right-3 top-3 text-[10px] font-semibold text-slate-400">
+                  {loginNik.length}/16
+                </span>
+              </div>
+              <p className="text-[10px] text-slate-500 mt-1 flex items-center gap-1">
+                <Info className="w-3 h-3 text-emerald-600 shrink-0" />
+                1 nomor HP/WA dapat digunakan beberapa NIK dalam 1 Kartu Keluarga (KK).
+              </p>
             </div>
 
             <div>
@@ -859,8 +878,8 @@ export default function AuthView() {
                     setAuthTab("forgot");
                     setForgotStep(1);
                     setForgotError(null);
-                    setForgotNik("");
-                    setForgotContact(phone || "");
+                    setForgotNik(loginNik || "");
+                    setForgotContact("");
                     setForgotAdminContact(null);
                   }}
                   className="text-[11px] font-bold text-emerald-700 hover:text-emerald-800 hover:underline"

@@ -31,7 +31,7 @@ interface AuthContextType {
   isLoading: boolean;
   isOfficerMode: boolean;
   setOfficerMode: (val: boolean) => void;
-  login: (phoneNumber: string, password: string) => Promise<{ success: boolean; message?: string }>;
+  login: (nik: string, password: string) => Promise<{ success: boolean; message?: string }>;
   quickLogin: (type: "ADMIN" | "RT" | "RW" | "RESIDENT" | "PENDING") => Promise<void>;
   logout: () => Promise<void>;
   refreshProfile: () => Promise<void>;
@@ -105,13 +105,13 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     }
   }, [user?.id]);
 
-  const login = async (phoneNumber: string, password: string) => {
+  const login = async (nik: string, password: string) => {
     setIsLoading(true);
     try {
       const res = await fetch("/api/v1/auth/login", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ phoneNumber, password }),
+        body: JSON.stringify({ nik, phoneNumber: nik, password }),
       });
       const data = await res.json();
       if (res.ok && data.success) {

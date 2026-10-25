@@ -1,26 +1,51 @@
 import { NextRequest, NextResponse } from "next/server";
 import { getStore } from "@/lib/data-store";
 import { comparePassword, generateAccessToken, generateRefreshToken } from "@/lib/auth";
-import { decryptAES256GCM, maskNik } from "@/lib/security";
+import { decryptAES256GCM, maskNik, hashBlindIndex } from "@/lib/security";
 import { recordAuditLog } from "@/lib/audit";
 
 export async function POST(req: NextRequest) {
   try {
-    const { phoneNumber, password } = await req.json();
+    const body = await req.json();
+    const nikInput = (body.nik || body.phoneNumber || body.identifier || "").toString().trim();
+    const password = (body.password || "").toString();
 
-    if (!phoneNumber || !password) {
+    if (!nikInput || !password) {
       return NextResponse.json(
-        { success: false, message: "Nomor HP dan kata sandi wajib diisi" },
+        { success: false, message: "Nomor NIK dan kata sandi wajib diisi" },
         { status: 400 }
       );
     }
 
     const store = getStore();
-    const user = store.users.find((u) => u.phone_number === phoneNumber.trim());
+
+    // 1. Cari pengguna berdasarkan blind index NIK (16 digit)
+    const cleanNik = nikInput.replace(/\D/g, "");
+    let user = null;
+    if (cleanNik.length === 16) {
+      const nikHash = hashBlindIndex(cleanNik);
+      user = store.users.find((u) => u.nik_hash === nikHash);
+    }
+
+    // Jika belum ketemu, coba blind index input mentah
+    if (!user) {
+      const rawNikHash = hashBlindIndex(nikInput);
+      user = store.users.find((u) => u.nik_hash === rawNikHash);
+    }
+
+    // 2. Fallback untuk kompatibilitas jika input nomor HP atau email
+    if (!user) {
+      user = store.users.find(
+        (u) =>
+          u.phone_number === nikInput ||
+          (cleanNik && u.phone_number === cleanNik) ||
+          (u.email && u.email.toLowerCase() === nikInput.toLowerCase())
+      );
+    }
 
     if (!user) {
       return NextResponse.json(
-        { success: false, message: "Nomor HP atau kata sandi salah" },
+        { success: false, message: "Nomor NIK atau kata sandi salah" },
         { status: 401 }
       );
     }
@@ -28,7 +53,7 @@ export async function POST(req: NextRequest) {
     const isMatch = await comparePassword(password, user.password_hash);
     if (!isMatch) {
       return NextResponse.json(
-        { success: false, message: "Nomor HP atau kata sandi salah" },
+        { success: false, message: "Nomor NIK atau kata sandi salah" },
         { status: 401 }
       );
     }
