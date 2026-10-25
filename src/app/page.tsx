@@ -28,24 +28,6 @@ export default function HomePage() {
   const [wargaSubTab, setWargaSubTab] = useState<"BAGAN" | "KONTAK" | "DARURAT">("BAGAN");
   const [forceReady, setForceReady] = useState(false);
 
-  // Check if system is initialized when no user is logged in
-  useEffect(() => {
-    async function checkSetup() {
-      try {
-        const res = await fetch("/api/v1/setup/status");
-        const json = await res.json();
-        if (json.success && !json.initialized) {
-          router.push("/setup");
-        }
-      } catch (e) {
-        // network or server error handled gracefully
-      }
-    }
-    if (!user) {
-      checkSetup();
-    }
-  }, [user, router]);
-
   // If user is Super Admin, default to "admin" tab
   useEffect(() => {
     if (user?.isSuperAdmin) {

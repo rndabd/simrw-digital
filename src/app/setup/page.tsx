@@ -50,7 +50,10 @@ export default function SetupPage() {
   useEffect(() => {
     async function checkStatus() {
       try {
-        const res = await fetch("/api/v1/setup/status");
+        const res = await fetch("/api/v1/setup/status?t=" + Date.now(), {
+          cache: "no-store",
+          headers: { "Cache-Control": "no-cache" },
+        });
         const json = await res.json();
         if (json.success && json.initialized) {
           setAlreadyInitialized(true);
@@ -164,7 +167,7 @@ export default function SetupPage() {
             </p>
           </div>
           <button
-            onClick={() => router.push("/")}
+            onClick={() => (window.location.href = "/")}
             className="w-full py-3 px-4 rounded-xl bg-emerald-700 hover:bg-emerald-800 text-white font-bold text-xs flex items-center justify-center gap-2 shadow-sm transition-all"
           >
             Buka Halaman Masuk
@@ -539,7 +542,7 @@ export default function SetupPage() {
               </p>
             </div>
             <button
-              onClick={() => router.push("/")}
+              onClick={() => (window.location.href = "/")}
               className="w-full py-3.5 px-4 rounded-xl bg-emerald-600 hover:bg-emerald-700 text-white font-bold text-xs flex items-center justify-center gap-2 shadow-sm transition-all"
             >
               Masuk ke Aplikasi Sekarang

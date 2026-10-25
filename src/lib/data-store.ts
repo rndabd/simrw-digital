@@ -539,8 +539,6 @@ function getInitialData(): DataStoreSchema {
 let memoryStore: DataStoreSchema | null = null;
 
 export function getStore(): DataStoreSchema {
-  if (memoryStore) return memoryStore;
-
   if (!fs.existsSync(DATA_DIR)) {
     fs.mkdirSync(DATA_DIR, { recursive: true });
   }
@@ -548,36 +546,37 @@ export function getStore(): DataStoreSchema {
   if (fs.existsSync(STORE_FILE)) {
     try {
       const content = fs.readFileSync(STORE_FILE, "utf-8");
-      memoryStore = JSON.parse(content);
-      if (!memoryStore?.rws) memoryStore!.rws = [];
-      if (!memoryStore?.rts) memoryStore!.rts = [];
-      if (!memoryStore?.households) memoryStore!.households = [];
-      if (!memoryStore?.users) memoryStore!.users = [];
-      if (!memoryStore?.roles) memoryStore!.roles = [];
-      if (!memoryStore?.user_roles) memoryStore!.user_roles = [];
-      if (!memoryStore?.officer_requests) memoryStore!.officer_requests = [];
-      if (!memoryStore?.device_tokens) memoryStore!.device_tokens = [];
-      if (!memoryStore?.announcements) memoryStore!.announcements = [];
-      if (!memoryStore?.audit_logs) memoryStore!.audit_logs = [];
-      if (!memoryStore?.bills) memoryStore!.bills = [];
-      if (!memoryStore?.cash_transactions) memoryStore!.cash_transactions = [];
-      if (!memoryStore?.fund_requests) memoryStore!.fund_requests = [];
-      if (!memoryStore?.rollovers) memoryStore!.rollovers = [];
-      if (!memoryStore?.master_residents) memoryStore!.master_residents = [];
-      if (!memoryStore?.complaints) memoryStore!.complaints = [];
-      if (!memoryStore?.emergency_contacts) memoryStore!.emergency_contacts = [];
-      if (!memoryStore?.wilayah_configs) memoryStore!.wilayah_configs = [];
-      if (!memoryStore?.verification_otps) memoryStore!.verification_otps = [];
+      const parsed: DataStoreSchema = JSON.parse(content);
+      if (!parsed.rws) parsed.rws = [];
+      if (!parsed.rts) parsed.rts = [];
+      if (!parsed.households) parsed.households = [];
+      if (!parsed.users) parsed.users = [];
+      if (!parsed.roles) parsed.roles = [];
+      if (!parsed.user_roles) parsed.user_roles = [];
+      if (!parsed.officer_requests) parsed.officer_requests = [];
+      if (!parsed.device_tokens) parsed.device_tokens = [];
+      if (!parsed.announcements) parsed.announcements = [];
+      if (!parsed.audit_logs) parsed.audit_logs = [];
+      if (!parsed.bills) parsed.bills = [];
+      if (!parsed.cash_transactions) parsed.cash_transactions = [];
+      if (!parsed.fund_requests) parsed.fund_requests = [];
+      if (!parsed.rollovers) parsed.rollovers = [];
+      if (!parsed.master_residents) parsed.master_residents = [];
+      if (!parsed.complaints) parsed.complaints = [];
+      if (!parsed.emergency_contacts) parsed.emergency_contacts = [];
+      if (!parsed.wilayah_configs) parsed.wilayah_configs = [];
+      if (!parsed.verification_otps) parsed.verification_otps = [];
 
       // Ensure all standard roles exist
       const initialRoles = getInitialData().roles;
       for (const r of initialRoles) {
-        if (!memoryStore!.roles.some((ex) => ex.id === r.id || ex.name === r.name)) {
-          memoryStore!.roles.push(r);
+        if (!parsed.roles.some((ex) => ex.id === r.id || ex.name === r.name)) {
+          parsed.roles.push(r);
         }
       }
 
-      return memoryStore!;
+      memoryStore = parsed;
+      return memoryStore;
     } catch (e) {
       console.warn("Failed to read store.json, reinitializing initial data");
     }

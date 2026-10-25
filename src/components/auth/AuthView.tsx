@@ -74,7 +74,10 @@ export default function AuthView() {
   useEffect(() => {
     async function checkInit() {
       try {
-        const res = await fetch("/api/v1/setup/status");
+        const res = await fetch("/api/v1/setup/status?t=" + Date.now(), {
+          cache: "no-store",
+          headers: { "Cache-Control": "no-cache" },
+        });
         const json = await res.json();
         if (json.success) {
           setIsSystemInitialized(json.initialized);
