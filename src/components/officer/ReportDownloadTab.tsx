@@ -18,6 +18,9 @@ import {
   Filter,
   Check,
   Eye,
+  Database,
+  FileSpreadsheet,
+  UserCheck,
 } from "lucide-react";
 
 export default function ReportDownloadTab() {
@@ -36,6 +39,39 @@ export default function ReportDownloadTab() {
   const [scopeUnit, setScopeUnit] = useState("CURRENT_RT");
   const [isGenerating, setIsGenerating] = useState(false);
   const [downloadSuccess, setDownloadSuccess] = useState<string | null>(null);
+  const [isExportingDb, setIsExportingDb] = useState(false);
+
+  const handleExportDatabase = async (type: "all" | "warga" | "pengurus") => {
+    setIsExportingDb(true);
+    try {
+      const token = localStorage.getItem("warga_token");
+      const res = await fetch(`/api/v1/export/database?type=${type}&format=csv`, {
+        headers: token ? { Authorization: `Bearer ${token}` } : {},
+      });
+      if (!res.ok) {
+        const err = await res.json().catch(() => ({}));
+        alert(err.message || "Gagal mengunduh file master database.");
+        return;
+      }
+      const blob = await res.blob();
+      const url = window.URL.createObjectURL(blob);
+      const a = document.createElement("a");
+      a.href = url;
+      const dateStr = new Date().toISOString().split("T")[0];
+      const filename = `Database_SIM-RW_${type.toUpperCase()}_${dateStr}.csv`;
+      a.download = filename;
+      document.body.appendChild(a);
+      a.click();
+      a.remove();
+      window.URL.revokeObjectURL(url);
+      setDownloadSuccess(`Master Database "${filename}" berhasil diunduh!`);
+      setTimeout(() => setDownloadSuccess(null), 5000);
+    } catch (err: any) {
+      alert("Error unduh database: " + err.message);
+    } finally {
+      setIsExportingDb(false);
+    }
+  };
 
   // Loaded data for report compilation
   const [reportData, setReportData] = useState<any>({
@@ -581,6 +617,62 @@ export default function ReportDownloadTab() {
           </div>
         </div>
       )}
+
+      {/* Master Database Export Card (Warga & Pengurus) */}
+      <div className="p-6 rounded-3xl bg-gradient-to-br from-indigo-950 via-slate-900 to-slate-950 border-2 border-indigo-500/40 text-white shadow-xl space-y-4">
+        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+          <div className="flex items-center gap-3">
+            <div className="w-12 h-12 rounded-2xl bg-indigo-500/20 border border-indigo-400/30 flex items-center justify-center text-indigo-300 shrink-0">
+              <Database className="w-6 h-6 text-indigo-400" />
+            </div>
+            <div>
+              <div className="flex items-center gap-2">
+                <span className="px-2.5 py-0.5 rounded-full text-[10px] font-extrabold bg-indigo-500/30 text-indigo-200 border border-indigo-400/30 uppercase tracking-wider">
+                  Master Export Database
+                </span>
+                <span className="text-xs text-emerald-400 font-bold flex items-center gap-1">
+                  <ShieldCheck className="w-3.5 h-3.5" /> UU PDP No. 27/2022
+                </span>
+              </div>
+              <h3 className="text-base font-extrabold text-white mt-0.5">
+                Ekspor Database Kependudukan & Kepengurusan Lengkap
+              </h3>
+              <p className="text-xs text-slate-300 font-medium">
+                Unduh salinan resmi data sensus kependudukan seluruh jiwa & struktur legalitas pengurus dalam format Spreadsheet (.CSV) kompatibel Microsoft Excel.
+              </p>
+            </div>
+          </div>
+        </div>
+
+        <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 pt-2">
+          <button
+            onClick={() => handleExportDatabase("all")}
+            disabled={isExportingDb}
+            className="p-3.5 rounded-2xl bg-indigo-600 hover:bg-indigo-500 active:scale-95 text-white font-bold text-xs flex items-center justify-center gap-2 shadow-lg shadow-indigo-950/50 transition-all border border-indigo-400/30"
+          >
+            <Download className="w-4 h-4 text-white" />
+            <span>{isExportingDb ? "Memproses..." : "Ekspor Lengkap (Warga & Pengurus)"}</span>
+          </button>
+
+          <button
+            onClick={() => handleExportDatabase("warga")}
+            disabled={isExportingDb}
+            className="p-3.5 rounded-2xl bg-slate-800 hover:bg-slate-700 active:scale-95 text-white font-bold text-xs flex items-center justify-center gap-2 shadow-md transition-all border border-slate-700"
+          >
+            <Users className="w-4 h-4 text-emerald-400" />
+            <span>{isExportingDb ? "Memproses..." : "Database Sensus Warga Saja"}</span>
+          </button>
+
+          <button
+            onClick={() => handleExportDatabase("pengurus")}
+            disabled={isExportingDb}
+            className="p-3.5 rounded-2xl bg-slate-800 hover:bg-slate-700 active:scale-95 text-white font-bold text-xs flex items-center justify-center gap-2 shadow-md transition-all border border-slate-700"
+          >
+            <UserCheck className="w-4 h-4 text-amber-400" />
+            <span>{isExportingDb ? "Memproses..." : "Daftar Kepengurusan Saja"}</span>
+          </button>
+        </div>
+      </div>
 
       {/* Action Buttons: Cetak PDF Resmi & Unduh CSV */}
       <div className="p-6 rounded-3xl bg-white dark:bg-slate-900 border-2 border-slate-200 dark:border-slate-800 shadow-lg flex flex-col sm:flex-row items-center justify-between gap-4">

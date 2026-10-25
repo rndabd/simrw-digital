@@ -21,6 +21,9 @@ import {
   Calendar,
   X,
   Check,
+  Download,
+  FileSpreadsheet,
+  ChevronDown,
 } from "lucide-react";
 
 export default function MasterResidentsTab() {
@@ -58,6 +61,40 @@ export default function MasterResidentsTab() {
 
   // Unmasked NIK state for privacy
   const [unmaskedNiks, setUnmaskedNiks] = useState<Record<string, boolean>>({});
+
+  // Export State
+  const [isExporting, setIsExporting] = useState(false);
+  const [showExportMenu, setShowExportMenu] = useState(false);
+
+  const handleExport = async (type: "all" | "warga" | "pengurus") => {
+    setIsExporting(true);
+    try {
+      const token = localStorage.getItem("warga_token");
+      const res = await fetch(`/api/v1/export/database?type=${type}&format=csv`, {
+        headers: token ? { Authorization: `Bearer ${token}` } : {},
+      });
+      if (!res.ok) {
+        const err = await res.json().catch(() => ({}));
+        alert(err.message || "Gagal mengunduh file export.");
+        return;
+      }
+      const blob = await res.blob();
+      const url = window.URL.createObjectURL(blob);
+      const a = document.createElement("a");
+      a.href = url;
+      const dateStr = new Date().toISOString().split("T")[0];
+      a.download = `Database_SIM-RW_${type.toUpperCase()}_${dateStr}.csv`;
+      document.body.appendChild(a);
+      a.click();
+      a.remove();
+      window.URL.revokeObjectURL(url);
+      setShowExportMenu(false);
+    } catch (err: any) {
+      alert("Gagal mengekspor: " + err.message);
+    } finally {
+      setIsExporting(false);
+    }
+  };
 
   const fetchResidents = async () => {
     setIsLoading(true);
@@ -264,13 +301,66 @@ export default function MasterResidentsTab() {
           </div>
         </div>
 
-        <button
-          onClick={handleOpenAddModal}
-          className="py-2 px-3.5 rounded-xl bg-emerald-600 hover:bg-emerald-500 text-white font-extrabold text-xs flex items-center justify-center gap-1.5 shadow-md shadow-emerald-950/40 transition-all active:scale-95 shrink-0"
-        >
-          <UserPlus className="w-4 h-4" />
-          <span>Input Penduduk Baru</span>
-        </button>
+        <div className="flex flex-wrap items-center gap-2 shrink-0">
+          {/* Export Database Button with Dropdown */}
+          <div className="relative">
+            <button
+              onClick={() => setShowExportMenu(!showExportMenu)}
+              disabled={isExporting}
+              className="py-2 px-3.5 rounded-xl bg-slate-800 hover:bg-slate-700 border border-slate-600 text-white font-extrabold text-xs flex items-center justify-center gap-1.5 shadow-md transition-all active:scale-95"
+            >
+              <FileSpreadsheet className="w-4 h-4 text-emerald-400" />
+              <span>{isExporting ? "Mengekspor..." : "Ekspor Database"}</span>
+              <ChevronDown className="w-3.5 h-3.5 text-slate-400" />
+            </button>
+
+            {showExportMenu && (
+              <div className="absolute right-0 mt-2 w-64 bg-slate-900 border border-slate-700 rounded-2xl shadow-2xl p-2 z-50 animate-in fade-in zoom-in-95 space-y-1">
+                <div className="px-2.5 py-1.5 text-[10.5px] font-bold text-slate-400 uppercase tracking-wider border-b border-slate-800">
+                  Format Unduh Excel / CSV
+                </div>
+                <button
+                  onClick={() => handleExport("all")}
+                  className="w-full text-left px-3 py-2 rounded-xl text-xs font-semibold text-slate-100 hover:bg-indigo-600/30 hover:text-white flex items-center justify-between transition-all"
+                >
+                  <div className="flex items-center gap-2">
+                    <Download className="w-3.5 h-3.5 text-indigo-400" />
+                    <span>Lengkap (Warga & Pengurus)</span>
+                  </div>
+                  <span className="text-[10px] px-1.5 py-0.5 rounded bg-indigo-500/30 text-indigo-200">CSV</span>
+                </button>
+                <button
+                  onClick={() => handleExport("warga")}
+                  className="w-full text-left px-3 py-2 rounded-xl text-xs font-semibold text-slate-100 hover:bg-emerald-600/30 hover:text-white flex items-center justify-between transition-all"
+                >
+                  <div className="flex items-center gap-2">
+                    <Users className="w-3.5 h-3.5 text-emerald-400" />
+                    <span>Sensus Data Warga Saja</span>
+                  </div>
+                  <span className="text-[10px] px-1.5 py-0.5 rounded bg-emerald-500/30 text-emerald-200">CSV</span>
+                </button>
+                <button
+                  onClick={() => handleExport("pengurus")}
+                  className="w-full text-left px-3 py-2 rounded-xl text-xs font-semibold text-slate-100 hover:bg-amber-600/30 hover:text-white flex items-center justify-between transition-all"
+                >
+                  <div className="flex items-center gap-2">
+                    <Users className="w-3.5 h-3.5 text-amber-400" />
+                    <span>Daftar Pengurus RT/RW Saja</span>
+                  </div>
+                  <span className="text-[10px] px-1.5 py-0.5 rounded bg-amber-500/30 text-amber-200">CSV</span>
+                </button>
+              </div>
+            )}
+          </div>
+
+          <button
+            onClick={handleOpenAddModal}
+            className="py-2 px-3.5 rounded-xl bg-emerald-600 hover:bg-emerald-500 text-white font-extrabold text-xs flex items-center justify-center gap-1.5 shadow-md shadow-emerald-950/40 transition-all active:scale-95 shrink-0"
+          >
+            <UserPlus className="w-4 h-4" />
+            <span>Input Penduduk Baru</span>
+          </button>
+        </div>
       </div>
 
       {/* Filter & Search Bar */}

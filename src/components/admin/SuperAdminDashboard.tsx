@@ -19,12 +19,58 @@ import {
   X,
   Check,
   LogOut,
+  Download,
+  Database,
+  FileSpreadsheet,
+  UserCheck,
 } from "lucide-react";
 import { formatAuditAction, AuditPayloadViewer, formatRoleName } from "@/lib/formatters";
 
 export default function SuperAdminDashboard() {
   const { user, logout } = useAuth();
-  const [activeTab, setActiveTab] = useState<"rw_requests" | "all_rws" | "rollover_wizard" | "rollover_history" | "audit">("rw_requests");
+  const [activeTab, setActiveTab] = useState<"rw_requests" | "all_rws" | "rollover_wizard" | "rollover_history" | "audit" | "export_database">("rw_requests");
+
+  // Export Database State
+  const [exportRwFilter, setExportRwFilter] = useState("");
+  const [exportType, setExportType] = useState<"all" | "warga" | "pengurus">("all");
+  const [isExporting, setIsExporting] = useState(false);
+  const [exportSuccess, setExportSuccess] = useState<string | null>(null);
+
+  const handleSuperAdminExport = async (typeOverride?: "all" | "warga" | "pengurus") => {
+    const type = typeOverride || exportType;
+    setIsExporting(true);
+    try {
+      const token = localStorage.getItem("warga_token");
+      let url = `/api/v1/export/database?type=${type}&format=csv`;
+      if (exportRwFilter) url += `&rw_id=${encodeURIComponent(exportRwFilter)}`;
+
+      const res = await fetch(url, {
+        headers: token ? { Authorization: `Bearer ${token}` } : {},
+      });
+      if (!res.ok) {
+        const err = await res.json().catch(() => ({}));
+        alert(err.message || "Gagal mengekspor database.");
+        return;
+      }
+      const blob = await res.blob();
+      const blobUrl = window.URL.createObjectURL(blob);
+      const a = document.createElement("a");
+      a.href = blobUrl;
+      const dateStr = new Date().toISOString().split("T")[0];
+      const filename = `Database_Kelurahan_${type.toUpperCase()}_${dateStr}.csv`;
+      a.download = filename;
+      document.body.appendChild(a);
+      a.click();
+      a.remove();
+      window.URL.revokeObjectURL(blobUrl);
+      setExportSuccess(`Database "${filename}" berhasil diunduh!`);
+      setTimeout(() => setExportSuccess(null), 5000);
+    } catch (err: any) {
+      alert("Gagal mengekspor database: " + err.message);
+    } finally {
+      setIsExporting(false);
+    }
+  };
 
   // RW Requests & List State
   const [rwList, setRwList] = useState<any[]>([]);
@@ -222,7 +268,7 @@ export default function SuperAdminDashboard() {
         </div>
 
         {/* Tab Controls */}
-        <div className="grid grid-cols-2 md:grid-cols-5 gap-1.5 mt-6 bg-slate-800/90 p-1.5 rounded-2xl text-xs font-bold text-slate-200">
+        <div className="grid grid-cols-2 md:grid-cols-6 gap-1.5 mt-6 bg-slate-800/90 p-1.5 rounded-2xl text-xs font-bold text-slate-200">
           <button
             onClick={() => setActiveTab("rw_requests")}
             className={`py-2 px-3 rounded-xl transition-all flex items-center justify-center gap-1.5 ${
@@ -281,6 +327,18 @@ export default function SuperAdminDashboard() {
           >
             <Lock className="w-3.5 h-3.5" />
             <span>Jejak Audit</span>
+          </button>
+
+          <button
+            onClick={() => setActiveTab("export_database")}
+            className={`py-2 px-3 rounded-xl transition-all flex items-center justify-center gap-1.5 ${
+              activeTab === "export_database"
+                ? "bg-amber-500 text-slate-950 shadow-md font-extrabold"
+                : "hover:text-white"
+            }`}
+          >
+            <Database className="w-3.5 h-3.5" />
+            <span>Ekspor Database</span>
           </button>
         </div>
       </div>
@@ -713,6 +771,188 @@ export default function SuperAdminDashboard() {
               })}
             </div>
           )}
+        </div>
+      )}
+
+      {/* TAB 6: EKSPOR DATABASE KELURAHAN (WARGA & PENGURUS) */}
+      {activeTab === "export_database" && (
+        <div className="space-y-4">
+          {/* Success Banner */}
+          {exportSuccess && (
+            <div className="p-4 bg-emerald-50 border border-emerald-300 rounded-2xl flex items-center justify-between text-emerald-800">
+              <div className="flex items-center gap-3">
+                <CheckCircle2 className="w-5 h-5 text-emerald-600 shrink-0" />
+                <p className="text-sm font-semibold">{exportSuccess}</p>
+              </div>
+              <button
+                onClick={() => setExportSuccess(null)}
+                className="text-emerald-700 font-bold text-xs hover:underline"
+              >
+                Tutup
+              </button>
+            </div>
+          )}
+
+          {/* Top Banner */}
+          <div className="p-6 rounded-3xl bg-gradient-to-r from-slate-900 via-indigo-950 to-slate-900 text-white shadow-xl border border-indigo-900/60 relative overflow-hidden">
+            <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
+              <div className="flex items-center gap-4">
+                <div className="w-14 h-14 rounded-2xl bg-amber-500/20 border border-amber-400/30 flex items-center justify-center text-amber-300 shrink-0">
+                  <Database className="w-7 h-7 text-amber-400" />
+                </div>
+                <div>
+                  <div className="flex items-center gap-2 mb-1">
+                    <span className="px-3 py-0.5 bg-amber-500/20 border border-amber-400/40 text-amber-300 text-[10px] font-extrabold rounded-full uppercase tracking-wider">
+                      SUPER ADMIN EXPORT CENTER
+                    </span>
+                    <span className="text-xs text-emerald-400 font-semibold flex items-center gap-1">
+                      <ShieldCheck className="w-3.5 h-3.5" /> UU PDP No. 27/2022
+                    </span>
+                  </div>
+                  <h3 className="text-lg font-extrabold text-white">
+                    Pusat Ekspor & Unduh Database Kelurahan
+                  </h3>
+                  <p className="text-xs text-slate-300 font-medium max-w-2xl mt-0.5">
+                    Ekspor seluruh data sensus kependudukan jiwa warga dan susunan kepengurusan RT/RW se-Kelurahan dalam format Spreadsheet (.CSV) standar Microsoft Excel.
+                  </p>
+                </div>
+              </div>
+
+              <div className="flex items-center gap-2">
+                <button
+                  onClick={() => handleSuperAdminExport("all")}
+                  disabled={isExporting}
+                  className="px-4 py-2.5 rounded-xl bg-amber-500 hover:bg-amber-400 active:scale-95 text-slate-950 text-xs font-extrabold flex items-center gap-2 shadow-lg shadow-amber-950/40 transition-all"
+                >
+                  <Download className="w-4 h-4" />
+                  <span>{isExporting ? "Memproses Unduhan..." : "Unduh Semua (.CSV)"}</span>
+                </button>
+              </div>
+            </div>
+          </div>
+
+          {/* Filter & Export Control Box */}
+          <div className="p-6 rounded-3xl bg-white border border-slate-200 shadow-sm space-y-6">
+            <div>
+              <h4 className="text-sm font-extrabold text-slate-900 flex items-center gap-2">
+                <FileSpreadsheet className="w-4 h-4 text-indigo-600" />
+                Konfigurasi Parameter Ekspor Database
+              </h4>
+              <p className="text-xs text-slate-600 font-medium mt-0.5">
+                Pilih cakupan wilayah RW dan jenis data yang ingin diekspor.
+              </p>
+            </div>
+
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+              {/* Filter RW */}
+              <div className="space-y-1.5">
+                <label className="text-xs font-bold text-slate-700">Cakupan Wilayah RW:</label>
+                <select
+                  value={exportRwFilter}
+                  onChange={(e) => setExportRwFilter(e.target.value)}
+                  className="w-full text-xs p-3 rounded-xl border border-slate-300 bg-white font-medium focus:ring-2 focus:ring-amber-500"
+                >
+                  <option value="">Seluruh RW Se-Kelurahan ({rwList.length} RW Terdaftar)</option>
+                  {rwList.map((rw) => (
+                    <option key={rw.id} value={rw.id}>
+                      RW {rw.rw_number} - Kel. {rw.village}, Kec. {rw.district} ({rw.status === "ACTIVE" ? "Aktif" : rw.status})
+                    </option>
+                  ))}
+                </select>
+                <p className="text-[11px] text-slate-500">
+                  Kosongkan untuk mengunduh master database seluruh RW di wilayah kelurahan.
+                </p>
+              </div>
+
+              {/* Tipe Ekspor */}
+              <div className="space-y-1.5">
+                <label className="text-xs font-bold text-slate-700">Bagian Data yang Diunduh:</label>
+                <select
+                  value={exportType}
+                  onChange={(e) => setExportType(e.target.value as any)}
+                  className="w-full text-xs p-3 rounded-xl border border-slate-300 bg-white font-medium focus:ring-2 focus:ring-amber-500"
+                >
+                  <option value="all">Gabungan Lengkap (Data Warga & Pengurus)</option>
+                  <option value="warga">Hanya Sensus & Buku Induk Kependudukan Warga</option>
+                  <option value="pengurus">Hanya Daftar Susunan Kepengurusan RT/RW</option>
+                </select>
+                <p className="text-[11px] text-slate-500">
+                  Format file otomatis disesuaikan dengan formula string untuk mencegah pemotongan NIK/KK di Excel.
+                </p>
+              </div>
+            </div>
+
+            {/* Tombol Aksi Utama */}
+            <div className="pt-2 flex flex-col sm:flex-row items-center justify-between gap-3 border-t border-slate-100">
+              <div className="text-xs text-slate-500">
+                Data terenkripsi AES-256 dan diatur oleh kebijakan kerahasiaan kearsipan kelurahan.
+              </div>
+              <div className="flex items-center gap-2 w-full sm:w-auto">
+                <button
+                  onClick={() => handleSuperAdminExport()}
+                  disabled={isExporting}
+                  className="w-full sm:w-auto px-6 py-3 rounded-2xl bg-indigo-600 hover:bg-indigo-700 active:scale-95 text-white text-xs font-bold flex items-center justify-center gap-2 shadow-md shadow-indigo-900/30 transition-all"
+                >
+                  <Download className="w-4 h-4" />
+                  <span>{isExporting ? "Menyiapkan File..." : "Unduh Sesuai Pilihan (.CSV)"}</span>
+                </button>
+              </div>
+            </div>
+          </div>
+
+          {/* Quick Download Cards */}
+          <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
+            <div
+              onClick={() => handleSuperAdminExport("all")}
+              className="p-4 rounded-2xl bg-white border border-slate-200 hover:border-indigo-400 hover:shadow-md transition-all cursor-pointer space-y-2 group"
+            >
+              <div className="w-10 h-10 rounded-xl bg-indigo-50 border border-indigo-200 flex items-center justify-center text-indigo-600 group-hover:scale-105 transition-all">
+                <Download className="w-5 h-5" />
+              </div>
+              <div className="font-extrabold text-xs text-slate-900">Master Database Gabungan</div>
+              <p className="text-[11px] text-slate-600 leading-relaxed font-medium">
+                Unduh seluruh data sensus warga dan daftar struktur resmi pengurus dalam 1 file spreadsheet.
+              </p>
+              <div className="text-[11px] font-bold text-indigo-600 flex items-center gap-1 pt-1">
+                <span>Unduh File Sekarang</span>
+                <ArrowRight className="w-3 h-3" />
+              </div>
+            </div>
+
+            <div
+              onClick={() => handleSuperAdminExport("warga")}
+              className="p-4 rounded-2xl bg-white border border-slate-200 hover:border-emerald-400 hover:shadow-md transition-all cursor-pointer space-y-2 group"
+            >
+              <div className="w-10 h-10 rounded-xl bg-emerald-50 border border-emerald-200 flex items-center justify-center text-emerald-600 group-hover:scale-105 transition-all">
+                <Users className="w-5 h-5" />
+              </div>
+              <div className="font-extrabold text-xs text-slate-900">Database Warga Saja</div>
+              <p className="text-[11px] text-slate-600 leading-relaxed font-medium">
+                Unduh buku induk sensus kependudukan seluruh jiwa, NIK, KK, hubungan keluarga, dan mutasi.
+              </p>
+              <div className="text-[11px] font-bold text-emerald-600 flex items-center gap-1 pt-1">
+                <span>Unduh Sensus Warga</span>
+                <ArrowRight className="w-3 h-3" />
+              </div>
+            </div>
+
+            <div
+              onClick={() => handleSuperAdminExport("pengurus")}
+              className="p-4 rounded-2xl bg-white border border-slate-200 hover:border-amber-400 hover:shadow-md transition-all cursor-pointer space-y-2 group"
+            >
+              <div className="w-10 h-10 rounded-xl bg-amber-50 border border-amber-200 flex items-center justify-center text-amber-600 group-hover:scale-105 transition-all">
+                <UserCheck className="w-5 h-5" />
+              </div>
+              <div className="font-extrabold text-xs text-slate-900">Daftar Pengurus Saja</div>
+              <p className="text-[11px] text-slate-600 leading-relaxed font-medium">
+                Unduh susunan seluruh pejabat RW dan RT, amanah jabatan, masa bakti, nomor kontak, dan SK.
+              </p>
+              <div className="text-[11px] font-bold text-amber-600 flex items-center gap-1 pt-1">
+                <span>Unduh Data Pengurus</span>
+                <ArrowRight className="w-3 h-3" />
+              </div>
+            </div>
+          </div>
         </div>
       )}
     </div>
