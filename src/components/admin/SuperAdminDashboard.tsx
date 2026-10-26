@@ -23,12 +23,20 @@ import {
   Database,
   FileSpreadsheet,
   UserCheck,
+  Plus,
+  Trash2,
+  Edit3,
+  KeyRound,
+  Search,
+  Filter,
+  UserPlus,
+  AlertCircle,
 } from "lucide-react";
 import { formatAuditAction, AuditPayloadViewer, formatRoleName } from "@/lib/formatters";
 
 export default function SuperAdminDashboard() {
   const { user, logout } = useAuth();
-  const [activeTab, setActiveTab] = useState<"rw_requests" | "all_rws" | "rollover_wizard" | "rollover_history" | "audit" | "export_database">("rw_requests");
+  const [activeTab, setActiveTab] = useState<"rw_requests" | "all_rws" | "manage_users" | "rollover_wizard" | "rollover_history" | "audit" | "export_database">("manage_users");
 
   // Export Database State
   const [exportRwFilter, setExportRwFilter] = useState("");
@@ -99,6 +107,182 @@ export default function SuperAdminDashboard() {
   const [auditLogs, setAuditLogs] = useState<any[]>([]);
   const [isLoadingAudit, setIsLoadingAudit] = useState(false);
 
+  // User Management State
+  const [userList, setUserList] = useState<any[]>([]);
+  const [isLoadingUsers, setIsLoadingUsers] = useState(false);
+  const [userSearch, setUserSearch] = useState("");
+  const [userRoleFilter, setUserRoleFilter] = useState("");
+  const [showAddUserModal, setShowAddUserModal] = useState(false);
+  const [showEditUserModal, setShowEditUserModal] = useState(false);
+  const [userSubmitLoading, setUserSubmitLoading] = useState(false);
+  const [userSubmitError, setUserSubmitError] = useState<string | null>(null);
+  const [userSubmitSuccess, setUserSubmitSuccess] = useState<string | null>(null);
+
+  // Add User Form State
+  const [addFullName, setAddFullName] = useState("");
+  const [addRole, setAddRole] = useState("RESIDENT");
+  const [addPhone, setAddPhone] = useState("");
+  const [addEmail, setAddEmail] = useState("");
+  const [addPassword, setAddPassword] = useState("Warga12345!");
+  const [addNik, setAddNik] = useState("");
+  const [addKk, setAddKk] = useState("");
+  const [addRwId, setAddRwId] = useState("");
+  const [addRtId, setAddRtId] = useState("");
+  const [addAddressBlock, setAddAddressBlock] = useState("");
+  const [addStatus, setAddStatus] = useState<"VERIFIED_ACTIVE" | "PENDING_VERIFICATION">("VERIFIED_ACTIVE");
+
+  // Edit User Form State
+  const [editUserId, setEditUserId] = useState("");
+  const [editFullName, setEditFullName] = useState("");
+  const [editRole, setEditRole] = useState("RESIDENT");
+  const [editPhone, setEditPhone] = useState("");
+  const [editEmail, setEditEmail] = useState("");
+  const [editNik, setEditNik] = useState("");
+  const [editKk, setEditKk] = useState("");
+  const [editRwId, setEditRwId] = useState("");
+  const [editRtId, setEditRtId] = useState("");
+  const [editAddressBlock, setEditAddressBlock] = useState("");
+  const [editStatus, setEditStatus] = useState("VERIFIED_ACTIVE");
+  const [editNewPassword, setEditNewPassword] = useState("");
+
+  const fetchUsers = async () => {
+    setIsLoadingUsers(true);
+    try {
+      const res = await fetch("/api/v1/admin/users");
+      const json = await res.json();
+      if (json.success && Array.isArray(json.data)) {
+        setUserList(json.data);
+      }
+    } catch (e) {
+      console.error(e);
+    } finally {
+      setIsLoadingUsers(false);
+    }
+  };
+
+  const handleCreateUser = async (e: React.FormEvent) => {
+    e.preventDefault();
+    setUserSubmitLoading(true);
+    setUserSubmitError(null);
+    setUserSubmitSuccess(null);
+    try {
+      const res = await fetch("/api/v1/admin/users", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          fullName: addFullName,
+          role: addRole,
+          phoneNumber: addPhone,
+          email: addEmail,
+          password: addPassword,
+          nik: addNik,
+          kk: addKk,
+          rwId: addRwId,
+          rtId: addRtId,
+          addressBlock: addAddressBlock,
+          status: addStatus,
+        }),
+      });
+      const json = await res.json();
+      if (json.success) {
+        setUserSubmitSuccess(json.message);
+        fetchUsers();
+        setTimeout(() => {
+          setShowAddUserModal(false);
+          setUserSubmitSuccess(null);
+          setAddFullName("");
+          setAddPhone("");
+          setAddEmail("");
+          setAddNik("");
+          setAddKk("");
+          setAddAddressBlock("");
+          setAddPassword("Warga12345!");
+        }, 1500);
+      } else {
+        setUserSubmitError(json.message || "Gagal menambahkan akun.");
+      }
+    } catch (err: any) {
+      setUserSubmitError(err.message || "Koneksi bermasalah.");
+    } finally {
+      setUserSubmitLoading(false);
+    }
+  };
+
+  const openEditUser = (u: any) => {
+    setEditUserId(u.id);
+    setEditFullName(u.fullName || "");
+    setEditRole(u.roles?.[0] || "RESIDENT");
+    setEditPhone(u.phoneNumber || "");
+    setEditEmail(u.email || "");
+    setEditNik(u.nik || "");
+    setEditKk(u.kk || "");
+    setEditRwId(u.rwId || "");
+    setEditRtId(u.rtId || "");
+    setEditAddressBlock(u.addressBlock || "");
+    setEditStatus(u.status || "VERIFIED_ACTIVE");
+    setEditNewPassword("");
+    setUserSubmitError(null);
+    setUserSubmitSuccess(null);
+    setShowEditUserModal(true);
+  };
+
+  const handleUpdateUser = async (e: React.FormEvent) => {
+    e.preventDefault();
+    setUserSubmitLoading(true);
+    setUserSubmitError(null);
+    setUserSubmitSuccess(null);
+    try {
+      const res = await fetch(`/api/v1/admin/users/${editUserId}`, {
+        method: "PATCH",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          fullName: editFullName,
+          role: editRole,
+          phoneNumber: editPhone,
+          email: editEmail,
+          nik: editNik,
+          kk: editKk,
+          rwId: editRwId,
+          rtId: editRtId,
+          addressBlock: editAddressBlock,
+          status: editStatus,
+          newPassword: editNewPassword,
+        }),
+      });
+      const json = await res.json();
+      if (json.success) {
+        setUserSubmitSuccess(json.message);
+        fetchUsers();
+        setTimeout(() => {
+          setShowEditUserModal(false);
+          setUserSubmitSuccess(null);
+        }, 1500);
+      } else {
+        setUserSubmitError(json.message || "Gagal memperbarui pengguna.");
+      }
+    } catch (err: any) {
+      setUserSubmitError(err.message || "Koneksi bermasalah.");
+    } finally {
+      setUserSubmitLoading(false);
+    }
+  };
+
+  const handleDeleteUser = async (userId: string, name: string) => {
+    if (!window.confirm(`Yakin ingin menghapus akun pengguna "${name}" dari sistem? Tindakan ini tidak dapat dibatalkan.`)) return;
+    try {
+      const res = await fetch(`/api/v1/admin/users/${userId}`, { method: "DELETE" });
+      const json = await res.json();
+      if (json.success) {
+        alert(json.message);
+        fetchUsers();
+      } else {
+        alert(json.message || "Gagal menghapus pengguna.");
+      }
+    } catch (err: any) {
+      alert(err.message);
+    }
+  };
+
   const fetchRwRequests = async () => {
     setIsLoadingRws(true);
     try {
@@ -148,6 +332,10 @@ export default function SuperAdminDashboard() {
   };
 
   useEffect(() => {
+    fetchRwRequests();
+    if (activeTab === "manage_users") {
+      fetchUsers();
+    }
     if (activeTab === "rw_requests" || activeTab === "all_rws" || activeTab === "rollover_wizard") {
       fetchRwRequests();
     }
@@ -268,7 +456,19 @@ export default function SuperAdminDashboard() {
         </div>
 
         {/* Tab Controls */}
-        <div className="grid grid-cols-2 md:grid-cols-6 gap-1.5 mt-6 bg-slate-800/90 p-1.5 rounded-2xl text-xs font-bold text-slate-200">
+        <div className="grid grid-cols-2 md:grid-cols-7 gap-1.5 mt-6 bg-slate-800/90 p-1.5 rounded-2xl text-xs font-bold text-slate-200">
+          <button
+            onClick={() => setActiveTab("manage_users")}
+            className={`py-2 px-3 rounded-xl transition-all flex items-center justify-center gap-1.5 ${
+              activeTab === "manage_users"
+                ? "bg-amber-500 text-slate-950 shadow-md font-extrabold"
+                : "hover:text-white"
+            }`}
+          >
+            <Users className="w-3.5 h-3.5" />
+            <span>Kelola Akun ({userList.length})</span>
+          </button>
+
           <button
             onClick={() => setActiveTab("rw_requests")}
             className={`py-2 px-3 rounded-xl transition-all flex items-center justify-center gap-1.5 ${
@@ -342,6 +542,845 @@ export default function SuperAdminDashboard() {
           </button>
         </div>
       </div>
+
+      {/* TAB 0: KELOLA PENGGUNA (TAMBAH USER ADMIN / WARGA / PENGURUS) */}
+      {activeTab === "manage_users" && (
+        <div className="space-y-4">
+          {/* Header & Stats Banner */}
+          <div className="p-5 rounded-3xl bg-white border border-slate-200/90 shadow-xs space-y-4">
+            <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+              <div>
+                <h3 className="text-base font-extrabold text-slate-900 tracking-tight flex items-center gap-2">
+                  <Users className="w-5 h-5 text-amber-600" />
+                  Manajemen & Pendaftaran Akun Pengguna
+                </h3>
+                <p className="text-xs text-slate-500 mt-0.5">
+                  Super Admin dapat menambah akun baru (Admin Kelurahan, Pengurus RW/RT, atau Warga). Parameter yang belum diisi dapat dilengkapi kemudian oleh masing-masing pengguna.
+                </p>
+              </div>
+
+              <div className="flex items-center gap-2 shrink-0">
+                <button
+                  type="button"
+                  onClick={fetchUsers}
+                  className="p-2.5 rounded-xl bg-slate-100 hover:bg-slate-200 text-slate-700 text-xs font-bold flex items-center gap-1.5 transition-all"
+                  title="Muat Ulang Data Pengguna"
+                >
+                  <RefreshCw className={`w-3.5 h-3.5 ${isLoadingUsers ? "animate-spin" : ""}`} />
+                  <span>Segarkan</span>
+                </button>
+
+                <button
+                  type="button"
+                  onClick={() => {
+                    setAddFullName("");
+                    setAddPhone("");
+                    setAddEmail("");
+                    setAddPassword("Warga12345!");
+                    setAddRole("RESIDENT");
+                    setAddNik("");
+                    setAddKk("");
+                    setAddRwId(activeRws[0]?.id || "");
+                    setAddRtId("");
+                    setAddAddressBlock("");
+                    setAddStatus("VERIFIED_ACTIVE");
+                    setUserSubmitError(null);
+                    setUserSubmitSuccess(null);
+                    setShowAddUserModal(true);
+                  }}
+                  className="px-4 py-2.5 rounded-xl bg-amber-500 hover:bg-amber-600 text-slate-950 font-extrabold text-xs flex items-center gap-1.5 shadow-md shadow-amber-950/20 active:scale-95 transition-all"
+                >
+                  <UserPlus className="w-4 h-4" />
+                  <span>+ Tambah Akun Baru</span>
+                </button>
+              </div>
+            </div>
+
+            {/* Quick Metrics */}
+            <div className="grid grid-cols-2 sm:grid-cols-4 gap-2 pt-2 border-t border-slate-100">
+              <div className="p-3 rounded-2xl bg-slate-50 border border-slate-200/80">
+                <div className="text-[10px] font-bold text-slate-500 uppercase tracking-wider">Total Akun</div>
+                <div className="text-lg font-black text-slate-900 mt-0.5">{userList.length} Akun</div>
+              </div>
+              <div className="p-3 rounded-2xl bg-amber-50 border border-amber-200/80">
+                <div className="text-[10px] font-bold text-amber-800 uppercase tracking-wider">Admin Kelurahan</div>
+                <div className="text-lg font-black text-amber-950 mt-0.5">
+                  {userList.filter((u) => u.roles.includes("SUPER_ADMIN")).length} Akun
+                </div>
+              </div>
+              <div className="p-3 rounded-2xl bg-emerald-50 border border-emerald-200/80">
+                <div className="text-[10px] font-bold text-emerald-800 uppercase tracking-wider">Pengurus RW & RT</div>
+                <div className="text-lg font-black text-emerald-950 mt-0.5">
+                  {userList.filter((u) => u.roles.some((r: string) => r.startsWith("RW_") || r.startsWith("RT_"))).length} Pejabat
+                </div>
+              </div>
+              <div className="p-3 rounded-2xl bg-indigo-50 border border-indigo-200/80">
+                <div className="text-[10px] font-bold text-indigo-800 uppercase tracking-wider">Warga Terdaftar</div>
+                <div className="text-lg font-black text-indigo-950 mt-0.5">
+                  {userList.filter((u) => u.roles.includes("RESIDENT")).length} Warga
+                </div>
+              </div>
+            </div>
+
+            {/* Filter & Search Bar */}
+            <div className="flex flex-col sm:flex-row items-center gap-2 pt-2">
+              <div className="relative flex-1 w-full">
+                <Search className="w-4 h-4 text-slate-400 absolute left-3 top-3" />
+                <input
+                  type="text"
+                  value={userSearch}
+                  onChange={(e) => setUserSearch(e.target.value)}
+                  placeholder="Cari nama, NIK, No. HP, atau alamat..."
+                  className="w-full text-xs pl-9 pr-3 py-2.5 rounded-xl border border-slate-300 font-medium focus:ring-2 focus:ring-amber-500"
+                />
+              </div>
+
+              <div className="flex items-center gap-2 w-full sm:w-auto">
+                <select
+                  value={userRoleFilter}
+                  onChange={(e) => setUserRoleFilter(e.target.value)}
+                  className="text-xs p-2.5 rounded-xl border border-slate-300 font-medium focus:ring-2 focus:ring-amber-500 bg-white"
+                >
+                  <option value="">Semua Peran Akun</option>
+                  <option value="ADMIN">Super Admin (Kelurahan)</option>
+                  <option value="RW">Pengurus RW</option>
+                  <option value="RT">Pengurus RT</option>
+                  <option value="RESIDENT">Warga Lingkungan</option>
+                </select>
+              </div>
+            </div>
+          </div>
+
+          {/* User List Table / Cards */}
+          {isLoadingUsers ? (
+            <div className="p-12 text-center text-xs font-bold text-slate-600">
+              <RefreshCw className="w-6 h-6 animate-spin mx-auto mb-2 text-amber-500" />
+              Memuat data pengguna sistem...
+            </div>
+          ) : userList.length === 0 ? (
+            <div className="p-12 bg-white rounded-3xl border border-slate-200 text-center space-y-3 shadow-xs">
+              <Users className="w-12 h-12 text-slate-400 mx-auto" />
+              <div className="text-sm font-bold text-slate-800">Belum Ada Pengguna Terdaftar</div>
+              <p className="text-xs text-slate-500 max-w-sm mx-auto">
+                Silakan klik tombol <strong>+ Tambah Akun Baru</strong> di atas untuk mendaftarkan akun perdana Admin, Pengurus, atau Warga.
+              </p>
+            </div>
+          ) : (
+            <div className="bg-white rounded-3xl border border-slate-200/90 shadow-xs overflow-hidden">
+              <div className="overflow-x-auto">
+                <table className="w-full text-left text-xs border-collapse">
+                  <thead>
+                    <tr className="bg-slate-50 border-b border-slate-200 text-slate-700 font-bold uppercase tracking-wider text-[10px]">
+                      <th className="py-3.5 px-4">Nama & Kontak</th>
+                      <th className="py-3.5 px-4">Peran Akun</th>
+                      <th className="py-3.5 px-4">NIK (KTP)</th>
+                      <th className="py-3.5 px-4">No. Kartu Keluarga</th>
+                      <th className="py-3.5 px-4">Domisili (RW/RT)</th>
+                      <th className="py-3.5 px-4">Status</th>
+                      <th className="py-3.5 px-4 text-center">Aksi</th>
+                    </tr>
+                  </thead>
+                  <tbody className="divide-y divide-slate-100 font-medium">
+                    {userList
+                      .filter((u) => {
+                        const q = userSearch.toLowerCase();
+                        const matchesSearch =
+                          !userSearch ||
+                          u.fullName.toLowerCase().includes(q) ||
+                          u.phoneNumber.includes(q) ||
+                          u.nik.includes(q) ||
+                          u.email.toLowerCase().includes(q) ||
+                          u.addressBlock.toLowerCase().includes(q);
+
+                        const matchesRole =
+                          !userRoleFilter ||
+                          (userRoleFilter === "ADMIN" && u.roles.includes("SUPER_ADMIN")) ||
+                          (userRoleFilter === "RW" && u.roles.some((r: string) => r.startsWith("RW_"))) ||
+                          (userRoleFilter === "RT" && u.roles.some((r: string) => r.startsWith("RT_"))) ||
+                          (userRoleFilter === "RESIDENT" && u.roles.includes("RESIDENT"));
+
+                        return matchesSearch && matchesRole;
+                      })
+                      .map((u) => {
+                        const isSuperAdmin = u.roles.includes("SUPER_ADMIN");
+                        const isRwRole = u.roles.some((r: string) => r.startsWith("RW_"));
+                        const isRtRole = u.roles.some((r: string) => r.startsWith("RT_"));
+
+                        return (
+                          <tr key={u.id} className="hover:bg-slate-50/70 transition-colors">
+                            <td className="py-3.5 px-4">
+                              <div className="font-extrabold text-slate-900">{u.fullName}</div>
+                              <div className="text-[11px] font-mono text-slate-600 flex items-center gap-1 mt-0.5">
+                                <span>📱 {u.phoneNumber || "-"}</span>
+                                {u.email && <span className="text-slate-400">• ✉️ {u.email}</span>}
+                              </div>
+                            </td>
+
+                            <td className="py-3.5 px-4">
+                              <span
+                                className={`px-2.5 py-1 rounded-full text-[10px] font-extrabold border ${
+                                  isSuperAdmin
+                                    ? "bg-amber-100 text-amber-900 border-amber-300"
+                                    : isRwRole
+                                    ? "bg-purple-100 text-purple-900 border-purple-300"
+                                    : isRtRole
+                                    ? "bg-emerald-100 text-emerald-900 border-emerald-300"
+                                    : "bg-slate-100 text-slate-800 border-slate-300"
+                                }`}
+                              >
+                                {formatRoleName(u.roles[0] || "RESIDENT")}
+                              </span>
+                            </td>
+
+                            <td className="py-3.5 px-4">
+                              {u.nik ? (
+                                <span className="font-mono text-[11px] font-bold text-emerald-800 bg-emerald-50 px-2 py-0.5 rounded border border-emerald-200">
+                                  {u.nik}
+                                </span>
+                              ) : (
+                                <span className="text-[10px] font-bold text-amber-700 bg-amber-50 px-2 py-0.5 rounded border border-amber-200">
+                                  Belum Diisi
+                                </span>
+                              )}
+                            </td>
+
+                            <td className="py-3.5 px-4">
+                              {u.kk ? (
+                                <span className="font-mono text-[11px] text-slate-700 bg-slate-100 px-2 py-0.5 rounded border border-slate-200">
+                                  {u.kk}
+                                </span>
+                              ) : (
+                                <span className="text-[10px] text-slate-400 bg-slate-50 px-2 py-0.5 rounded border border-slate-200">
+                                  Belum Diisi
+                                </span>
+                              )}
+                            </td>
+
+                            <td className="py-3.5 px-4">
+                              <div className="font-bold text-slate-800">
+                                {u.rwNumber ? `RW ${u.rwNumber}` : "-"}{" "}
+                                {u.rtNumber ? `/ RT ${u.rtNumber}` : ""}
+                              </div>
+                              <div className="text-[10px] text-slate-500 truncate max-w-[150px]">
+                                {u.addressBlock || "Alamat belum diatur"}
+                              </div>
+                            </td>
+
+                            <td className="py-3.5 px-4">
+                              <span
+                                className={`px-2 py-0.5 rounded-full text-[10px] font-bold ${
+                                  u.status === "VERIFIED_ACTIVE"
+                                    ? "bg-emerald-100 text-emerald-800"
+                                    : "bg-amber-100 text-amber-800"
+                                }`}
+                              >
+                                {u.status === "VERIFIED_ACTIVE" ? "✓ Aktif" : "Menunggu Verifikasi"}
+                              </span>
+                            </td>
+
+                            <td className="py-3.5 px-4 text-center">
+                              <div className="flex items-center justify-center gap-1.5">
+                                <button
+                                  type="button"
+                                  onClick={() => openEditUser(u)}
+                                  className="p-1.5 rounded-lg bg-slate-100 hover:bg-slate-200 text-slate-700 transition-colors"
+                                  title="Ubah / Lengkapi Parameter Pengguna"
+                                >
+                                  <Edit3 className="w-3.5 h-3.5" />
+                                </button>
+                                <button
+                                  type="button"
+                                  onClick={() => handleDeleteUser(u.id, u.fullName)}
+                                  className="p-1.5 rounded-lg bg-rose-50 hover:bg-rose-100 text-rose-700 transition-colors"
+                                  title="Hapus Akun Pengguna"
+                                >
+                                  <Trash2 className="w-3.5 h-3.5" />
+                                </button>
+                              </div>
+                            </td>
+                          </tr>
+                        );
+                      })}
+                  </tbody>
+                </table>
+              </div>
+            </div>
+          )}
+        </div>
+      )}
+
+      {/* MODAL 1: TAMBAH AKUN BARU (OLEH SUPER ADMIN) */}
+      {showAddUserModal && (
+        <div className="fixed inset-0 z-50 bg-slate-900/60 backdrop-blur-sm flex items-center justify-center p-4 overflow-y-auto">
+          <div className="bg-white rounded-3xl max-w-lg w-full p-6 shadow-2xl border border-slate-100 relative animate-in fade-in zoom-in duration-200 max-h-[90vh] overflow-y-auto">
+            <div className="flex items-start justify-between mb-4">
+              <div className="flex items-center gap-3">
+                <div className="w-10 h-10 rounded-2xl bg-amber-100 text-amber-800 flex items-center justify-center shrink-0">
+                  <UserPlus className="w-5 h-5" />
+                </div>
+                <div>
+                  <h3 className="text-base font-extrabold text-slate-900">Tambah Akun Pengguna Baru</h3>
+                  <p className="text-xs text-slate-500">
+                    Parameter yang belum diketahui dapat dikosongkan untuk diisi sendiri oleh user.
+                  </p>
+                </div>
+              </div>
+              <button
+                type="button"
+                onClick={() => setShowAddUserModal(false)}
+                className="p-1.5 rounded-full text-slate-400 hover:text-slate-700 hover:bg-slate-100 transition-colors"
+              >
+                <X className="w-5 h-5" />
+              </button>
+            </div>
+
+            {userSubmitError && (
+              <div className="mb-4 p-3 rounded-xl bg-rose-50 border border-rose-200 text-rose-700 text-xs flex items-start gap-2">
+                <AlertCircle className="w-4 h-4 shrink-0 mt-0.5" />
+                <div>{userSubmitError}</div>
+              </div>
+            )}
+            {userSubmitSuccess && (
+              <div className="mb-4 p-3 rounded-xl bg-emerald-50 border border-emerald-200 text-emerald-700 text-xs flex items-start gap-2">
+                <CheckCircle2 className="w-4 h-4 shrink-0 mt-0.5" />
+                <div>{userSubmitSuccess}</div>
+              </div>
+            )}
+
+            <form onSubmit={handleCreateUser} className="space-y-3.5">
+              {/* Role Selector */}
+              <div>
+                <label className="text-xs font-semibold text-slate-700 block mb-1">
+                  Peran / Wewenang Akun
+                </label>
+                <select
+                  value={addRole}
+                  onChange={(e) => setAddRole(e.target.value)}
+                  className="w-full text-xs p-2.5 rounded-xl border border-slate-300 font-bold focus:ring-2 focus:ring-amber-500 bg-white"
+                >
+                  <optgroup label="Kelurahan">
+                    <option value="SUPER_ADMIN">Super Admin (Kelurahan)</option>
+                  </optgroup>
+                  <optgroup label="Pengurus RW">
+                    <option value="RW_CHAIR">Ketua RW</option>
+                    <option value="RW_VICE_CHAIR">Wakil Ketua RW</option>
+                    <option value="RW_SECRETARY">Sekretaris RW</option>
+                    <option value="RW_TREASURER">Bendahara RW</option>
+                    <option value="RW_SECURITY">Seksi Keamanan & Kamtib RW</option>
+                    <option value="RW_ENVIRONMENT">Seksi Lingkungan & Kebersihan RW</option>
+                    <option value="RW_DEVELOPMENT">Seksi Pembangunan RW</option>
+                    <option value="RW_RELATIONS">Seksi Humas RW</option>
+                    <option value="RW_YOUTH">Seksi Pemuda & Karang Taruna RW</option>
+                    <option value="RW_SOCIAL">Seksi Sosial & Kesejahteraan RW</option>
+                    <option value="RW_STAFF">Staf / Pengurus RW Lainnya</option>
+                  </optgroup>
+                  <optgroup label="Pengurus RT">
+                    <option value="RT_CHAIR">Ketua RT</option>
+                    <option value="RT_VICE_CHAIR">Wakil Ketua RT</option>
+                    <option value="RT_SECRETARY">Sekretaris RT</option>
+                    <option value="RT_TREASURER">Bendahara RT</option>
+                    <option value="RT_SECURITY">Seksi Keamanan RT</option>
+                    <option value="RT_ENVIRONMENT">Seksi Kebersihan RT</option>
+                    <option value="RT_SOCIAL">Seksi Sosial RT</option>
+                    <option value="RT_YOUTH">Seksi Pemuda RT</option>
+                    <option value="RT_WOMEN">Seksi Perempuan & PKK RT</option>
+                    <option value="RT_STAFF">Staf / Pengurus RT Lainnya</option>
+                  </optgroup>
+                  <optgroup label="Warga">
+                    <option value="RESIDENT">Warga Lingkungan (Tetap / Domisili)</option>
+                  </optgroup>
+                </select>
+              </div>
+
+              {/* RW & RT Selector */}
+              <div className="grid grid-cols-2 gap-3">
+                <div>
+                  <label className="text-xs font-semibold text-slate-700 block mb-1">
+                    Wilayah RW (Opsional)
+                  </label>
+                  <select
+                    value={addRwId}
+                    onChange={(e) => {
+                      const rwId = e.target.value;
+                      setAddRwId(rwId);
+                      const targetRw = rwList.find((r) => r.id === rwId);
+                      if (targetRw?.rtUnits?.length > 0) {
+                        setAddRtId(targetRw.rtUnits[0].id);
+                      }
+                    }}
+                    className="w-full text-xs p-2.5 rounded-xl border border-slate-300 font-medium focus:ring-2 focus:ring-amber-500 bg-white"
+                  >
+                    <option value="">Pilih RW</option>
+                    {rwList.map((r) => (
+                      <option key={r.id} value={r.id}>
+                        RW {r.rw_number} ({r.village})
+                      </option>
+                    ))}
+                  </select>
+                </div>
+                <div>
+                  <label className="text-xs font-semibold text-slate-700 block mb-1">
+                    Wilayah RT (Opsional)
+                  </label>
+                  <select
+                    value={addRtId}
+                    onChange={(e) => setAddRtId(e.target.value)}
+                    className="w-full text-xs p-2.5 rounded-xl border border-slate-300 font-medium focus:ring-2 focus:ring-amber-500 bg-white"
+                  >
+                    <option value="">Pilih RT</option>
+                    {(() => {
+                      const selRw = rwList.find((r) => r.id === addRwId);
+                      return selRw?.rtUnits?.map((rt: any) => (
+                        <option key={rt.id} value={rt.id}>
+                          RT {rt.number || rt.rt_number}
+                        </option>
+                      ));
+                    })()}
+                  </select>
+                </div>
+              </div>
+
+              {/* Nama Lengkap */}
+              <div>
+                <label className="text-xs font-semibold text-slate-700 block mb-1">
+                  Nama Lengkap <span className="text-rose-500">*</span>
+                </label>
+                <input
+                  type="text"
+                  required
+                  value={addFullName}
+                  onChange={(e) => setAddFullName(e.target.value)}
+                  placeholder="Nama Lengkap Pengguna"
+                  className="w-full text-xs p-3 rounded-xl border border-slate-300 font-medium focus:ring-2 focus:ring-amber-500"
+                />
+              </div>
+
+              {/* Nomor WhatsApp */}
+              <div>
+                <label className="text-xs font-semibold text-slate-700 block mb-1">
+                  Nomor WhatsApp / HP
+                </label>
+                <input
+                  type="tel"
+                  value={addPhone}
+                  onChange={(e) => setAddPhone(e.target.value)}
+                  placeholder="08xxxxxxxxxx (1 nomor bisa digunakan sekeluarga)"
+                  className="w-full text-xs p-3 rounded-xl border border-slate-300 font-mono font-medium focus:ring-2 focus:ring-amber-500"
+                />
+              </div>
+
+              {/* Kata Sandi Awal */}
+              <div>
+                <label className="text-xs font-semibold text-slate-700 block mb-1">
+                  Kata Sandi Awal
+                </label>
+                <input
+                  type="text"
+                  value={addPassword}
+                  onChange={(e) => setAddPassword(e.target.value)}
+                  placeholder="Default: Warga12345!"
+                  className="w-full text-xs p-3 rounded-xl border border-slate-300 font-medium focus:ring-2 focus:ring-amber-500"
+                />
+              </div>
+
+              {/* NIK (Opsional) */}
+              <div>
+                <div className="flex items-center justify-between mb-1">
+                  <label className="text-xs font-semibold text-slate-700">
+                    Nomor NIK (Opsional)
+                  </label>
+                  <span className="text-[10px] text-slate-400 font-semibold">{addNik.length}/16</span>
+                </div>
+                <input
+                  type="text"
+                  inputMode="numeric"
+                  pattern="[0-9]*"
+                  maxLength={16}
+                  value={addNik}
+                  onChange={(e) => setAddNik(e.target.value.replace(/\D/g, "").slice(0, 16))}
+                  placeholder="16 digit NIK (Bisa dikosongkan untuk diisi user nanti)"
+                  className="w-full text-xs p-3 rounded-xl border border-slate-300 font-mono font-medium focus:ring-2 focus:ring-amber-500 tracking-wider"
+                />
+              </div>
+
+              {/* No. KK (Opsional) */}
+              <div>
+                <div className="flex items-center justify-between mb-1">
+                  <label className="text-xs font-semibold text-slate-700">
+                    Nomor KK (Opsional)
+                  </label>
+                  <span className="text-[10px] text-slate-400 font-semibold">{addKk.length}/16</span>
+                </div>
+                <input
+                  type="text"
+                  inputMode="numeric"
+                  pattern="[0-9]*"
+                  maxLength={16}
+                  value={addKk}
+                  onChange={(e) => setAddKk(e.target.value.replace(/\D/g, "").slice(0, 16))}
+                  placeholder="16 digit No. KK (Bisa dikosongkan untuk diisi user nanti)"
+                  className="w-full text-xs p-3 rounded-xl border border-slate-300 font-mono font-medium focus:ring-2 focus:ring-amber-500 tracking-wider"
+                />
+              </div>
+
+              {/* Alamat Domisili */}
+              <div>
+                <label className="text-xs font-semibold text-slate-700 block mb-1">
+                  Alamat Domisili / Blok Rumah (Opsional)
+                </label>
+                <input
+                  type="text"
+                  value={addAddressBlock}
+                  onChange={(e) => setAddAddressBlock(e.target.value)}
+                  placeholder="Contoh: Blok B3 No. 12"
+                  className="w-full text-xs p-3 rounded-xl border border-slate-300 font-medium focus:ring-2 focus:ring-amber-500"
+                />
+              </div>
+
+              {/* Email (Opsional) */}
+              <div>
+                <label className="text-xs font-semibold text-slate-700 block mb-1">
+                  Alamat Email (Opsional)
+                </label>
+                <input
+                  type="email"
+                  value={addEmail}
+                  onChange={(e) => setAddEmail(e.target.value)}
+                  placeholder="user@domain.com"
+                  className="w-full text-xs p-3 rounded-xl border border-slate-300 font-medium focus:ring-2 focus:ring-amber-500"
+                />
+              </div>
+
+              {/* Status Verifikasi */}
+              <div>
+                <label className="text-xs font-semibold text-slate-700 block mb-1">
+                  Status Akun
+                </label>
+                <select
+                  value={addStatus}
+                  onChange={(e) => setAddStatus(e.target.value as any)}
+                  className="w-full text-xs p-2.5 rounded-xl border border-slate-300 font-medium focus:ring-2 focus:ring-amber-500 bg-white"
+                >
+                  <option value="VERIFIED_ACTIVE">✓ Langsung Aktif (Terverifikasi)</option>
+                  <option value="PENDING_VERIFICATION">Menunggu Verifikasi Berkas</option>
+                </select>
+              </div>
+
+              <div className="pt-2 flex gap-2">
+                <button
+                  type="button"
+                  onClick={() => setShowAddUserModal(false)}
+                  className="w-1/3 py-2.5 px-3 rounded-xl bg-slate-100 hover:bg-slate-200 text-slate-700 font-bold text-xs"
+                >
+                  Batal
+                </button>
+                <button
+                  type="submit"
+                  disabled={userSubmitLoading}
+                  className="w-2/3 py-2.5 px-4 rounded-xl bg-amber-500 hover:bg-amber-600 disabled:opacity-50 text-slate-950 font-extrabold text-xs flex items-center justify-center gap-2 shadow-sm transition-all"
+                >
+                  {userSubmitLoading ? (
+                    <>
+                      <RefreshCw className="w-4 h-4 animate-spin" />
+                      Menyimpan Akun...
+                    </>
+                  ) : (
+                    <>
+                      <Check className="w-4 h-4" />
+                      Simpan & Terbitkan Akun
+                    </>
+                  )}
+                </button>
+              </div>
+            </form>
+          </div>
+        </div>
+      )}
+
+      {/* MODAL 2: UBAH DATA PENGGUNA (OLEH SUPER ADMIN) */}
+      {showEditUserModal && (
+        <div className="fixed inset-0 z-50 bg-slate-900/60 backdrop-blur-sm flex items-center justify-center p-4 overflow-y-auto">
+          <div className="bg-white rounded-3xl max-w-lg w-full p-6 shadow-2xl border border-slate-100 relative animate-in fade-in zoom-in duration-200 max-h-[90vh] overflow-y-auto">
+            <div className="flex items-start justify-between mb-4">
+              <div className="flex items-center gap-3">
+                <div className="w-10 h-10 rounded-2xl bg-slate-100 text-slate-800 flex items-center justify-center shrink-0">
+                  <Edit3 className="w-5 h-5" />
+                </div>
+                <div>
+                  <h3 className="text-base font-extrabold text-slate-900">Ubah Data Pengguna</h3>
+                  <p className="text-xs text-slate-500">
+                    Perbarui parameter NIK, No. KK, RT, RW, atau reset kata sandi.
+                  </p>
+                </div>
+              </div>
+              <button
+                type="button"
+                onClick={() => setShowEditUserModal(false)}
+                className="p-1.5 rounded-full text-slate-400 hover:text-slate-700 hover:bg-slate-100 transition-colors"
+              >
+                <X className="w-5 h-5" />
+              </button>
+            </div>
+
+            {userSubmitError && (
+              <div className="mb-4 p-3 rounded-xl bg-rose-50 border border-rose-200 text-rose-700 text-xs flex items-start gap-2">
+                <AlertCircle className="w-4 h-4 shrink-0 mt-0.5" />
+                <div>{userSubmitError}</div>
+              </div>
+            )}
+            {userSubmitSuccess && (
+              <div className="mb-4 p-3 rounded-xl bg-emerald-50 border border-emerald-200 text-emerald-700 text-xs flex items-start gap-2">
+                <CheckCircle2 className="w-4 h-4 shrink-0 mt-0.5" />
+                <div>{userSubmitSuccess}</div>
+              </div>
+            )}
+
+            <form onSubmit={handleUpdateUser} className="space-y-3.5">
+              {/* Role Selector */}
+              <div>
+                <label className="text-xs font-semibold text-slate-700 block mb-1">
+                  Peran / Wewenang Akun
+                </label>
+                <select
+                  value={editRole}
+                  onChange={(e) => setEditRole(e.target.value)}
+                  className="w-full text-xs p-2.5 rounded-xl border border-slate-300 font-bold focus:ring-2 focus:ring-amber-500 bg-white"
+                >
+                  <optgroup label="Kelurahan">
+                    <option value="SUPER_ADMIN">Super Admin (Kelurahan)</option>
+                  </optgroup>
+                  <optgroup label="Pengurus RW">
+                    <option value="RW_CHAIR">Ketua RW</option>
+                    <option value="RW_VICE_CHAIR">Wakil Ketua RW</option>
+                    <option value="RW_SECRETARY">Sekretaris RW</option>
+                    <option value="RW_TREASURER">Bendahara RW</option>
+                    <option value="RW_SECURITY">Seksi Keamanan & Kamtib RW</option>
+                    <option value="RW_ENVIRONMENT">Seksi Lingkungan & Kebersihan RW</option>
+                    <option value="RW_DEVELOPMENT">Seksi Pembangunan RW</option>
+                    <option value="RW_RELATIONS">Seksi Humas RW</option>
+                    <option value="RW_YOUTH">Seksi Pemuda & Karang Taruna RW</option>
+                    <option value="RW_SOCIAL">Seksi Sosial & Kesejahteraan RW</option>
+                    <option value="RW_STAFF">Staf / Pengurus RW Lainnya</option>
+                  </optgroup>
+                  <optgroup label="Pengurus RT">
+                    <option value="RT_CHAIR">Ketua RT</option>
+                    <option value="RT_VICE_CHAIR">Wakil Ketua RT</option>
+                    <option value="RT_SECRETARY">Sekretaris RT</option>
+                    <option value="RT_TREASURER">Bendahara RT</option>
+                    <option value="RT_SECURITY">Seksi Keamanan RT</option>
+                    <option value="RT_ENVIRONMENT">Seksi Kebersihan RT</option>
+                    <option value="RT_SOCIAL">Seksi Sosial RT</option>
+                    <option value="RT_YOUTH">Seksi Pemuda RT</option>
+                    <option value="RT_WOMEN">Seksi Perempuan & PKK RT</option>
+                    <option value="RT_STAFF">Staf / Pengurus RT Lainnya</option>
+                  </optgroup>
+                  <optgroup label="Warga">
+                    <option value="RESIDENT">Warga Lingkungan (Tetap / Domisili)</option>
+                  </optgroup>
+                </select>
+              </div>
+
+              {/* RW & RT Selector */}
+              <div className="grid grid-cols-2 gap-3">
+                <div>
+                  <label className="text-xs font-semibold text-slate-700 block mb-1">
+                    Wilayah RW
+                  </label>
+                  <select
+                    value={editRwId}
+                    onChange={(e) => {
+                      const rwId = e.target.value;
+                      setEditRwId(rwId);
+                      const targetRw = rwList.find((r) => r.id === rwId);
+                      if (targetRw?.rtUnits?.length > 0) {
+                        setEditRtId(targetRw.rtUnits[0].id);
+                      }
+                    }}
+                    className="w-full text-xs p-2.5 rounded-xl border border-slate-300 font-medium focus:ring-2 focus:ring-amber-500 bg-white"
+                  >
+                    <option value="">Pilih RW</option>
+                    {rwList.map((r) => (
+                      <option key={r.id} value={r.id}>
+                        RW {r.rw_number} ({r.village})
+                      </option>
+                    ))}
+                  </select>
+                </div>
+                <div>
+                  <label className="text-xs font-semibold text-slate-700 block mb-1">
+                    Wilayah RT
+                  </label>
+                  <select
+                    value={editRtId}
+                    onChange={(e) => setEditRtId(e.target.value)}
+                    className="w-full text-xs p-2.5 rounded-xl border border-slate-300 font-medium focus:ring-2 focus:ring-amber-500 bg-white"
+                  >
+                    <option value="">Pilih RT</option>
+                    {(() => {
+                      const selRw = rwList.find((r) => r.id === editRwId);
+                      return selRw?.rtUnits?.map((rt: any) => (
+                        <option key={rt.id} value={rt.id}>
+                          RT {rt.number || rt.rt_number}
+                        </option>
+                      ));
+                    })()}
+                  </select>
+                </div>
+              </div>
+
+              {/* Nama Lengkap */}
+              <div>
+                <label className="text-xs font-semibold text-slate-700 block mb-1">
+                  Nama Lengkap
+                </label>
+                <input
+                  type="text"
+                  required
+                  value={editFullName}
+                  onChange={(e) => setEditFullName(e.target.value)}
+                  className="w-full text-xs p-3 rounded-xl border border-slate-300 font-medium focus:ring-2 focus:ring-amber-500"
+                />
+              </div>
+
+              {/* NIK */}
+              <div>
+                <div className="flex items-center justify-between mb-1">
+                  <label className="text-xs font-semibold text-slate-700">
+                    Nomor NIK (16 Digit)
+                  </label>
+                  <span className="text-[10px] text-slate-400 font-semibold">{editNik.length}/16</span>
+                </div>
+                <input
+                  type="text"
+                  inputMode="numeric"
+                  pattern="[0-9]*"
+                  maxLength={16}
+                  value={editNik}
+                  onChange={(e) => setEditNik(e.target.value.replace(/\D/g, "").slice(0, 16))}
+                  placeholder="16 digit NIK"
+                  className="w-full text-xs p-3 rounded-xl border border-slate-300 font-mono font-medium focus:ring-2 focus:ring-amber-500 tracking-wider"
+                />
+              </div>
+
+              {/* No. KK */}
+              <div>
+                <div className="flex items-center justify-between mb-1">
+                  <label className="text-xs font-semibold text-slate-700">
+                    Nomor Kartu Keluarga (16 Digit)
+                  </label>
+                  <span className="text-[10px] text-slate-400 font-semibold">{editKk.length}/16</span>
+                </div>
+                <input
+                  type="text"
+                  inputMode="numeric"
+                  pattern="[0-9]*"
+                  maxLength={16}
+                  value={editKk}
+                  onChange={(e) => setEditKk(e.target.value.replace(/\D/g, "").slice(0, 16))}
+                  placeholder="16 digit No. KK"
+                  className="w-full text-xs p-3 rounded-xl border border-slate-300 font-mono font-medium focus:ring-2 focus:ring-amber-500 tracking-wider"
+                />
+              </div>
+
+              {/* Nomor WhatsApp */}
+              <div>
+                <label className="text-xs font-semibold text-slate-700 block mb-1">
+                  Nomor WhatsApp / HP
+                </label>
+                <input
+                  type="tel"
+                  value={editPhone}
+                  onChange={(e) => setEditPhone(e.target.value)}
+                  className="w-full text-xs p-3 rounded-xl border border-slate-300 font-mono font-medium focus:ring-2 focus:ring-amber-500"
+                />
+              </div>
+
+              {/* Alamat Domisili */}
+              <div>
+                <label className="text-xs font-semibold text-slate-700 block mb-1">
+                  Alamat Domisili / Blok Rumah
+                </label>
+                <input
+                  type="text"
+                  value={editAddressBlock}
+                  onChange={(e) => setEditAddressBlock(e.target.value)}
+                  className="w-full text-xs p-3 rounded-xl border border-slate-300 font-medium focus:ring-2 focus:ring-amber-500"
+                />
+              </div>
+
+              {/* Email */}
+              <div>
+                <label className="text-xs font-semibold text-slate-700 block mb-1">
+                  Alamat Email (Opsional)
+                </label>
+                <input
+                  type="email"
+                  value={editEmail}
+                  onChange={(e) => setEditEmail(e.target.value)}
+                  className="w-full text-xs p-3 rounded-xl border border-slate-300 font-medium focus:ring-2 focus:ring-amber-500"
+                />
+              </div>
+
+              {/* Status */}
+              <div>
+                <label className="text-xs font-semibold text-slate-700 block mb-1">
+                  Status Akun
+                </label>
+                <select
+                  value={editStatus}
+                  onChange={(e) => setEditStatus(e.target.value)}
+                  className="w-full text-xs p-2.5 rounded-xl border border-slate-300 font-medium focus:ring-2 focus:ring-amber-500 bg-white"
+                >
+                  <option value="VERIFIED_ACTIVE">✓ Aktif (Terverifikasi)</option>
+                  <option value="PENDING_VERIFICATION">Menunggu Verifikasi</option>
+                  <option value="SUSPENDED">Ditangguhkan / Suspend</option>
+                </select>
+              </div>
+
+              {/* Reset Password */}
+              <div>
+                <label className="text-xs font-semibold text-slate-700 block mb-1">
+                  Atur Kata Sandi Baru (Opsional)
+                </label>
+                <input
+                  type="text"
+                  value={editNewPassword}
+                  onChange={(e) => setEditNewPassword(e.target.value)}
+                  placeholder="Kosongkan jika tidak ingin mengubah sandi"
+                  className="w-full text-xs p-3 rounded-xl border border-slate-300 font-medium focus:ring-2 focus:ring-amber-500"
+                />
+              </div>
+
+              <div className="pt-2 flex gap-2">
+                <button
+                  type="button"
+                  onClick={() => setShowEditUserModal(false)}
+                  className="w-1/3 py-2.5 px-3 rounded-xl bg-slate-100 hover:bg-slate-200 text-slate-700 font-bold text-xs"
+                >
+                  Batal
+                </button>
+                <button
+                  type="submit"
+                  disabled={userSubmitLoading}
+                  className="w-2/3 py-2.5 px-4 rounded-xl bg-amber-500 hover:bg-amber-600 disabled:opacity-50 text-slate-950 font-extrabold text-xs flex items-center justify-center gap-2 shadow-sm transition-all"
+                >
+                  {userSubmitLoading ? (
+                    <>
+                      <RefreshCw className="w-4 h-4 animate-spin" />
+                      Memperbarui...
+                    </>
+                  ) : (
+                    <>
+                      <Check className="w-4 h-4" />
+                      Simpan Perubahan
+                    </>
+                  )}
+                </button>
+              </div>
+            </form>
+          </div>
+        </div>
+      )}
 
       {/* TAB 1: PERMOHONAN RW BARU */}
       {activeTab === "rw_requests" && (

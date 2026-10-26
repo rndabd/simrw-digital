@@ -397,15 +397,15 @@ export default function AuthView() {
     setErrorMessage(null);
 
     const cleanNik = loginNik.replace(/\D/g, "");
-    if (cleanNik.length !== 16 && loginNik.trim().length < 10) {
-      setErrorMessage("Nomor NIK harus 16 digit sesuai e-KTP.");
+    if (cleanNik.length < 10 && !loginNik.includes("@")) {
+      setErrorMessage("Nomor NIK (16 digit) atau Nomor HP (minimal 10 digit) tidak valid.");
       setIsSubmitting(false);
       return;
     }
 
     const result = await login(cleanNik || loginNik.trim(), password);
     if (!result.success) {
-      setErrorMessage(getFriendlyErrorMessage(result.message, "Nomor NIK atau kata sandi tidak cocok."));
+      setErrorMessage(getFriendlyErrorMessage(result.message, "Nomor NIK / HP atau kata sandi tidak cocok."));
     }
     setIsSubmitting(false);
   };
@@ -843,7 +843,7 @@ export default function AuthView() {
           <form onSubmit={handleLoginSubmit} className="space-y-3">
             <div>
               <label className="text-xs font-semibold text-slate-700 block mb-1">
-                Nomor Induk Kependudukan (NIK)
+                Nomor Induk Kependudukan (NIK) / No. WhatsApp
               </label>
               <div className="relative">
                 <input
@@ -854,7 +854,7 @@ export default function AuthView() {
                   required
                   value={loginNik}
                   onChange={(e) => setLoginNik(e.target.value.replace(/\D/g, "").slice(0, 16))}
-                  placeholder="16 digit NIK sesuai KTP"
+                  placeholder="16 digit NIK KTP atau Nomor WhatsApp (08xx)"
                   className="w-full text-xs p-3 pr-14 rounded-xl border border-slate-300 font-medium focus:ring-2 focus:ring-emerald-500 tracking-wider font-mono"
                 />
                 <span className="absolute right-3 top-3 text-[10px] font-semibold text-slate-400">
@@ -863,7 +863,7 @@ export default function AuthView() {
               </div>
               <p className="text-[10px] text-slate-500 mt-1 flex items-center gap-1">
                 <Info className="w-3 h-3 text-emerald-600 shrink-0" />
-                1 nomor HP/WA dapat digunakan beberapa NIK dalam 1 Kartu Keluarga (KK).
+                Masuk dengan 16 digit NIK atau Nomor WhatsApp terdaftar. 1 nomor HP dapat dipakai bersama dalam 1 KK.
               </p>
             </div>
 

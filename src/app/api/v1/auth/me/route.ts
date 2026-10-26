@@ -1,7 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import { getAuthUser } from "@/lib/auth";
 import { getStore } from "@/lib/data-store";
-import { decryptAES256GCM, maskNik } from "@/lib/security";
+import { decryptAES256GCM, maskNik, maskKK } from "@/lib/security";
 
 export async function GET(req: NextRequest) {
   try {
@@ -32,10 +32,13 @@ export async function GET(req: NextRequest) {
       new Set(matchedRoles.flatMap((r) => r.permissions))
     );
 
-    let maskedNik = "327301******0000";
+    let rawNik = "";
+    let maskedNik = "Belum Dilengkapi";
     try {
-      const rawNik = decryptAES256GCM(user.nik_encrypted);
-      maskedNik = maskNik(rawNik);
+      if (user.nik_encrypted) {
+        rawNik = decryptAES256GCM(user.nik_encrypted);
+        maskedNik = maskNik(rawNik);
+      }
     } catch {}
 
     const rw = store.rws.find((r) => r.id === user.rw_id);
@@ -43,6 +46,15 @@ export async function GET(req: NextRequest) {
     const hh = user.household_id
       ? store.households.find((h) => h.id === user.household_id)
       : null;
+
+    let rawKk = "";
+    let maskedKk = "Belum Dilengkapi";
+    try {
+      if (hh?.kk_number_enc) {
+        rawKk = decryptAES256GCM(hh.kk_number_enc);
+        maskedKk = maskKK(rawKk);
+      }
+    } catch {}
 
     // Check if user has officer requests
     const pendingOfficerReq = store.officer_requests.find(
@@ -61,6 +73,9 @@ export async function GET(req: NextRequest) {
         isEmailVerified: !!user.is_email_verified,
         status: user.status,
         maskedNik,
+        nik: rawNik || "",
+        maskedKk,
+        kk: rawKk || "",
         rejectionNote: user.rejection_note,
         verifiedAt: user.verified_at,
         rw: rw ? { id: rw.id, number: rw.rw_number, village: rw.village, district: rw.district, city: rw.city } : null,

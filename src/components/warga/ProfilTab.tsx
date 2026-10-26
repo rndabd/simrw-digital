@@ -36,9 +36,29 @@ export default function ProfilTab() {
   const [avatarUploadError, setAvatarUploadError] = useState<string | null>(null);
   const [avatarUploadSuccess, setAvatarUploadSuccess] = useState<string | null>(null);
 
+  // Organizations for RW/RT selector
+  const [orgList, setOrgList] = useState<any[]>([]);
+
+  React.useEffect(() => {
+    async function loadOrgs() {
+      try {
+        const res = await fetch("/api/v1/organizations/public");
+        const json = await res.json();
+        if (json.success && Array.isArray(json.data)) {
+          setOrgList(json.data);
+        }
+      } catch {}
+    }
+    loadOrgs();
+  }, []);
+
   // State for Edit Profile Modal
   const [showEditProfileModal, setShowEditProfileModal] = useState(false);
   const [editFullName, setEditFullName] = useState("");
+  const [editNik, setEditNik] = useState("");
+  const [editKk, setEditKk] = useState("");
+  const [editRwId, setEditRwId] = useState("");
+  const [editRtId, setEditRtId] = useState("");
   const [editAddressBlock, setEditAddressBlock] = useState("");
   const [editPhone, setEditPhone] = useState("");
   const [editEmail, setEditEmail] = useState("");
@@ -56,6 +76,10 @@ export default function ProfilTab() {
 
   const openEditProfile = () => {
     setEditFullName(user?.fullName || "");
+    setEditNik(user?.nik || "");
+    setEditKk(user?.kk || "");
+    setEditRwId(user?.rw?.id || (orgList.length > 0 ? orgList[0].id : ""));
+    setEditRtId(user?.rt?.id || "");
     setEditAddressBlock(user?.addressBlock || "");
     setEditPhone(user?.phoneNumber || "");
     setEditEmail(user?.email || "");
@@ -73,6 +97,10 @@ export default function ProfilTab() {
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
           fullName: editFullName,
+          nik: editNik,
+          kk: editKk,
+          rwId: editRwId,
+          rtId: editRtId,
           addressBlock: editAddressBlock,
           phoneNumber: editPhone,
           email: editEmail,
@@ -302,8 +330,36 @@ export default function ProfilTab() {
     }
   };
 
+  const isProfileIncomplete = !user?.nik || !user?.kk || !user?.rw?.number || !user?.rt?.number;
+
   return (
     <div className="space-y-6 pb-20">
+      {/* Banner Peringatan Jika Data Kependudukan Belum Lengkap */}
+      {isProfileIncomplete && (
+        <div className="p-4 rounded-3xl bg-amber-500/10 border border-amber-500/30 text-amber-950 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3 shadow-xs">
+          <div className="flex items-start gap-3">
+            <div className="p-2 rounded-2xl bg-amber-500 text-slate-950 shrink-0 mt-0.5 shadow-xs">
+              <AlertTriangle className="w-5 h-5" />
+            </div>
+            <div>
+              <div className="font-extrabold text-sm text-amber-950">
+                Data Kependudukan Anda Belum Lengkap
+              </div>
+              <p className="text-xs text-amber-900/90 mt-0.5 leading-relaxed">
+                Parameter kependudukan Anda ({!user?.nik ? "NIK, " : ""}{!user?.kk ? "No. KK, " : ""}{!user?.rw?.number || !user?.rt?.number ? "RT/RW, " : ""}belum lengkap). Anda dapat melengkapinya secara mandiri sekarang.
+              </p>
+            </div>
+          </div>
+          <button
+            type="button"
+            onClick={openEditProfile}
+            className="px-4 py-2 rounded-xl bg-amber-500 hover:bg-amber-600 active:scale-95 text-slate-950 font-extrabold text-xs shrink-0 shadow-sm transition-all"
+          >
+            Lengkapi Data Sekarang
+          </button>
+        </div>
+      )}
+
       {/* 1. Header Profil & Foto Avatar */}
       <div className="p-6 rounded-3xl bg-white border border-slate-200/90 shadow-sm">
         <div className="flex flex-col sm:flex-row items-center gap-5">
@@ -363,10 +419,16 @@ export default function ProfilTab() {
             <p className="text-xs text-slate-500 flex items-center justify-center sm:justify-start gap-2">
               <span>{user?.addressBlock || "Alamat Terdata"}</span>
               <span>•</span>
-              <span>RT {user?.rt?.number || "02"} / RW {user?.rw?.number || "05"}</span>
+              <span>RT {user?.rt?.number || "-"} / RW {user?.rw?.number || "-"}</span>
             </p>
 
             <div className="pt-1 flex flex-wrap items-center justify-center sm:justify-start gap-2">
+              <span className="text-xs font-mono font-medium text-slate-700 bg-slate-100 px-2.5 py-1 rounded-lg border border-slate-200">
+                🪪 NIK: {user?.maskedNik || "Belum Diisi"}
+              </span>
+              <span className="text-xs font-mono font-medium text-slate-700 bg-slate-100 px-2.5 py-1 rounded-lg border border-slate-200">
+                👨‍👩‍👧‍👦 KK: {user?.maskedKk || "Belum Diisi"}
+              </span>
               <span className="text-xs font-mono font-medium text-slate-600 bg-slate-100 px-2.5 py-1 rounded-lg">
                 📱 {user?.phoneNumber || "-"}
               </span>
@@ -385,7 +447,7 @@ export default function ProfilTab() {
                 className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-emerald-50 hover:bg-emerald-100 border border-emerald-300 text-emerald-800 text-xs font-bold transition-all shadow-2xs hover:shadow-xs active:scale-95"
               >
                 <Edit3 className="w-3.5 h-3.5 text-emerald-700" />
-                Ubah Profil & Alamat
+                Ubah Profil, NIK & Wilayah
               </button>
               <button
                 type="button"
@@ -794,6 +856,104 @@ export default function ProfilTab() {
             )}
 
             <form onSubmit={handleSaveProfile} className="space-y-3.5">
+              {/* NIK Input */}
+              <div>
+                <div className="flex items-center justify-between mb-1">
+                  <label className="text-xs font-semibold text-slate-700">
+                    Nomor Induk Kependudukan (NIK)
+                  </label>
+                  <span className="text-[10px] font-semibold text-slate-400">
+                    {editNik.length}/16
+                  </span>
+                </div>
+                <input
+                  type="text"
+                  inputMode="numeric"
+                  pattern="[0-9]*"
+                  maxLength={16}
+                  value={editNik}
+                  onChange={(e) => setEditNik(e.target.value.replace(/\D/g, "").slice(0, 16))}
+                  placeholder="16 digit NIK sesuai e-KTP"
+                  className="w-full text-xs p-3 rounded-xl border border-slate-300 font-mono font-medium focus:ring-2 focus:ring-emerald-500 tracking-wider"
+                />
+                <p className="text-[10px] text-slate-500 mt-0.5">
+                  NIK digunakan sebagai ID masuk akun (login) & pendataan resmi.
+                </p>
+              </div>
+
+              {/* No. KK Input */}
+              <div>
+                <div className="flex items-center justify-between mb-1">
+                  <label className="text-xs font-semibold text-slate-700">
+                    Nomor Kartu Keluarga (KK)
+                  </label>
+                  <span className="text-[10px] font-semibold text-slate-400">
+                    {editKk.length}/16
+                  </span>
+                </div>
+                <input
+                  type="text"
+                  inputMode="numeric"
+                  pattern="[0-9]*"
+                  maxLength={16}
+                  value={editKk}
+                  onChange={(e) => setEditKk(e.target.value.replace(/\D/g, "").slice(0, 16))}
+                  placeholder="16 digit No. KK sesuai Kartu Keluarga"
+                  className="w-full text-xs p-3 rounded-xl border border-slate-300 font-mono font-medium focus:ring-2 focus:ring-emerald-500 tracking-wider"
+                />
+                <p className="text-[10px] text-slate-500 mt-0.5">
+                  Menghubungkan Anda dengan anggota keluarga dalam 1 KK.
+                </p>
+              </div>
+
+              {/* Pilihan RW & RT */}
+              <div className="grid grid-cols-2 gap-3">
+                <div>
+                  <label className="text-xs font-semibold text-slate-700 block mb-1">
+                    Wilayah RW
+                  </label>
+                  <select
+                    value={editRwId}
+                    onChange={(e) => {
+                      const newRwId = e.target.value;
+                      setEditRwId(newRwId);
+                      const foundRw = orgList.find((o) => o.id === newRwId);
+                      if (foundRw && foundRw.rtUnits?.length > 0) {
+                        setEditRtId(foundRw.rtUnits[0].id);
+                      }
+                    }}
+                    className="w-full text-xs p-2.5 rounded-xl border border-slate-300 font-medium focus:ring-2 focus:ring-emerald-500 bg-white"
+                  >
+                    <option value="">Pilih RW</option>
+                    {orgList.map((rw) => (
+                      <option key={rw.id} value={rw.id}>
+                        RW {rw.number} ({rw.village})
+                      </option>
+                    ))}
+                  </select>
+                </div>
+                <div>
+                  <label className="text-xs font-semibold text-slate-700 block mb-1">
+                    Wilayah RT
+                  </label>
+                  <select
+                    value={editRtId}
+                    onChange={(e) => setEditRtId(e.target.value)}
+                    className="w-full text-xs p-2.5 rounded-xl border border-slate-300 font-medium focus:ring-2 focus:ring-emerald-500 bg-white"
+                  >
+                    <option value="">Pilih RT</option>
+                    {(() => {
+                      const selRw = orgList.find((o) => o.id === editRwId);
+                      return selRw?.rtUnits?.map((rt: any) => (
+                        <option key={rt.id} value={rt.id}>
+                          RT {rt.number}
+                        </option>
+                      ));
+                    })()}
+                  </select>
+                </div>
+              </div>
+
               <div>
                 <label className="text-xs font-semibold text-slate-700 block mb-1">
                   Nama Lengkap
@@ -834,6 +994,9 @@ export default function ProfilTab() {
                   placeholder="08xxxxxxxxxx"
                   className="w-full text-xs p-3 rounded-xl border border-slate-300 font-mono font-medium focus:ring-2 focus:ring-emerald-500"
                 />
+                <p className="text-[10px] text-slate-500 mt-0.5">
+                  1 nomor HP dapat digunakan bersama anggota keluarga dalam 1 KK.
+                </p>
               </div>
 
               <div>

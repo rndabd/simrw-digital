@@ -14,6 +14,9 @@ export interface UserProfile {
   isEmailVerified?: boolean;
   status: "UNVERIFIED" | "PENDING_VERIFICATION" | "VERIFIED_ACTIVE" | "REJECTED" | "SUSPENDED";
   maskedNik: string;
+  nik?: string;
+  maskedKk?: string;
+  kk?: string;
   rejectionNote?: string;
   verifiedAt?: string;
   rw?: { id: string; number: string; village: string; district?: string; city: string };
