@@ -123,7 +123,7 @@ export default function AppShell({
         >
           <div className="hidden md:block w-32 h-4 bg-slate-800 rounded-b-xl mx-auto absolute top-0 left-1/2 -translate-x-1/2 z-50 pointer-events-none" />
           <OfflineBanner />
-          <div className="flex-1 min-h-0 flex flex-col bg-slate-950/45 backdrop-blur-[2px] h-full relative">
+          <div className="flex-1 min-h-0 flex flex-col bg-slate-950/45 backdrop-blur-[2px] w-full relative">
             <PullToRefresh>
               {children}
             </PullToRefresh>

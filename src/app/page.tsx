@@ -179,7 +179,7 @@ export default function HomePage() {
       onOpenNotif={() => setShowNotificationsModal(true)}
     >
       {/* Main Unified Viewport */}
-      <div className={isDesktop ? "min-h-full flex flex-col" : "flex-1 min-h-0 flex flex-col h-full relative"}>
+      <div className={isDesktop ? "min-h-full flex flex-col" : "flex-1 min-h-0 flex flex-col w-full relative"}>
         {/* Header (rendered in mobile mode) */}
         {!isDesktop && (
           <div className="shrink-0 z-30">
@@ -228,9 +228,9 @@ export default function HomePage() {
           className={
             isDesktop
               ? "flex-1"
-              : "flex-1 min-h-0 overflow-y-auto overscroll-y-contain px-3 sm:px-4 pt-2 pb-24 touch-pan-y"
+              : "flex-1 min-h-0 overflow-y-auto px-3 sm:px-4 pt-2 pb-24 touch-pan-y"
           }
-          style={{ WebkitOverflowScrolling: "touch" }}
+          style={{ WebkitOverflowScrolling: "touch", overscrollBehaviorY: "contain" }}
         >
           {/* Admin / Officer Tab */}
           {activeTab === "admin" && user.isSuperAdmin && <SuperAdminDashboard />}
